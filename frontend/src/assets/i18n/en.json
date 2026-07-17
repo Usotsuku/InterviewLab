@@ -1,0 +1,48 @@
+{
+  "APP": {
+    "NAME": "InterviewLab",
+    "TAGLINE": "Master your interview with AI-powered feedback"
+  },
+  "NAV": {
+    "DASHBOARD": "Dashboard",
+    "INTERVIEW": "Interview",
+    "PROFILE": "Profile",
+    "ANALYTICS": "Analytics",
+    "HISTORY": "History",
+    "SETTINGS": "Settings"
+  },
+  "AUTH": {
+    "LOGIN": "Sign In",
+    "REGISTER": "Create Account",
+    "LOGOUT": "Logout",
+    "EMAIL": "Email",
+    "PASSWORD": "Password",
+    "FULL_NAME": "Full Name",
+    "ALREADY_HAVE_ACCOUNT": "Already have an account?",
+    "NO_ACCOUNT": "Don't have an account?",
+    "LOGIN_SUCCESS": "Welcome back!",
+    "REGISTER_SUCCESS": "Account created successfully!"
+  },
+  "INTERVIEW": {
+    "SETUP_TITLE": "Start Interview Session",
+    "MODE_LABEL": "Interview Mode",
+    "DIFFICULTY_LABEL": "Difficulty",
+    "QUESTION_COUNT_LABEL": "Number of Questions",
+    "BEGIN_SESSION": "Begin Session",
+    "START_RECORDING": "Start Recording",
+    "STOP_SUBMIT": "Stop & Submit",
+    "LISTENING": "Listening...",
+    "GRANT_MIC": "Grant Microphone Access",
+    "MIC_REQUIRED": "Microphone Access Required"
+  },
+  "COMMON": {
+    "SAVE": "Save",
+    "CANCEL": "Cancel",
+    "EDIT": "Edit",
+    "DELETE": "Delete",
+    "BACK": "Back",
+    "LOADING": "Loading...",
+    "ERROR_GENERIC": "Something went wrong. Please try again.",
+    "NO_DATA": "No data available."
+  }
+}

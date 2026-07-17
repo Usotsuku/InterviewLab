@@ -1,0 +1,225 @@
+/* ============================================================
+   InterviewLab — Global Design System
+   ============================================================ */
+
+/* --- Google Font: Inter --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* --- CSS Custom Properties (Design Tokens) --- */
+:root {
+  /* Brand Colors */
+  --il-primary-50:  #eef2ff;
+  --il-primary-100: #e0e7ff;
+  --il-primary-200: #c7d2fe;
+  --il-primary-300: #a5b4fc;
+  --il-primary-400: #818cf8;
+  --il-primary-500: #6366f1;  /* Primary brand color */
+  --il-primary-600: #4f46e5;
+  --il-primary-700: #4338ca;
+  --il-primary-800: #3730a3;
+  --il-primary-900: #312e81;
+
+  /* Accent */
+  --il-accent-400: #34d399;
+  --il-accent-500: #10b981;
+  --il-accent-600: #059669;
+
+  /* Warning */
+  --il-warn-400: #fb923c;
+  --il-warn-500: #f97316;
+
+  /* Neutral */
+  --il-neutral-50:  #f8fafc;
+  --il-neutral-100: #f1f5f9;
+  --il-neutral-200: #e2e8f0;
+  --il-neutral-300: #cbd5e1;
+  --il-neutral-400: #94a3b8;
+  --il-neutral-500: #64748b;
+  --il-neutral-600: #475569;
+  --il-neutral-700: #334155;
+  --il-neutral-800: #1e293b;
+  --il-neutral-900: #0f172a;
+
+  /* Surface */
+  --il-bg:          #0f172a;
+  --il-surface-1:   #1e293b;
+  --il-surface-2:   #334155;
+  --il-surface-3:   #475569;
+  --il-border:      rgba(148, 163, 184, 0.15);
+  --il-text:        #f1f5f9;
+  --il-text-muted:  #94a3b8;
+
+  /* Spacing */
+  --il-radius-sm:  6px;
+  --il-radius-md:  12px;
+  --il-radius-lg:  16px;
+  --il-radius-xl:  24px;
+
+  /* Typography */
+  --il-font:       'Inter', sans-serif;
+  --il-font-xs:    0.75rem;
+  --il-font-sm:    0.875rem;
+  --il-font-base:  1rem;
+  --il-font-lg:    1.125rem;
+  --il-font-xl:    1.25rem;
+  --il-font-2xl:   1.5rem;
+  --il-font-3xl:   1.875rem;
+  --il-font-4xl:   2.25rem;
+
+  /* Shadows */
+  --il-shadow-sm:  0 1px 3px rgba(0,0,0,0.4), 0 1px 2px rgba(0,0,0,0.3);
+  --il-shadow-md:  0 4px 6px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.3);
+  --il-shadow-lg:  0 10px 15px rgba(0,0,0,0.4), 0 4px 6px rgba(0,0,0,0.3);
+  --il-shadow-glow: 0 0 20px rgba(99,102,241,0.25);
+
+  /* Transitions */
+  --il-transition-fast:   150ms ease;
+  --il-transition-base:   200ms ease;
+  --il-transition-slow:   300ms ease;
+}
+
+/* --- Reset --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--il-font);
+  background-color: var(--il-bg);
+  color: var(--il-text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Typography Utilities --- */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--il-text);
+}
+
+h1 { font-size: var(--il-font-4xl); }
+h2 { font-size: var(--il-font-3xl); }
+h3 { font-size: var(--il-font-2xl); }
+h4 { font-size: var(--il-font-xl); }
+h5 { font-size: var(--il-font-lg); }
+h6 { font-size: var(--il-font-base); }
+
+p {
+  line-height: 1.6;
+  color: var(--il-text-muted);
+}
+
+a {
+  color: var(--il-primary-400);
+  text-decoration: none;
+  transition: color var(--il-transition-fast);
+}
+
+a:hover {
+  color: var(--il-primary-300);
+}
+
+/* --- Scrollbar Styling --- */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--il-surface-1); }
+::-webkit-scrollbar-thumb { background: var(--il-surface-3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--il-primary-500); }
+
+/* --- Angular Material Overrides --- */
+.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: var(--il-surface-2);
+  --mdc-snackbar-supporting-text-color: var(--il-text);
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+/* --- Glassmorphism Utility --- */
+.il-glass {
+  background: rgba(30, 41, 59, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--il-border);
+  border-radius: var(--il-radius-lg);
+}
+
+/* --- Card Utility --- */
+.il-card {
+  background: var(--il-surface-1);
+  border: 1px solid var(--il-border);
+  border-radius: var(--il-radius-lg);
+  padding: 24px;
+  transition: box-shadow var(--il-transition-base);
+}
+
+.il-card:hover {
+  box-shadow: var(--il-shadow-md);
+}
+
+/* --- Badge Utilities --- */
+.il-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: var(--il-font-xs);
+  font-weight: 600;
+}
+
+.il-badge--primary { background: rgba(99,102,241,0.2); color: var(--il-primary-300); }
+.il-badge--success { background: rgba(16,185,129,0.2); color: var(--il-accent-400); }
+.il-badge--warn    { background: rgba(249,115,22,0.2);  color: var(--il-warn-400); }
+
+/* --- Loading Skeleton Utility --- */
+@keyframes il-skeleton-shimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+.il-skeleton {
+  background: linear-gradient(90deg, var(--il-surface-1) 25%, var(--il-surface-2) 50%, var(--il-surface-1) 75%);
+  background-size: 800px 100%;
+  animation: il-skeleton-shimmer 1.5s infinite;
+  border-radius: var(--il-radius-sm);
+}
+
+/* --- Pulse Animation --- */
+@keyframes il-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.95); }
+}
+
+.il-pulse { animation: il-pulse 1.5s ease-in-out infinite; }
+
+/* --- Fade-In Animation --- */
+@keyframes il-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.il-fade-in { animation: il-fade-in 200ms ease forwards; }
+
+/* --- Recording Dot Animation --- */
+@keyframes il-recording-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+.il-recording-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: il-recording-dot 1s ease-in-out infinite;
+}

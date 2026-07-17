@@ -1,0 +1,33 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument, Types } from 'mongoose';
+
+export type AiEvaluationDocument = HydratedDocument<AiEvaluation>;
+
+@Schema({ collection: 'ai_evaluations', timestamps: true })
+export class AiEvaluation {
+  @Prop({ type: Types.ObjectId, ref: 'Answer', required: true, index: true })
+  answerId!: Types.ObjectId;
+
+  @Prop({ type: Types.ObjectId, ref: 'Interview', required: true, index: true })
+  interviewId!: Types.ObjectId;
+
+  @Prop({ default: null })
+  technicalScore?: number;
+
+  @Prop({ default: null })
+  semanticScore?: number;
+
+  @Prop({ type: [String], default: [] })
+  missingConcepts!: string[];
+
+  @Prop({ type: [String], default: [] })
+  communicationTips!: string[];
+
+  @Prop({ default: '' })
+  idealAnswer?: string;
+
+  @Prop({ default: null })
+  deletedAt?: Date;
+}
+
+export const AiEvaluationSchema = SchemaFactory.createForClass(AiEvaluation);

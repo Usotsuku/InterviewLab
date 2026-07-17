@@ -1,0 +1,48 @@
+{
+  "APP": {
+    "NAME": "InterviewLab",
+    "TAGLINE": "Maîtrisez vos entretiens avec un feedback IA"
+  },
+  "NAV": {
+    "DASHBOARD": "Tableau de bord",
+    "INTERVIEW": "Entretien",
+    "PROFILE": "Profil",
+    "ANALYTICS": "Analytiques",
+    "HISTORY": "Historique",
+    "SETTINGS": "Paramètres"
+  },
+  "AUTH": {
+    "LOGIN": "Se connecter",
+    "REGISTER": "Créer un compte",
+    "LOGOUT": "Déconnexion",
+    "EMAIL": "Email",
+    "PASSWORD": "Mot de passe",
+    "FULL_NAME": "Nom complet",
+    "ALREADY_HAVE_ACCOUNT": "Vous avez déjà un compte ?",
+    "NO_ACCOUNT": "Vous n'avez pas de compte ?",
+    "LOGIN_SUCCESS": "Bienvenue !",
+    "REGISTER_SUCCESS": "Compte créé avec succès !"
+  },
+  "INTERVIEW": {
+    "SETUP_TITLE": "Démarrer une session d'entretien",
+    "MODE_LABEL": "Mode d'entretien",
+    "DIFFICULTY_LABEL": "Difficulté",
+    "QUESTION_COUNT_LABEL": "Nombre de questions",
+    "BEGIN_SESSION": "Démarrer la session",
+    "START_RECORDING": "Commencer l'enregistrement",
+    "STOP_SUBMIT": "Arrêter et soumettre",
+    "LISTENING": "En écoute...",
+    "GRANT_MIC": "Autoriser le microphone",
+    "MIC_REQUIRED": "Accès au microphone requis"
+  },
+  "COMMON": {
+    "SAVE": "Enregistrer",
+    "CANCEL": "Annuler",
+    "EDIT": "Modifier",
+    "DELETE": "Supprimer",
+    "BACK": "Retour",
+    "LOADING": "Chargement...",
+    "ERROR_GENERIC": "Une erreur s'est produite. Veuillez réessayer.",
+    "NO_DATA": "Aucune donnée disponible."
+  }
+}
