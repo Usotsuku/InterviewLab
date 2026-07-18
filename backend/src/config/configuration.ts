@@ -55,7 +55,7 @@ export default registerAs('config', (): Config => ({
     provider: process.env.AI_PROVIDER || 'gemini',
     geminiApiKey: process.env.GEMINI_API_KEY,
     gemini: {
-      model: process.env.GEMINI_MODEL || 'gemini-2.5-flash',
+      model: process.env.GEMINI_MODEL || 'gemini-3.5-flash',
       temperature: parseFloat(process.env.GEMINI_TEMPERATURE || '0.4'),
       topP: parseFloat(process.env.GEMINI_TOP_P || '0.95'),
       topK: parseInt(process.env.GEMINI_TOP_K || '40', 10),

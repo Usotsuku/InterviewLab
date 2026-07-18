@@ -79,6 +79,34 @@ describe('CandidateProfileService', () => {
       expect(result.skills).toEqual(['React']);
     });
 
+    it('should persist experience and projects when provided', async () => {
+      const mockDoc = createMockProfile();
+      const updatedProfile = createMockProfile({
+        summary: 'Updated',
+        experience: [{ company: 'Acme', position: 'Dev', startDate: new Date('2020-01-01') }],
+        projects: [{ name: 'Proj', technologies: ['TS'] }],
+      });
+      mockProfileRepo.findByUserId
+        .mockResolvedValueOnce(mockDoc)
+        .mockResolvedValueOnce(updatedProfile);
+      mockProfileRepo.updateById.mockResolvedValue(mockDoc);
+
+      const result = await service.updateByUserId('user1', {
+        summary: 'Updated',
+        experience: [{ company: 'Acme', position: 'Dev', startDate: '2020-01-01' }],
+        projects: [{ name: 'Proj', technologies: ['TS'] }],
+      });
+      expect(mockProfileRepo.updateById).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          experience: [{ company: 'Acme', position: 'Dev', startDate: '2020-01-01' }],
+          projects: [{ name: 'Proj', technologies: ['TS'] }],
+        }),
+      );
+      expect(result.experience).toHaveLength(1);
+      expect(result.projects).toHaveLength(1);
+    });
+
     it('should create profile if not found during update', async () => {
       mockProfileRepo.findByUserId
         .mockResolvedValueOnce(null)
@@ -87,6 +115,25 @@ describe('CandidateProfileService', () => {
 
       const result = await service.updateByUserId('507f1f77bcf86cd799439011', { summary: 'New' });
       expect(mockProfileRepo.create).toHaveBeenCalled();
+    });
+
+    it('should include experience and projects when creating profile via update', async () => {
+      const experience = [{ company: 'Acme', position: 'Dev', startDate: '2020-01-01' }];
+      const projects = [{ name: 'Proj', technologies: ['TS'] }];
+      mockProfileRepo.findByUserId.mockResolvedValueOnce(null);
+      mockProfileRepo.create.mockResolvedValue(createMockProfile({ experience, projects }));
+      mockProfileRepo.findByUserId.mockResolvedValueOnce(
+        createMockProfile({ summary: 'New', experience, projects }),
+      );
+
+      await service.updateByUserId('507f1f77bcf86cd799439011', {
+        summary: 'New',
+        experience,
+        projects,
+      });
+      expect(mockProfileRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({ experience, projects }),
+      );
     });
   });
 

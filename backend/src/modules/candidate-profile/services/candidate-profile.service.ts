@@ -1,6 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { CandidateProfileRepository } from '../repositories/candidate-profile.repository';
+import { CandidateProfile } from '../schemas/candidate-profile.schema';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { CANDIDATE_PROFILE_ERRORS } from '../errors/candidate-profile.errors';
 import { AppException } from '@core/exceptions/app.exception';
@@ -108,8 +109,8 @@ export class CandidateProfileService {
         summary: dto.summary ?? '',
         skills: dto.skills ?? [],
         technologies: dto.technologies ?? [],
-        experience: [],
-        projects: [],
+        experience: (dto.experience ?? []) as CandidateProfile['experience'],
+        projects: (dto.projects ?? []) as CandidateProfile['projects'],
         strengths: dto.strengths ?? [],
         weaknesses: dto.weaknesses ?? [],
         cvAnalysisStatus: CvAnalysisStatus.NOT_UPLOADED,
@@ -124,6 +125,8 @@ export class CandidateProfileService {
     if (dto.summary !== undefined) updateData.summary = dto.summary;
     if (dto.skills !== undefined) updateData.skills = dto.skills;
     if (dto.technologies !== undefined) updateData.technologies = dto.technologies;
+    if (dto.experience !== undefined) updateData.experience = dto.experience;
+    if (dto.projects !== undefined) updateData.projects = dto.projects;
     if (dto.strengths !== undefined) updateData.strengths = dto.strengths;
     if (dto.weaknesses !== undefined) updateData.weaknesses = dto.weaknesses;
 

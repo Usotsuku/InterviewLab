@@ -47,6 +47,8 @@ export class CvAnalysisService {
         summary: mappedProfile.summary,
         skills: mappedProfile.skills,
         technologies: mappedProfile.technologies,
+        experience: mappedProfile.experience,
+        projects: mappedProfile.projects,
         strengths: mappedProfile.strengths,
         weaknesses: mappedProfile.weaknesses,
       });

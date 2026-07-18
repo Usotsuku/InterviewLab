@@ -36,6 +36,7 @@ describe('InterviewGenerationService', () => {
 
   const mockQuestionRepo = {
     create: jest.fn(),
+    findByInterviewId: jest.fn().mockResolvedValue([]),
   };
 
   const validAiResponse = JSON.stringify({

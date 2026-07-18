@@ -1,54 +1,53 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { GoogleGenerativeAI, GenerativeModel, GenerationConfig } from '@google/generative-ai';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { GoogleGenAI, GenerateContentConfig } from '@google/genai';
 import { AIProvider, GenerateRequest, GenerateResponse } from './ai-provider.interface';
 import { AiConfig } from '../config/ai.config';
 import { AI_ERRORS } from '../errors/ai.errors';
 import { AppException } from '@core/exceptions/app.exception';
 
 @Injectable()
-export class GeminiProvider extends AIProvider {
+export class GeminiProvider extends AIProvider implements OnModuleInit {
   private readonly _logger = new Logger(GeminiProvider.name);
-  private readonly _genAI: GoogleGenerativeAI;
-  private readonly _model: GenerativeModel;
+  private readonly _client: GoogleGenAI;
 
   readonly name = 'gemini';
 
   constructor(private readonly _aiConfig: AiConfig) {
     super();
-    this._genAI = new GoogleGenerativeAI(this._aiConfig.geminiApiKey);
-    this._model = this._genAI.getGenerativeModel({
-      model: this._aiConfig.model,
-    });
+    this._client = new GoogleGenAI({ apiKey: this._aiConfig.geminiApiKey });
+  }
+
+  async onModuleInit(): Promise<void> {
+    this._logStartupConfig();
+    this._assertApiKeyConfigured();
+    await this._assertModelAvailable();
   }
 
   async generate(request: GenerateRequest): Promise<GenerateResponse> {
     const startTime = Date.now();
 
-    const generationConfig: GenerationConfig = {
+    const config: GenerateContentConfig = {
       temperature: request.temperature ?? this._aiConfig.temperature,
-      maxOutputTokens: request.maxOutputTokens ?? this._aiConfig.maxOutputTokens,
       topP: request.topP ?? this._aiConfig.topP,
       topK: request.topK ?? this._aiConfig.topK,
-    };
-
-    const modelConfig: Parameters<typeof this._genAI.getGenerativeModel>[0] = {
-      model: this._aiConfig.model,
-      generationConfig,
+      maxOutputTokens: request.maxOutputTokens ?? this._aiConfig.maxOutputTokens,
     };
 
     if (request.systemInstruction) {
-      modelConfig.systemInstruction = request.systemInstruction;
+      config.systemInstruction = request.systemInstruction;
     }
 
-    const model = this._genAI.getGenerativeModel(modelConfig);
-
     try {
-      const result = await this._withTimeout(
-        model.generateContent(request.prompt),
+      const response = await this._withTimeout(
+        this._client.models.generateContent({
+          model: this._aiConfig.model,
+          contents: request.prompt,
+          config,
+        }),
         this._aiConfig.timeoutMs,
       );
-      const response = result.response;
-      const text = response.text();
+
+      const text = response.text ?? '';
       const tokenUsage = {
         input: response.usageMetadata?.promptTokenCount ?? 0,
         output: response.usageMetadata?.candidatesTokenCount ?? 0,
@@ -90,22 +89,116 @@ export class GeminiProvider extends AIProvider {
     return true;
   }
 
-  private _handleApiError(error: unknown): never {
-    const err = error as { status?: number; message?: string; code?: number };
+  private _logStartupConfig(): void {
+    const key = this._aiConfig.geminiApiKey ?? '';
+    const fingerprint =
+      key.length >= 10 ? `${key.substring(0, 6)}...${key.substring(key.length - 4)}` : '***';
+    this._logger.log(`[startup] Provider: ${this.name}`);
+    this._logger.log(`[startup] Configured model: ${this._aiConfig.model}`);
+    this._logger.log(`[startup] API key fingerprint: ${fingerprint}`);
+    this._logger.log(`[startup] Node version: ${process.version}`);
+  }
+
+  private _assertApiKeyConfigured(): void {
+    if (!this._aiConfig.geminiApiKey) {
+      this._logger.error('[startup] GEMINI_API_KEY is not configured');
+      AppException.throw(
+        AI_ERRORS.CONFIGURATION_ERROR,
+        'GEMINI_API_KEY is missing. The AI provider cannot start.',
+      );
+    }
+  }
+
+  private async _assertModelAvailable(): Promise<void> {
+    try {
+      await this._client.models.generateContent({
+        model: this._aiConfig.model,
+        contents: 'ping',
+        config: { maxOutputTokens: 1 },
+      });
+      this._logger.log(
+        `[startup] Model "${this._aiConfig.model}" is available for generateContent`,
+      );
+    } catch (error) {
+      this._logger.error(
+        `[startup] Model "${this._aiConfig.model}" is NOT available for generateContent`,
+      );
+      await this._logAvailableModels();
+      this._handleApiError(error, 'startup validation');
+    }
+  }
+
+  private async _logAvailableModels(): Promise<void> {
+    try {
+      this._logger.log('[startup] Listing models that support generateContent...');
+      const pager = await this._client.models.list({ config: { pageSize: 100 } });
+      const available: string[] = [];
+      for await (const model of pager) {
+        if (model.supportedActions?.includes('generateContent') && model.name) {
+          const modelName = model.name.replace('models/', '');
+          available.push(modelName);
+          this._logger.log(`[startup]   - ${modelName} (${model.displayName ?? 'n/a'})`);
+        }
+      }
+      this._logger.log(`[startup] Found ${available.length} model(s) supporting generateContent`);
+    } catch (listError) {
+      this._logger.warn(`[startup] Could not list models: ${(listError as Error).message}`);
+    }
+  }
+
+  private _handleApiError(error: unknown, context = 'generate'): never {
+    const err = error as {
+      status?: number;
+      code?: number | string;
+      message?: string;
+      cause?: { code?: string; message?: string };
+    };
+
+    const status = typeof err.status === 'number' ? err.status : undefined;
+    const causeCode = err.cause?.code;
+    const message = `${err.message ?? ''}${causeCode ? ` (${causeCode})` : ''}`.toLowerCase();
+
     this._logger.error(
-      `[generate] Provider error: ${err.status ?? 'n/a'} ${err.message ?? String(error)}`,
+      `[${context}] Provider error: status=${status ?? 'n/a'} ${err.message ?? String(error)}`,
     );
 
-    if (err.status === 429 || err.code === 429) {
-      AppException.throw(AI_ERRORS.RATE_LIMIT_EXCEEDED);
+    if (
+      status === undefined &&
+      (message.includes('fetch failed') ||
+        message.includes('enotfound') ||
+        message.includes('econnrefused') ||
+        message.includes('econnreset') ||
+        message.includes('etimedout') ||
+        causeCode != null)
+    ) {
+      AppException.throw(AI_ERRORS.NETWORK_ERROR);
     }
 
-    if (err.status === 401 || err.status === 403) {
+    if (status === 400) {
+      AppException.throw(AI_ERRORS.MALFORMED_REQUEST);
+    }
+
+    if (status === 401 || status === 403) {
       AppException.throw(AI_ERRORS.AUTHENTICATION_FAILED);
     }
 
-    if (err.message?.includes('timeout') || err.message?.includes('DEADLINE_EXCEEDED')) {
+    if (status === 404) {
+      AppException.throw(AI_ERRORS.INVALID_MODEL);
+    }
+
+    if (status === 429) {
+      if (message.includes('quota') || message.includes('resource_exhausted')) {
+        AppException.throw(AI_ERRORS.QUOTA_EXCEEDED);
+      }
+      AppException.throw(AI_ERRORS.RATE_LIMIT_EXCEEDED);
+    }
+
+    if (status === 408 || message.includes('timeout') || message.includes('deadline_exceeded')) {
       AppException.throw(AI_ERRORS.REQUEST_TIMEOUT);
+    }
+
+    if (status !== undefined && status >= 500) {
+      AppException.throw(AI_ERRORS.PROVIDER_UNAVAILABLE);
     }
 
     AppException.throw(AI_ERRORS.PROVIDER_UNAVAILABLE);

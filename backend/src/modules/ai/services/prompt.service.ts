@@ -13,7 +13,10 @@ CRITICAL RULES:
 - Do NOT include trailing commas.
 - Dates must be in YYYY-MM-DD format. Use null if end date is not available.
 - All string values must be non-empty strings.
-- Arrays must contain at least one element where applicable.`;
+- Arrays must contain at least one element where applicable.
+- ALWAYS include "experience" and "projects" arrays in your response, even if the CV has limited information. Use an empty array ONLY if the CV absolutely contains zero relevant entries for that field.
+- For experience: extract ALL work history entries you can identify from the CV. Include company name, position/title, start date, end date (null if current role), and a brief description of responsibilities.
+- For projects: extract ALL project entries you can identify. Include project name, description, technologies used, and URL (null if not available).`;
 
 const CV_ANALYSIS_JSON_SCHEMA = `{
   "summary": "Professional summary of the candidate",
@@ -91,7 +94,16 @@ const ANSWER_EVALUATION_JSON_SCHEMA = `{
 export class PromptService {
   buildCvPrompt(cvText: string): PromptPayload {
     return {
-      prompt: `Analyze the following CV content and extract structured information.
+      prompt: `Analyze the following CV content and extract ALL structured information.
+
+You MUST include ALL of these fields in your response:
+- summary: Professional summary of the candidate
+- skills: All skills mentioned in the CV
+- technologies: All technologies, tools, frameworks, and platforms mentioned
+- strengths: Key strengths demonstrated
+- weaknesses: Areas for improvement or gaps
+- experience: ALL work experience entries. Extract every job position you can identify — include company, position, startDate, endDate (null if current), and description. Do NOT skip experience entries even if some dates or details are unclear.
+- projects: ALL project entries. Extract every project you can identify — include name, description, technologies used, and url (null if not available). Do NOT skip projects even if details are partial.
 
 Return a JSON object with exactly this schema:
 ${CV_ANALYSIS_JSON_SCHEMA}

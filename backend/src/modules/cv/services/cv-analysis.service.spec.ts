@@ -108,6 +108,23 @@ describe('CvAnalysisService', () => {
         summary: 'Experienced developer',
         skills: ['JavaScript', 'TypeScript'],
         technologies: ['React', 'Node.js'],
+        experience: [
+          {
+            company: 'Tech Corp',
+            position: 'Developer',
+            startDate: new Date('2020-01-01'),
+            endDate: new Date('2023-12-31'),
+            description: 'Built stuff',
+          },
+        ],
+        projects: [
+          {
+            name: 'Project X',
+            description: 'A cool project',
+            technologies: ['React'],
+            url: 'https://github.com/example',
+          },
+        ],
         strengths: ['Problem solving'],
         weaknesses: ['Public speaking'],
       });

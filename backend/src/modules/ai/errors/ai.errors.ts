@@ -26,4 +26,29 @@ export const AI_ERRORS = {
     statusCode: 502,
     description: 'The AI provider returned an invalid or unexpected response.',
   },
+  INVALID_MODEL: {
+    message: 'AI_INVALID_MODEL',
+    statusCode: 404,
+    description: 'The configured AI model does not exist or does not support generateContent.',
+  },
+  QUOTA_EXCEEDED: {
+    message: 'AI_QUOTA_EXCEEDED',
+    statusCode: 429,
+    description: 'The AI provider quota has been exhausted. Please try again later.',
+  },
+  MALFORMED_REQUEST: {
+    message: 'AI_MALFORMED_REQUEST',
+    statusCode: 400,
+    description: 'The AI request was malformed and rejected by the provider.',
+  },
+  NETWORK_ERROR: {
+    message: 'AI_NETWORK_ERROR',
+    statusCode: 503,
+    description: 'A network error occurred while contacting the AI provider.',
+  },
+  CONFIGURATION_ERROR: {
+    message: 'AI_CONFIGURATION_ERROR',
+    statusCode: 500,
+    description: 'The AI provider is misconfigured and cannot start.',
+  },
 } as const satisfies Record<string, IAppException>;

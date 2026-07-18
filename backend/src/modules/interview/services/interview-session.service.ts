@@ -113,6 +113,10 @@ export class InterviewSessionService {
     const questions = await this._questionRepo.findByInterviewId(interviewId);
     const currentIndex = doc.currentQuestionIndex ?? 0;
 
+    this._logger.log(
+      `[getCurrentQuestion] interviewId=${interviewId} status=${doc.status} currentIdx=${currentIndex} questionsFound=${questions.length} totalQuestions=${doc.totalQuestions}`,
+    );
+
     if (questions.length === 0) {
       AppException.throw(INTERVIEW_ERRORS.NO_QUESTIONS);
     }

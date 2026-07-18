@@ -77,6 +77,11 @@ export class InterviewGenerationService {
         await this._questionRepo.create(doc);
       }
 
+      const verifyDocs = await this._questionRepo.findByInterviewId(interviewId);
+      this._logger.log(
+        `[generate] Persisted ${questionDocs.length} question docs, re-queried ${verifyDocs.length} for interview ${interviewId}`,
+      );
+
       this._logger.log(
         `[generate] Interview generated: ${mapped.questions.length} questions, title: "${mapped.title}"`,
       );

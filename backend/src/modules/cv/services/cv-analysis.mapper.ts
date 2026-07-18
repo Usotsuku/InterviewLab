@@ -150,8 +150,10 @@ export function mapAiResponseToProfile(raw: string): MappedProfile {
   const data = parseJsonFromAiResponse(raw);
   validateResponse(data);
 
+  const expCount = Array.isArray(data.experience) ? data.experience.length : -1;
+  const projCount = Array.isArray(data.projects) ? data.projects.length : -1;
   _logger.log(
-    `[mapAiResponseToProfile] Mapping ${data.skills.length} skills, ${data.technologies.length} technologies`,
+    `[mapAiResponseToProfile] skills: ${data.skills.length}, technologies: ${data.technologies.length}, experience: ${expCount}, projects: ${projCount}`,
   );
 
   return {
