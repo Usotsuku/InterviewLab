@@ -5,10 +5,20 @@
     <p class="text-sm text-neutral-400 max-w-sm mb-5">{{ description() }}</p>
   }
   @if (actionLabel()) {
-    <il-button
-      (clicked)="actionClick.emit()"
-      size="md"
-      [attr.aria-label]="actionLabel()"
-    >{{ actionLabel() }}</il-button>
+    <div class="flex flex-wrap items-center justify-center gap-3">
+      <il-button
+        (clicked)="actionClick.emit()"
+        size="md"
+        [attr.aria-label]="actionLabel()"
+      >{{ actionLabel() }}</il-button>
+      @if (secondaryActionLabel()) {
+        <il-button
+          variant="secondary"
+          (clicked)="secondaryActionClick.emit()"
+          size="md"
+          [attr.aria-label]="secondaryActionLabel()"
+        >{{ secondaryActionLabel() }}</il-button>
+      }
+    </div>
   }
 </div>

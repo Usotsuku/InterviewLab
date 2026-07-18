@@ -6,6 +6,7 @@ import { Interview } from '../../core/models/domain.models';
 import { InterviewApiService } from '../../core/interview/interview-api.service';
 import { ProfileApiService } from '../../core/profile/profile-api.service';
 import { CandidateProfile } from '../../core/models/domain.models';
+import { toFriendlyError } from '../../core/http/error-message';
 
 export interface InterviewSetupState extends Record<string, unknown> {
   mode: InterviewMode;
@@ -118,10 +119,6 @@ export class InterviewSetupStore extends AsyncStore<InterviewSetupState> {
   }
 
   private _extractError(err: unknown): string {
-    if (typeof err === 'object' && err !== null && 'error' in err) {
-      const httpErr = err as { error: { message?: string } };
-      return httpErr.error?.message ?? 'An unexpected error occurred';
-    }
-    return 'An unexpected error occurred';
+    return toFriendlyError(err);
   }
 }

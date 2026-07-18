@@ -24,6 +24,13 @@ export interface UploadCvResponse {
   status: string;
 }
 
+export interface UploadedCvFile {
+  buffer: Buffer;
+  originalname: string;
+  mimetype: string;
+  size: number;
+}
+
 @Injectable()
 export class CvService {
   private readonly _logger = new Logger(CvService.name);
@@ -36,7 +43,7 @@ export class CvService {
     private readonly _config: ConfigService,
   ) {}
 
-  async upload(userId: string, file: Express.Multer.File): Promise<UploadCvResponse> {
+  async upload(userId: string, file: UploadedCvFile): Promise<UploadCvResponse> {
     this._validateFile(file);
 
     const ext = CV_CONSTRAINTS.ALLOWED_EXTENSION;
@@ -66,7 +73,7 @@ export class CvService {
     };
   }
 
-  async replace(userId: string, file: Express.Multer.File): Promise<UploadCvResponse> {
+  async replace(userId: string, file: UploadedCvFile): Promise<UploadCvResponse> {
     const profile = await this._getCvMetadata(userId);
     if (profile) {
       await this._storageService.deleteFile(profile.fileUrl);
@@ -105,7 +112,7 @@ export class CvService {
   }
 
   async getAnalysisStatus(userId: string): Promise<{ status: CvAnalysisStatus }> {
-    const profile = await this._candidateProfileService.findByUserId(userId);
+    const profile = await this._candidateProfileService.findOrCreateByUserId(userId);
     return { status: profile.cvAnalysisStatus };
   }
 
@@ -113,7 +120,7 @@ export class CvService {
     return this._pdfExtractionService.extractText(fileBuffer);
   }
 
-  private _validateFile(file: Express.Multer.File | undefined): void {
+  private _validateFile(file: UploadedCvFile | undefined): void {
     if (!file) {
       AppException.throw(CV_ERRORS.EMPTY_FILE);
     }

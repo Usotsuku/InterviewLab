@@ -85,7 +85,7 @@ describe('CandidateProfileService', () => {
         .mockResolvedValueOnce(createMockProfile({ summary: 'New' }));
       mockProfileRepo.create.mockResolvedValue(createMockProfile());
 
-      const result = await service.updateByUserId('user1', { summary: 'New' });
+      const result = await service.updateByUserId('507f1f77bcf86cd799439011', { summary: 'New' });
       expect(mockProfileRepo.create).toHaveBeenCalled();
     });
   });

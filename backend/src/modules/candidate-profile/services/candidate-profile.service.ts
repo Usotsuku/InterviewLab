@@ -96,24 +96,7 @@ export class CandidateProfileService {
   }
 
   async findOrCreateByUserId(userId: string): Promise<ProfileResponse> {
-    const existing = await this._profileRepo.findByUserId(userId);
-    if (existing) {
-      return this.findByUserId(userId);
-    }
-
-    const created = await this._profileRepo.create({
-      userId: new Types.ObjectId(userId),
-      summary: '',
-      skills: [],
-      technologies: [],
-      experience: [],
-      projects: [],
-      strengths: [],
-      weaknesses: [],
-      cvAnalysisStatus: CvAnalysisStatus.NOT_UPLOADED,
-    });
-
-    this._logger.log(`[findOrCreateByUserId] Profile created for user: ${userId}`);
+    await this._profileRepo.upsertByUserId(userId);
     return this.findByUserId(userId);
   }
 
@@ -167,13 +150,24 @@ export class CandidateProfileService {
     userId: string,
     cvData: { cvFileUrl: string; cvFileName: string; cvFileSize: number },
   ): Promise<void> {
-    const profile = await this._profileRepo.findByUserId(userId);
-    if (!profile) {
-      AppException.throw(CANDIDATE_PROFILE_ERRORS.PROFILE_NOT_FOUND);
-    }
+    const existing = await this._profileRepo.findByUserId(userId);
+    const docId = existing
+      ? (existing as unknown as { _id: Types.ObjectId })._id.toString()
+      : (
+          await this._profileRepo.create({
+            userId: new Types.ObjectId(userId),
+            summary: '',
+            skills: [],
+            technologies: [],
+            experience: [],
+            projects: [],
+            strengths: [],
+            weaknesses: [],
+            cvAnalysisStatus: CvAnalysisStatus.NOT_UPLOADED,
+          })
+        )._id.toString();
 
-    const doc = profile as unknown as { _id: Types.ObjectId };
-    await this._profileRepo.updateById(doc._id.toString(), {
+    await this._profileRepo.updateById(docId, {
       cvFileUrl: cvData.cvFileUrl,
       cvFileName: cvData.cvFileName,
       cvFileSize: cvData.cvFileSize,

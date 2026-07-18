@@ -43,6 +43,7 @@ async function bootstrap() {
     limits: {
       fileSize: uploadMaxBytes,
     },
+    throwFileSizeLimit: false,
   });
 
   app.setGlobalPrefix('api');

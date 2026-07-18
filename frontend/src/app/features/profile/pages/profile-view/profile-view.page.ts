@@ -44,4 +44,8 @@ export class ProfileViewPage implements OnInit {
   onCreateProfile(): void {
     this._router.navigate(['/profile/edit']);
   }
+
+  onUploadCv(): void {
+    this._router.navigate(['/profile']);
+  }
 }

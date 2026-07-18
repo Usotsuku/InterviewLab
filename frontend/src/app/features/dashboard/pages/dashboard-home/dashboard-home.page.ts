@@ -2,6 +2,7 @@ import { Component, ChangeDetectionStrategy, inject, OnInit } from '@angular/cor
 import { Router } from '@angular/router';
 import { DashboardStore, DashboardState } from '../../dashboard.store';
 import { AuthStore } from '@core/auth/auth.store';
+import { ProfileViewStore } from '../../../profile/profile-view.store';
 import { IlDashboardHeroComponent } from '../../components/dashboard-hero/dashboard-hero.component';
 import { IlStatisticsCardsComponent, StatItem } from '../../components/statistics-cards/statistics-cards.component';
 import { IlRecentInterviewsCardComponent } from '../../components/recent-interviews-card/recent-interviews-card.component';
@@ -9,6 +10,8 @@ import { IlProgressOverviewCardComponent } from '../../components/progress-overv
 import { IlSkillBreakdownCardComponent } from '../../components/skill-breakdown-card/skill-breakdown-card.component';
 import { IlQuickActionsCardComponent } from '../../components/quick-actions-card/quick-actions-card.component';
 import { IlSpinnerComponent } from '@shared/components/spinner/spinner.component';
+import { IlCardComponent } from '@shared/components/card/card.component';
+import { IlEmptyStateComponent } from '@shared/components/empty-state/empty-state.component';
 
 @Component({
   selector: 'il-dashboard-home',
@@ -22,6 +25,8 @@ import { IlSpinnerComponent } from '@shared/components/spinner/spinner.component
     IlSkillBreakdownCardComponent,
     IlQuickActionsCardComponent,
     IlSpinnerComponent,
+    IlCardComponent,
+    IlEmptyStateComponent,
   ],
   templateUrl: './dashboard-home.page.html',
 })
@@ -29,8 +34,12 @@ export class DashboardHomePage implements OnInit {
   private readonly _dashboardStore = inject(DashboardStore);
   private readonly _authStore = inject(AuthStore);
   private readonly _router = inject(Router);
+  private readonly _profileView = inject(ProfileViewStore);
+
+  readonly router = this._router;
 
   readonly store = this._dashboardStore;
+  readonly profileView = this._profileView;
 
   readonly userName = this._authStore.user;
   readonly loading = this._dashboardStore.loading;
@@ -73,6 +82,7 @@ export class DashboardHomePage implements OnInit {
 
   ngOnInit(): void {
     this._dashboardStore.loadDashboard();
+    this._profileView.load();
   }
 
   onViewAll(): void {

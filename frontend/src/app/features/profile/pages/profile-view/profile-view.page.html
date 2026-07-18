@@ -6,6 +6,18 @@
       <il-button variant="secondary" (clicked)="store.load()">Retry</il-button>
     </div>
   } @else if (store.hasEntity()) {
+    @if (store.isEmpty()) {
+      <il-empty-state
+        icon="person_add"
+        title="No profile yet"
+        description="Create your professional profile to begin AI interview preparation, or upload your CV to get started automatically."
+        actionLabel="Create Profile"
+        (actionClick)="onCreateProfile()"
+        secondaryActionLabel="Upload CV"
+        (secondaryActionClick)="onUploadCv()"
+      />
+    }
+
     <il-profile-header
       [name]="userName()"
       [email]="userEmail()"

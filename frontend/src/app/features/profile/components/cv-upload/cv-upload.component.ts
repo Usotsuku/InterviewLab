@@ -4,6 +4,7 @@ import { CvUploadStore } from '../../cv-upload.store';
 import { IlButtonComponent } from '../../../../shared/components/button/button.component';
 import { IlBadgeComponent } from '../../../../shared/components/badge/badge.component';
 import { IlSpinnerComponent } from '../../../../shared/components/spinner/spinner.component';
+import { ProfileViewStore } from '../../profile-view.store';
 
 const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 
@@ -16,6 +17,7 @@ const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024;
 })
 export class IlCvUploadComponent {
   private readonly _store = inject(CvUploadStore);
+  private readonly _profileStore = inject(ProfileViewStore);
 
   readonly store = this._store;
   readonly isDragOver = signal(false);
@@ -56,6 +58,7 @@ export class IlCvUploadComponent {
 
   async onDelete(): Promise<void> {
     await this._store.deleteCv();
+    this._profileStore.load();
   }
 
   formatFileSize(bytes: number): string {
@@ -81,9 +84,11 @@ export class IlCvUploadComponent {
     }
 
     if (this._store.hasCv()) {
-      await this._store.replace(file);
+      const ok = await this._store.replace(file);
+      if (ok) this._profileStore.load();
     } else {
-      await this._store.upload(file);
+      const ok = await this._store.upload(file);
+      if (ok) this._profileStore.load();
     }
   }
 

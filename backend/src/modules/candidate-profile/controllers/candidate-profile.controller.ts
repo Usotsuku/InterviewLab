@@ -18,7 +18,7 @@ export class CandidateProfileController {
   @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
   @ApiResponse({ status: 404, description: 'CANDIDATE_PROFILE_NOT_FOUND' })
   async getProfile(@CurrentUser() user: JwtPayload) {
-    return this._profileService.findByUserId(user.sub);
+    return this._profileService.findOrCreateByUserId(user.sub);
   }
 
   @Patch()

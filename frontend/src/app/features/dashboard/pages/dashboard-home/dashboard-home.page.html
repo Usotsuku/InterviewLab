@@ -8,6 +8,20 @@
       <p class="text-sm text-danger-500">{{ error() }}</p>
     </div>
   } @else {
+    @if (profileView.isEmpty()) {
+      <il-card title="Get started">
+        <il-empty-state
+          icon="rocket_launch"
+          title="Welcome to InterviewLab"
+          description="Complete your candidate profile to unlock AI-generated interviews. Add your experience and skills, or upload your CV to begin."
+          actionLabel="Build Profile"
+          secondaryActionLabel="Upload CV"
+          (actionClick)="router.navigate(['/profile/edit'])"
+          (secondaryActionClick)="router.navigate(['/profile'])"
+        />
+      </il-card>
+    }
+
     <il-dashboard-hero
       [userName]="userName()?.name ?? 'Candidate'"
       [totalInterviews]="totalInterviews()"

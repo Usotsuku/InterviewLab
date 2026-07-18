@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { CvService } from './cv.service';
+import { CvService, UploadedCvFile } from './cv.service';
 import { StorageService } from '@modules/storage/services/storage.service';
 import { CandidateProfileService } from '@modules/candidate-profile/services/candidate-profile.service';
 import { PdfExtractionService } from './pdf-extraction.service';
@@ -47,20 +47,14 @@ describe('CvService', () => {
     get: jest.fn().mockReturnValue('./uploads'),
   };
 
-  const createMockFile = (overrides: Record<string, unknown> = {}): Express.Multer.File =>
+  const createMockFile = (overrides: Record<string, unknown> = {}): UploadedCvFile =>
     ({
-      fieldname: 'file',
       originalname: 'test-cv.pdf',
-      encoding: '7bit',
       mimetype: 'application/pdf',
       size: 1024,
       buffer: Buffer.from('%PDF-1.4\ntest pdf content'),
-      destination: '',
-      filename: 'test-cv.pdf',
-      path: '',
-      stream: null,
       ...overrides,
-    }) as unknown as Express.Multer.File;
+    }) as unknown as UploadedCvFile;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({

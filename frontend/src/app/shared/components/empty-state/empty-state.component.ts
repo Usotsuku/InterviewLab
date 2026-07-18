@@ -14,6 +14,8 @@ export class IlEmptyStateComponent {
   title = input('No data');
   description = input<string>();
   actionLabel = input<string>();
+  secondaryActionLabel = input<string>();
 
   actionClick = output<void>();
+  secondaryActionClick = output<void>();
 }

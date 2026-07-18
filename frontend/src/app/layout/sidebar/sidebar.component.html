@@ -8,17 +8,33 @@
 
   <nav class="flex flex-col gap-0.5 flex-1 px-2 py-3">
     @for (item of navItems; track item.route) {
-      <a
-        [routerLink]="item.route"
-        routerLinkActive="bg-primary-50 !text-primary-400"
-        class="flex items-center gap-3 px-3 py-2 rounded-md text-neutral-400 text-sm font-medium transition-all duration-fast no-underline hover:bg-primary-50 hover:text-primary-400"
-        [attr.aria-label]="item.label"
-      >
-        <mat-icon class="text-xl w-5 h-5 shrink-0" aria-hidden="true">{{ item.icon }}</mat-icon>
-        @if (!collapsed()) {
-          <span class="whitespace-nowrap">{{ item.label }}</span>
-        }
-      </a>
+      @if (isLocked(item.route)) {
+        <button
+          type="button"
+          disabled
+          class="flex items-center gap-3 px-3 py-2 rounded-md text-neutral-300 text-sm font-medium cursor-not-allowed"
+          [title]="'Complete your profile to unlock ' + item.label"
+          [attr.aria-label]="item.label + ' (locked)'"
+        >
+          <mat-icon class="text-xl w-5 h-5 shrink-0" aria-hidden="true">{{ item.icon }}</mat-icon>
+          @if (!collapsed()) {
+            <span class="whitespace-nowrap flex-1 text-left">{{ item.label }}</span>
+            <mat-icon class="text-base w-4 h-4 shrink-0" aria-hidden="true">lock</mat-icon>
+          }
+        </button>
+      } @else {
+        <a
+          [routerLink]="item.route"
+          routerLinkActive="bg-primary-50 !text-primary-400"
+          class="flex items-center gap-3 px-3 py-2 rounded-md text-neutral-400 text-sm font-medium transition-all duration-fast no-underline hover:bg-primary-50 hover:text-primary-400"
+          [attr.aria-label]="item.label"
+        >
+          <mat-icon class="text-xl w-5 h-5 shrink-0" aria-hidden="true">{{ item.icon }}</mat-icon>
+          @if (!collapsed()) {
+            <span class="whitespace-nowrap">{{ item.label }}</span>
+          }
+        </a>
+      }
     }
   </nav>
 </aside>

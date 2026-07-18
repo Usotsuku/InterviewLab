@@ -4,6 +4,7 @@ import { EntityStore } from '../../core/store/entity.store';
 import { CandidateProfile } from '../../core/models/domain.models';
 import { CvAnalysisStatus } from '../../core/models/domain.enums';
 import { ProfileApiService } from '../../core/profile/profile-api.service';
+import { toFriendlyError } from '../../core/http/error-message';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileViewStore extends EntityStore<CandidateProfile> {
@@ -20,18 +21,23 @@ export class ProfileViewStore extends EntityStore<CandidateProfile> {
   readonly cvAnalysisStatus = computed(() => this.entity()?.cvAnalysisStatus ?? ('NOT_UPLOADED' as CvAnalysisStatus));
   readonly cvFileName = computed(() => this.entity()?.cvFileName ?? null);
 
+  readonly isEmpty = computed(() => this.completionPercent() === 0);
+
+  readonly isProfileSufficient = computed(() => this.completionPercent() >= 20);
+
   get hasCv(): boolean {
     return this.entity()?.cvFileUrl != null;
   }
 
   async load(): Promise<void> {
+    if (this.initialized() || this._state().loading) return;
     this._setLoading(true);
     this._setError(null);
     try {
       const res = await firstValueFrom(this._api.getMyProfile());
       this._setEntity(res.data);
     } catch (err: unknown) {
-      this._setState({ loading: false, error: this._extractError(err) });
+      this._setState({ loading: false, error: toFriendlyError(err) });
     }
   }
 
@@ -43,16 +49,8 @@ export class ProfileViewStore extends EntityStore<CandidateProfile> {
       this._clearEntity();
       return true;
     } catch (err: unknown) {
-      this._setState({ loading: false, error: this._extractError(err) });
+      this._setState({ loading: false, error: toFriendlyError(err) });
       return false;
     }
-  }
-
-  private _extractError(err: unknown): string {
-    if (err instanceof Object && 'error' in err) {
-      const httpErr = err as { error: { message?: string } };
-      return httpErr.error?.message ?? 'Failed to load profile';
-    }
-    return 'Failed to load profile';
   }
 }
