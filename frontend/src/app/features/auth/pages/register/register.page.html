@@ -1,0 +1,32 @@
+<div class="il-card">
+  <h2>Create your account</h2>
+  <p class="text-sm text-neutral-400 mb-6">Start your AI-powered interview journey</p>
+
+  @if (authStore.error()) {
+    <div class="bg-danger-50 text-danger-400 px-3.5 py-2.5 rounded-sm text-sm mb-4">{{ authStore.error() }}</div>
+  }
+
+  <form class="flex flex-col gap-1" (ngSubmit)="onRegister()">
+    <mat-form-field appearance="outline">
+      <mat-label>Full Name</mat-label>
+      <input matInput [(ngModel)]="name" name="name" required autocomplete="name" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput type="email" [(ngModel)]="email" name="email" required />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Password</mat-label>
+      <input matInput type="password" [(ngModel)]="password" name="password" required />
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit" class="w-full h-11 mt-2" [disabled]="authStore.loading()">
+      @if (authStore.loading()) {
+        <mat-progress-spinner diameter="20" mode="indeterminate" />
+      } @else {
+        Create Account
+      }
+    </button>
+  </form>
+
+  <p class="text-center text-sm mt-5">Already have an account? <a routerLink="/auth/login">Sign in</a></p>
+</div>

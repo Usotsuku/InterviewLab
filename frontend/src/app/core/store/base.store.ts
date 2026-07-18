@@ -1,4 +1,4 @@
-import { signal, computed, Signal } from '@angular/core';
+import { signal, computed, Signal, WritableSignal } from '@angular/core';
 
 export interface BaseState {
   loading: boolean;
@@ -14,12 +14,14 @@ export interface BaseState {
  * - Components never receive store references — they receive signal values.
  */
 export abstract class BaseStore<TState extends BaseState> {
-  protected readonly _state: ReturnType<typeof signal<TState>>;
+  protected readonly _state: WritableSignal<TState>;
+  private readonly _initialState: TState;
 
   readonly loading: Signal<boolean>;
   readonly error: Signal<string | null>;
 
   constructor(initialState: TState) {
+    this._initialState = initialState;
     this._state = signal<TState>(initialState);
     this.loading = computed(() => this._state().loading);
     this.error = computed(() => this._state().error);
@@ -39,5 +41,9 @@ export abstract class BaseStore<TState extends BaseState> {
 
   resetError(): void {
     this._setError(null);
+  }
+
+  reset(): void {
+    this._state.set({ ...this._initialState });
   }
 }

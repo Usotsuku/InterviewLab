@@ -1,0 +1,9 @@
+.il-card {
+  background: var(--il-surface-1);
+  border: 1px solid var(--il-border);
+  border-radius: var(--il-radius-xl);
+  overflow: hidden;
+}
+
+.il-card--elevated { box-shadow: var(--il-shadow-sm); }
+.il-card--flat { box-shadow: none; }

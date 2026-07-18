@@ -1,0 +1,10 @@
+// ============================================================
+// InterviewLab — Design Token Entry Point
+// ============================================================
+
+@use 'theme-dark';
+@use 'theme-light';
+
+// --- Generate CSS Custom Properties ---
+@include theme-dark.dark-theme;
+@include theme-light.light-theme;

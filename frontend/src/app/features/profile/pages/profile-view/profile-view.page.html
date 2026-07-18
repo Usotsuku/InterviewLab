@@ -1,0 +1,33 @@
+<section>
+  <div class="flex items-center justify-between mb-7">
+    <h1 class="text-2xl font-bold">Candidate Profile</h1>
+    <button mat-stroked-button routerLink="edit">
+      <mat-icon>edit</mat-icon> Edit Profile
+    </button>
+  </div>
+
+  <div class="grid grid-cols-2 gap-5 max-lg:grid-cols-1">
+    <div class="il-card">
+      <h3>Professional Summary</h3>
+      <p class="text-neutral-400 text-sm mt-3">No summary added yet. <a routerLink="edit">Add one.</a></p>
+    </div>
+
+    <div class="il-card">
+      <h3>CV / Résumé</h3>
+      <p class="text-neutral-400 text-sm mt-3">Upload your CV for AI-powered profile extraction.</p>
+      <button mat-stroked-button color="primary" class="mt-4">
+        <mat-icon>upload_file</mat-icon> Upload CV
+      </button>
+    </div>
+
+    <div class="il-card">
+      <h3>Skills &amp; Technologies</h3>
+      <p class="text-neutral-400 text-sm mt-3">No skills added yet.</p>
+    </div>
+
+    <div class="il-card">
+      <h3>Experience</h3>
+      <p class="text-neutral-400 text-sm mt-3">No experience entries yet.</p>
+    </div>
+  </div>
+</section>

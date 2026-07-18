@@ -1,0 +1,17 @@
+<section>
+  <div class="flex items-center justify-between mb-7">
+    <h1 class="text-2xl font-bold">Edit Profile</h1>
+    <button mat-stroked-button routerLink="/profile">Cancel</button>
+  </div>
+  <div class="il-card max-w-xl flex flex-col gap-2 p-5">
+    <mat-form-field appearance="outline">
+      <mat-label>Full Name</mat-label>
+      <input matInput [(ngModel)]="name" name="name" />
+    </mat-form-field>
+    <mat-form-field appearance="outline">
+      <mat-label>Professional Summary</mat-label>
+      <textarea matInput [(ngModel)]="summary" name="summary" rows="4"></textarea>
+    </mat-form-field>
+    <button mat-raised-button color="primary">Save Changes</button>
+  </div>
+</section>

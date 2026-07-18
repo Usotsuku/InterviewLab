@@ -1,0 +1,12 @@
+<div class="flex items-center gap-3 w-full">
+  <div class="flex-1 h-1.5 rounded-full overflow-hidden bg-neutral-200">
+    <div
+      class="h-full rounded-full transition-[width] duration-slow"
+      [class]="fillClass()"
+      [style.width.%]="clampedValue()"
+    ></div>
+  </div>
+  @if (showLabel()) {
+    <span class="text-xs font-semibold text-neutral-400 min-w-9 text-right">{{ clampedValue() }}%</span>
+  }
+</div>

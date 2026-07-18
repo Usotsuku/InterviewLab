@@ -1,0 +1,28 @@
+<header class="flex items-center justify-between px-6 h-14 bg-neutral-100 border-b border-neutral-200">
+  <div class="flex items-center gap-3">
+    <h6 class="text-sm font-semibold text-neutral-400">InterviewLab</h6>
+  </div>
+  <div class="flex items-center gap-1">
+    <button
+      mat-icon-button
+      (click)="themeService.toggleTheme()"
+      [attr.aria-label]="themeService.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+    >
+      <mat-icon>{{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
+
+    <button mat-icon-button aria-label="Notifications">
+      <mat-icon>notifications_none</mat-icon>
+    </button>
+
+    <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
+      <il-avatar [name]="authStore.user()?.name ?? 'U'" size="sm" />
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item (click)="onLogout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </div>
+</header>

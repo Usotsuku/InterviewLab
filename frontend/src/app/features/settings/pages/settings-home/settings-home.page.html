@@ -1,0 +1,32 @@
+<section>
+  <h1 class="text-2xl font-bold mb-2">Settings</h1>
+  <p class="text-neutral-400 mb-6">Manage your application preferences.</p>
+
+  <div class="il-card mb-5 max-w-lg p-5">
+    <h3 id="language-section" class="mb-4">Language &amp; Region</h3>
+    <mat-form-field appearance="outline">
+      <mat-label>Language</mat-label>
+      <mat-select [(ngModel)]="language" name="language" aria-describedby="language-section">
+        <mat-option value="en">English</mat-option>
+        <mat-option value="fr">Français</mat-option>
+        <mat-option value="ar">العربية</mat-option>
+        <mat-option value="es">Español</mat-option>
+        <mat-option value="de">Deutsch</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="il-card mb-5 max-w-lg p-5">
+    <h3 id="notifications-section" class="mb-4">Notifications</h3>
+    <div class="flex justify-between items-center py-2.5 border-b border-neutral-200">
+      <span>Enable Notifications</span>
+      <mat-slide-toggle [(ngModel)]="notificationsEnabled" aria-label="Enable notifications" />
+    </div>
+    <div class="flex justify-between items-center py-2.5 border-b border-neutral-200">
+      <span>Interview Reminders</span>
+      <mat-slide-toggle [(ngModel)]="interviewReminders" aria-label="Interview reminders" />
+    </div>
+  </div>
+
+  <button mat-raised-button color="primary" class="mt-2" (click)="onSave()">Save Settings</button>
+</section>

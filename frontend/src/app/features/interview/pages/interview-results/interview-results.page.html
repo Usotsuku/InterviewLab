@@ -1,0 +1,40 @@
+<section>
+  <h1 class="text-2xl font-bold mb-2">Session Results</h1>
+  <p class="text-neutral-400 mb-7">Here is a breakdown of your performance.</p>
+
+  <div class="grid grid-cols-4 gap-4 mb-7 max-lg:grid-cols-2">
+    <div class="il-card text-center py-5">
+      <p class="text-sm text-neutral-400 mb-2">Overall</p>
+      <p class="text-3xl font-bold text-primary-400 m-0">—</p>
+    </div>
+    <div class="il-card text-center py-5">
+      <p class="text-sm text-neutral-400 mb-2">Communication</p>
+      <p class="text-3xl font-bold text-primary-400 m-0">—</p>
+    </div>
+    <div class="il-card text-center py-5">
+      <p class="text-sm text-neutral-400 mb-2">Technical</p>
+      <p class="text-3xl font-bold text-primary-400 m-0">—</p>
+    </div>
+    <div class="il-card text-center py-5">
+      <p class="text-sm text-neutral-400 mb-2">Confidence</p>
+      <p class="text-3xl font-bold text-primary-400 m-0">—</p>
+    </div>
+  </div>
+
+  <mat-tab-group class="mb-7">
+    <mat-tab label="Answer Breakdown">
+      <p class="py-6 text-neutral-400 italic">Answer details will appear here.</p>
+    </mat-tab>
+    <mat-tab label="AI Feedback">
+      <p class="py-6 text-neutral-400 italic">AI evaluation feedback will appear here.</p>
+    </mat-tab>
+    <mat-tab label="Metrics">
+      <p class="py-6 text-neutral-400 italic">Communication metrics will appear here.</p>
+    </mat-tab>
+  </mat-tab-group>
+
+  <div class="flex gap-3 justify-end">
+    <button mat-stroked-button routerLink="/dashboard">Back to Dashboard</button>
+    <button mat-raised-button color="primary" routerLink="/interview">New Session</button>
+  </div>
+</section>

@@ -20,6 +20,8 @@ export abstract class ListStore<T> extends BaseStore<ListState<T>> {
   readonly totalPages = computed(() =>
     Math.ceil(this._state().total / this._state().limit),
   );
+  readonly hasNext = computed(() => this._state().page < Math.ceil(this._state().total / this._state().limit));
+  readonly hasPrevious = computed(() => this._state().page > 1);
   readonly isEmpty = computed(() => this._state().items.length === 0 && !this._state().loading);
 
   constructor(initialLimit = 20) {
@@ -46,6 +48,16 @@ export abstract class ListStore<T> extends BaseStore<ListState<T>> {
 
   nextPage(): void {
     this._setState({ page: this._state().page + 1 } as Partial<ListState<T>>);
+  }
+
+  previousPage(): void {
+    if (this._state().page > 1) {
+      this._setState({ page: this._state().page - 1 } as Partial<ListState<T>>);
+    }
+  }
+
+  setPage(page: number): void {
+    this._setState({ page } as Partial<ListState<T>>);
   }
 
   resetList(): void {

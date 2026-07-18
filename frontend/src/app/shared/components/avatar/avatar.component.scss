@@ -1,0 +1,16 @@
+.il-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--il-radius-full);
+  background: var(--il-primary-bg);
+  color: var(--il-primary-400);
+  font-weight: 600;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.il-avatar--sm { width: 28px; height: 28px; font-size: 11px; }
+.il-avatar--md { width: 36px; height: 36px; font-size: 13px; }
+.il-avatar--lg { width: 48px; height: 48px; font-size: 16px; }
+.il-avatar--xl { width: 64px; height: 64px; font-size: 20px; }

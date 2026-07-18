@@ -1,0 +1,24 @@
+<aside [class]="sidebarClass()">
+  <div class="flex items-center gap-3 px-4 py-5 border-b border-neutral-200 min-h-14">
+    <span class="w-8 h-8 bg-primary-500 rounded-md flex items-center justify-center font-bold text-xs text-white shrink-0">IL</span>
+    @if (!collapsed()) {
+      <span class="font-bold text-sm text-neutral-800 whitespace-nowrap">InterviewLab</span>
+    }
+  </div>
+
+  <nav class="flex flex-col gap-0.5 flex-1 px-2 py-3">
+    @for (item of navItems; track item.route) {
+      <a
+        [routerLink]="item.route"
+        routerLinkActive="bg-primary-50 !text-primary-400"
+        class="flex items-center gap-3 px-3 py-2 rounded-md text-neutral-400 text-sm font-medium transition-all duration-fast no-underline hover:bg-primary-50 hover:text-primary-400"
+        [attr.aria-label]="item.label"
+      >
+        <mat-icon class="text-xl w-5 h-5 shrink-0">{{ item.icon }}</mat-icon>
+        @if (!collapsed()) {
+          <span class="whitespace-nowrap">{{ item.label }}</span>
+        }
+      </a>
+    }
+  </nav>
+</aside>

@@ -1,0 +1,6 @@
+<div [class]="spinnerClass()">
+  <div class="animate-spin rounded-full border-[3px] border-neutral-200 border-t-primary-500 sm:h-5 sm:w-5 sm:border-2 md:h-8 md:w-8 lg:h-12 lg:w-12 lg:border-4"></div>
+  @if (label()) {
+    <span class="text-sm text-neutral-400">{{ label() }}</span>
+  }
+</div>

@@ -1,0 +1,32 @@
+<section class="space-y-7">
+  <header class="flex items-center justify-between">
+    <h1 class="text-2xl font-bold">Dashboard</h1>
+    <button mat-raised-button color="primary" routerLink="/interview">
+      Start New Interview
+    </button>
+  </header>
+
+  <div class="grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-sm:grid-cols-1">
+    <div class="il-card text-center py-5">
+      <p class="text-sm text-neutral-400 mb-2">Overall Score</p>
+      <p class="text-3xl font-bold text-primary-400 m-0">—</p>
+    </div>
+    <div class="il-card text-center py-5">
+      <p class="text-sm text-neutral-400 mb-2">Communication</p>
+      <p class="text-3xl font-bold text-primary-400 m-0">—</p>
+    </div>
+    <div class="il-card text-center py-5">
+      <p class="text-sm text-neutral-400 mb-2">Technical</p>
+      <p class="text-3xl font-bold text-primary-400 m-0">—</p>
+    </div>
+    <div class="il-card text-center py-5">
+      <p class="text-sm text-neutral-400 mb-2">Sessions</p>
+      <p class="text-3xl font-bold text-primary-400 m-0">0</p>
+    </div>
+  </div>
+
+  <div class="il-card p-5">
+    <h3 class="mb-3">Recent Sessions</h3>
+    <p>No interview sessions yet. <a routerLink="/interview">Start your first one.</a></p>
+  </div>
+</section>

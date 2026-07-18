@@ -1,0 +1,61 @@
+<section class="flex flex-col gap-5 max-w-2xl mx-auto">
+  <div class="il-card p-5">
+    <div class="flex gap-2.5 mb-4">
+      <span class="il-badge il-badge--primary">Question 1 / 10</span>
+      <span class="il-badge il-badge--warning">TECHNICAL · MEDIUM</span>
+    </div>
+    <h2 class="text-xl leading-relaxed text-neutral-800">
+      Tell me about a challenging technical problem you solved recently.
+    </h2>
+    <mat-progress-bar mode="determinate" [value]="10" class="mt-5 rounded" role="progressbar" aria-label="Interview progress" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" />
+  </div>
+
+  <div class="il-card p-5">
+    @if (speech.permissionState() !== 'GRANTED') {
+      <div class="text-center py-6">
+        <mat-icon class="text-5xl w-12 h-12 text-neutral-400 mb-4" aria-hidden="true">mic_off</mat-icon>
+        <h3>Microphone Access Required</h3>
+        <p class="text-neutral-400">InterviewLab needs your microphone to record your answer.</p>
+        <button mat-raised-button color="primary" (click)="speech.requestMicrophonePermission()" aria-label="Grant microphone access">
+          Grant Microphone Access
+        </button>
+      </div>
+    }
+
+    @if (speech.permissionState() === 'GRANTED') {
+      <div class="mb-4">
+        <p class="text-xs uppercase tracking-wider text-neutral-400 mb-2.5">Your Answer</p>
+        <div class="min-h-24 text-base leading-7 text-neutral-800">
+          {{ speech.finalTranscript() }}
+          <span class="text-neutral-400">{{ speech.interimTranscript() }}</span>
+          @if (!speech.finalTranscript() && !speech.interimTranscript()) {
+            <span class="text-neutral-300 italic">
+              {{ speech.isRecording() ? 'Listening...' : 'Your answer will appear here as you speak.' }}
+            </span>
+          }
+        </div>
+      </div>
+
+      @if (speech.isRecording()) {
+        <div class="flex items-center gap-2 text-sm text-danger-400 my-3" role="timer" aria-live="off">
+          <div class="il-recording-dot" aria-hidden="true"></div>
+          <span>{{ speech.recordingDurationSeconds() }}s</span>
+        </div>
+      }
+
+      <div class="flex justify-center mt-5">
+        @if (!speech.isRecording()) {
+          <button mat-raised-button color="primary" (click)="onStartRecording()" aria-label="Start recording your answer">
+            <mat-icon>mic</mat-icon>
+            Start Recording
+          </button>
+        } @else {
+          <button mat-raised-button color="warn" (click)="onStopRecording()" aria-label="Stop recording and submit answer">
+            <mat-icon>stop</mat-icon>
+            Stop &amp; Submit
+          </button>
+        }
+      </div>
+    }
+  </div>
+</section>

@@ -1,0 +1,13 @@
+.il-sidebar {
+  height: 100vh;
+  background: var(--il-surface-1);
+  border-right: 1px solid var(--il-border);
+  display: flex;
+  flex-direction: column;
+  transition: width var(--il-transition-base);
+  width: var(--il-sidebar-width);
+}
+
+.il-sidebar--collapsed {
+  width: var(--il-space-12);
+}

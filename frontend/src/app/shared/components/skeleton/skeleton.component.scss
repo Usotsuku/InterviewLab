@@ -1,0 +1,10 @@
+.il-skeleton {
+  background: linear-gradient(90deg, var(--il-surface-1) 25%, var(--il-surface-2) 50%, var(--il-surface-1) 75%);
+  background-size: 800px 100%;
+  animation: il-skeleton-shimmer 1.5s infinite;
+}
+
+@keyframes il-skeleton-shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}

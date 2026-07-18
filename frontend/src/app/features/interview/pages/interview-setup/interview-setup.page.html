@@ -1,0 +1,37 @@
+<section>
+  <h1 class="text-2xl font-bold mb-2">Start Interview Session</h1>
+  <p class="text-neutral-400 mb-7">Configure your session parameters before we begin.</p>
+
+  <div class="il-card max-w-md flex flex-col gap-2 p-5">
+    <mat-form-field appearance="outline">
+      <mat-label>Interview Mode</mat-label>
+      <mat-select [(ngModel)]="mode" name="mode">
+        <mat-option value="TECHNICAL">Technical</mat-option>
+        <mat-option value="HR">HR</mat-option>
+        <mat-option value="MIXED">Mixed</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Difficulty</mat-label>
+      <mat-select [(ngModel)]="difficulty" name="difficulty">
+        <mat-option value="EASY">Easy</mat-option>
+        <mat-option value="MEDIUM">Medium</mat-option>
+        <mat-option value="HARD">Hard</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Number of Questions</mat-label>
+      <mat-select [(ngModel)]="questionCount" name="count">
+        <mat-option [value]="5">5 Questions</mat-option>
+        <mat-option [value]="10">10 Questions</mat-option>
+        <mat-option [value]="15">15 Questions</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" class="h-11 mt-2" (click)="onStart()">
+      Begin Session
+    </button>
+  </div>
+</section>

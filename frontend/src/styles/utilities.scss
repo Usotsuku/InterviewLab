@@ -1,0 +1,38 @@
+// ============================================================
+// InterviewLab — Utility Classes
+// Only custom animations/utilities not covered by Tailwind.
+// ============================================================
+
+// --- Fade In Animation ---
+@keyframes il-fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.il-fade-in {
+  animation: il-fade-in 200ms ease forwards;
+}
+
+// --- Fade In Up ---
+@keyframes il-fade-in-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.il-fade-in-up {
+  animation: il-fade-in-up 300ms ease forwards;
+}
+
+// --- Recording Dot ---
+@keyframes il-recording-dot {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0; }
+}
+
+.il-recording-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--il-danger-500);
+  animation: il-recording-dot 1s ease-in-out infinite;
+}

@@ -33,10 +33,13 @@ export class SpeechRecognitionService {
     this.interimTranscript.set('');
     this.recognitionError.set(null);
 
-    const SpeechRecognitionImpl =
-      (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    const SpeechRecognitionImpl = window.SpeechRecognition ?? window.webkitSpeechRecognition;
 
-    this._recognition = new SpeechRecognitionImpl() as SpeechRecognition;
+    if (!SpeechRecognitionImpl) {
+      throw new SpeechError('NOT_SUPPORTED', 'Web Speech API is not supported in this browser');
+    }
+
+    this._recognition = new SpeechRecognitionImpl();
     this._recognition.continuous = true;
     this._recognition.interimResults = true;
     this._recognition.maxAlternatives = 1;

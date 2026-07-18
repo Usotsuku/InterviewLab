@@ -1,0 +1,7 @@
+<div [class]="avatarClass()">
+  @if (src()) {
+    <img [src]="src()" [alt]="name()" class="w-full h-full object-cover" />
+  } @else {
+    <span class="select-none">{{ initials() }}</span>
+  }
+</div>

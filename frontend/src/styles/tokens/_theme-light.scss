@@ -1,0 +1,78 @@
+// ============================================================
+// InterviewLab — Light Theme
+// Maps SCSS tokens to CSS custom properties
+// ============================================================
+
+@use 'colors' as c;
+
+@mixin light-theme {
+  :root.il-theme-light {
+    // --- Surfaces ---
+    --il-bg:            #{c.$neutral-50};
+    --il-bg-subtle:     #ffffff;
+    --il-surface-0:     #ffffff;
+    --il-surface-1:     #{c.$neutral-50};
+    --il-surface-2:     #{c.$neutral-100};
+    --il-surface-3:     #{c.$neutral-200};
+    --il-border:        rgba(#{c.$neutral-900}, 0.08);
+    --il-border-strong: rgba(#{c.$neutral-900}, 0.15);
+
+    // --- Text ---
+    --il-text:           #{c.$neutral-900};
+    --il-text-secondary: #{c.$neutral-600};
+    --il-text-muted:     #{c.$neutral-500};
+    --il-text-inverse:   #{c.$neutral-50};
+
+    // --- Primary ---
+    --il-primary-50:   #{c.$primary-50};
+    --il-primary-100:  #{c.$primary-100};
+    --il-primary-200:  #{c.$primary-200};
+    --il-primary-300:  #{c.$primary-300};
+    --il-primary-400:  #{c.$primary-400};
+    --il-primary-500:  #{c.$primary-500};
+    --il-primary-600:  #{c.$primary-600};
+    --il-primary-700:  #{c.$primary-700};
+    --il-primary-bg:   rgba(#{c.$primary-500}, 0.08);
+    --il-primary-border: rgba(#{c.$primary-500}, 0.2);
+
+    // --- Success ---
+    --il-success-50:   #{c.$success-50};
+    --il-success-400:  #{c.$success-400};
+    --il-success-500:  #{c.$success-500};
+    --il-success-600:  #{c.$success-600};
+    --il-success-bg:   rgba(#{c.$success-500}, 0.08);
+    --il-success-border: rgba(#{c.$success-500}, 0.2);
+
+    // --- Warning ---
+    --il-warning-50:   #{c.$warning-50};
+    --il-warning-400:  #{c.$warning-400};
+    --il-warning-500:  #{c.$warning-500};
+    --il-warning-600:  #{c.$warning-600};
+    --il-warning-bg:   rgba(#{c.$warning-500}, 0.08);
+    --il-warning-border: rgba(#{c.$warning-500}, 0.2);
+
+    // --- Danger ---
+    --il-danger-50:    #{c.$danger-50};
+    --il-danger-400:   #{c.$danger-400};
+    --il-danger-500:   #{c.$danger-500};
+    --il-danger-600:   #{c.$danger-600};
+    --il-danger-bg:    rgba(#{c.$danger-500}, 0.08);
+    --il-danger-border: rgba(#{c.$danger-500}, 0.2);
+
+    // --- Info ---
+    --il-info-50:      #{c.$info-50};
+    --il-info-400:     #{c.$info-400};
+    --il-info-500:     #{c.$info-500};
+    --il-info-600:     #{c.$info-600};
+    --il-info-bg:      rgba(#{c.$info-500}, 0.08);
+    --il-info-border:  rgba(#{c.$info-500}, 0.2);
+
+    // Shadows are lighter in light mode
+    --il-shadow-xs:   0 1px 2px 0 rgba(0, 0, 0, 0.03);
+    --il-shadow-sm:   0 1px 3px 0 rgba(0, 0, 0, 0.06), 0 1px 2px -1px rgba(0, 0, 0, 0.06);
+    --il-shadow-md:   0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
+    --il-shadow-lg:   0 10px 15px -3px rgba(0, 0, 0, 0.06), 0 4px 6px -4px rgba(0, 0, 0, 0.06);
+    --il-shadow-xl:   0 20px 25px -5px rgba(0, 0, 0, 0.06), 0 8px 10px -6px rgba(0, 0, 0, 0.06);
+    --il-shadow-ring: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  }
+}

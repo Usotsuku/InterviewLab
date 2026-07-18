@@ -1,0 +1,15 @@
+<div class="flex flex-col items-center justify-center py-12 px-6 text-center">
+  <mat-icon class="text-5xl w-12 h-12 text-neutral-400 mb-4" aria-hidden="true">{{ icon() }}</mat-icon>
+  <h4 class="text-lg font-semibold text-neutral-800 mb-2">{{ title() }}</h4>
+  @if (description()) {
+    <p class="text-sm text-neutral-400 max-w-sm mb-5">{{ description() }}</p>
+  }
+  @if (actionLabel()) {
+    <il-button
+      [label]="actionLabel()!"
+      (clicked)="actionClick.emit()"
+      size="md"
+      [attr.aria-label]="actionLabel()"
+    />
+  }
+</div>

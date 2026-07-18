@@ -1,0 +1,86 @@
+// ============================================================
+// InterviewLab — Global Styles
+// ============================================================
+
+// --- Reset ---
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--il-font);
+  background-color: var(--il-bg);
+  color: var(--il-text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.5;
+}
+
+// --- Typography ---
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--il-text);
+}
+
+h1 { font-size: var(--il-font-4xl); }
+h2 { font-size: var(--il-font-3xl); }
+h3 { font-size: var(--il-font-2xl); }
+h4 { font-size: var(--il-font-xl); }
+h5 { font-size: var(--il-font-lg); }
+h6 { font-size: var(--il-font-base); }
+
+p {
+  line-height: 1.6;
+  color: var(--il-text-secondary);
+}
+
+a {
+  color: var(--il-primary-400);
+  text-decoration: none;
+  transition: color var(--il-transition-fast);
+
+  &:hover {
+    color: var(--il-primary-300);
+  }
+}
+
+code, pre {
+  font-family: var(--il-font-mono);
+}
+
+// --- Scrollbar ---
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--il-surface-3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--il-primary-500); }
+
+// --- Angular Material Overrides ---
+.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: var(--il-surface-2);
+  --mdc-snackbar-supporting-text-color: var(--il-text);
+}
+
+.mat-mdc-form-field {
+  width: 100%;
+}
+
+// --- Selection ---
+::selection {
+  background: var(--il-primary-500);
+  color: white;
+}
+
+// --- Focus Visible ---
+:focus-visible {
+  outline: 2px solid var(--il-primary-500);
+  outline-offset: 2px;
+}

@@ -1,8 +1,9 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { TokenService } from './token.service';
 import { ApiResponse } from '../http/api-response.interface';
+import { BaseStore } from '../store/base.store';
 
 export interface AuthUser {
   id: string;
@@ -17,33 +18,27 @@ export interface AuthState {
   error: string | null;
 }
 
-/**
- * AuthStore — signal-based, unidirectional auth state container.
- * Only this store calls AuthApiService for session operations.
- */
 @Injectable({ providedIn: 'root' })
-export class AuthStore {
-  private readonly _state = signal<AuthState>({
-    user: null,
-    isAuthenticated: false,
-    loading: false,
-    error: null,
-  });
-
+export class AuthStore extends BaseStore<AuthState> {
   readonly user = computed(() => this._state().user);
   readonly isAuthenticated = computed(() => this._state().isAuthenticated);
-  readonly loading = computed(() => this._state().loading);
-  readonly error = computed(() => this._state().error);
 
   constructor(
     private readonly _http: HttpClient,
     private readonly _tokenService: TokenService,
   ) {
+    super({
+      user: null,
+      isAuthenticated: false,
+      loading: false,
+      error: null,
+    });
     this._restoreSession();
   }
 
   async login(email: string, password: string): Promise<void> {
-    this._setState({ loading: true, error: null });
+    this._setLoading(true);
+    this._setError(null);
     try {
       const res = await firstValueFrom(
         this._http.post<ApiResponse<{ accessToken: string; refreshToken: string; user: AuthUser }>>(
@@ -53,13 +48,17 @@ export class AuthStore {
       );
       this._tokenService.setTokens(res.data.accessToken, res.data.refreshToken);
       this._setState({ user: res.data.user, isAuthenticated: true, loading: false });
-    } catch (err: any) {
-      this._setState({ error: err?.error?.message ?? 'Login failed', loading: false });
+    } catch (err: unknown) {
+      const message = err instanceof Object && 'error' in err
+        ? (err as { error: { message?: string } }).error?.message ?? 'Login failed'
+        : 'Login failed';
+      this._setState({ loading: false, error: message });
     }
   }
 
   async register(name: string, email: string, password: string): Promise<void> {
-    this._setState({ loading: true, error: null });
+    this._setLoading(true);
+    this._setError(null);
     try {
       const res = await firstValueFrom(
         this._http.post<ApiResponse<{ accessToken: string; refreshToken: string; user: AuthUser }>>(
@@ -69,8 +68,11 @@ export class AuthStore {
       );
       this._tokenService.setTokens(res.data.accessToken, res.data.refreshToken);
       this._setState({ user: res.data.user, isAuthenticated: true, loading: false });
-    } catch (err: any) {
-      this._setState({ error: err?.error?.message ?? 'Registration failed', loading: false });
+    } catch (err: unknown) {
+      const message = err instanceof Object && 'error' in err
+        ? (err as { error: { message?: string } }).error?.message ?? 'Registration failed'
+        : 'Registration failed';
+      this._setState({ loading: false, error: message });
     }
   }
 
@@ -81,12 +83,7 @@ export class AuthStore {
 
   private _restoreSession(): void {
     if (this._tokenService.hasValidToken()) {
-      // TODO: fetch /users/me to restore user from token
       this._setState({ isAuthenticated: true });
     }
-  }
-
-  private _setState(partial: Partial<AuthState>): void {
-    this._state.update((s) => ({ ...s, ...partial }));
   }
 }
