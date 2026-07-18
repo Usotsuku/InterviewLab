@@ -1,20 +1,16 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { AuthStore } from '../../../../core/auth/auth.store';
+import { ResetPasswordStore } from '../../reset-password.store';
 import { IlButtonComponent } from '../../../../shared/components/button/button.component';
 import { IlFormErrorComponent } from '../../../../shared/components/form-error/form-error.component';
-import {
-  passwordStrengthValidator,
-  matchFieldValidator,
-  noWhitespaceValidator,
-} from '../../../../shared/validators/form.validators';
+import { passwordStrengthValidator, matchFieldValidator } from '../../../../shared/validators/form.validators';
 
 @Component({
-  selector: 'il-register-page',
+  selector: 'il-reset-password-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
@@ -26,30 +22,29 @@ import {
     IlButtonComponent,
     IlFormErrorComponent,
   ],
-  templateUrl: './register.page.html',
+  templateUrl: './reset-password.page.html',
 })
-export class RegisterPage {
+export class ResetPasswordPage {
   private readonly _fb = inject(FormBuilder);
   private readonly _router = inject(Router);
-  readonly authStore = inject(AuthStore);
+  private readonly _route = inject(ActivatedRoute);
+  readonly store = inject(ResetPasswordStore);
 
   hidePassword = true;
   hideConfirm = true;
 
+  readonly token: string = this._route.snapshot.queryParamMap.get('token') ?? '';
+
   readonly form = this._fb.nonNullable.group({
-    name: ['', [Validators.required, Validators.minLength(2), noWhitespaceValidator()]],
-    email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(8), passwordStrengthValidator()]],
     confirmPassword: ['', [Validators.required, matchFieldValidator('password')]],
   });
 
-  get name() { return this.form.controls.name; }
-  get email() { return this.form.controls.email; }
   get password() { return this.form.controls.password; }
   get confirmPassword() { return this.form.controls.confirmPassword; }
 
-  get errorMessage(): string | null {
-    return this.authStore.error();
+  get hasValidToken(): boolean {
+    return this.token.length > 0;
   }
 
   get passwordStrength() {
@@ -68,10 +63,9 @@ export class RegisterPage {
       this.form.markAllAsTouched();
       return;
     }
-    const { name, email, password } = this.form.getRawValue();
-    const success = await this.authStore.register(name, email, password);
+    const success = await this.store.resetPassword(this.token, this.form.getRawValue().password);
     if (success) {
-      this._router.navigate(['/dashboard']);
+      setTimeout(() => this._router.navigate(['/auth/login']), 3000);
     }
   }
 }

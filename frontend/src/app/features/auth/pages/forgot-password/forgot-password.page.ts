@@ -1,15 +1,15 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
-import { AuthStore } from '../../../../core/auth/auth.store';
+import { ForgotPasswordStore } from '../../forgot-password.store';
 import { IlButtonComponent } from '../../../../shared/components/button/button.component';
 import { IlFormErrorComponent } from '../../../../shared/components/form-error/form-error.component';
 
 @Component({
-  selector: 'il-login-page',
+  selector: 'il-forgot-password-page',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
@@ -21,36 +21,23 @@ import { IlFormErrorComponent } from '../../../../shared/components/form-error/f
     IlButtonComponent,
     IlFormErrorComponent,
   ],
-  templateUrl: './login.page.html',
+  templateUrl: './forgot-password.page.html',
 })
-export class LoginPage {
+export class ForgotPasswordPage {
   private readonly _fb = inject(FormBuilder);
-  private readonly _router = inject(Router);
-  readonly authStore = inject(AuthStore);
-
-  hidePassword = true;
+  readonly store = inject(ForgotPasswordStore);
 
   readonly form = this._fb.nonNullable.group({
     email: ['', [Validators.required, Validators.email]],
-    password: ['', [Validators.required, Validators.minLength(8)]],
   });
 
   get email() { return this.form.controls.email; }
-  get password() { return this.form.controls.password; }
-
-  get errorMessage(): string | null {
-    return this.authStore.error();
-  }
 
   async onSubmit(): Promise<void> {
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
-    const { email, password } = this.form.getRawValue();
-    const success = await this.authStore.login(email, password);
-    if (success) {
-      this._router.navigate(['/dashboard']);
-    }
+    await this.store.sendResetEmail(this.form.getRawValue().email);
   }
 }

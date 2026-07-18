@@ -1,39 +1,81 @@
-<div class="il-card">
-  <h2 class="text-xl mb-1.5">Welcome back</h2>
-  <p class="text-sm text-neutral-400 mb-6">Sign in to continue your interview preparation</p>
+<div class="il-card p-8">
+  <div class="mb-6">
+    <h2 class="text-xl font-semibold text-neutral-800 mb-1">Welcome back</h2>
+    <p class="text-sm text-neutral-400">Sign in to continue your interview preparation</p>
+  </div>
 
-  @if (authStore.error()) {
-    <div class="bg-danger-50 text-danger-400 px-3.5 py-2.5 rounded-sm text-sm mb-4">{{ authStore.error() }}</div>
+  @if (errorMessage) {
+    <div class="bg-danger-50 text-danger-500 px-4 py-3 rounded-lg text-sm mb-5 border border-danger-400/20" role="alert">
+      {{ errorMessage }}
+    </div>
   }
 
-  <form class="flex flex-col gap-1" (ngSubmit)="onLogin()">
-    <mat-form-field appearance="outline">
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4" novalidate>
+    <mat-form-field appearance="outline" class="w-full">
       <mat-label>Email</mat-label>
-      <input matInput type="email" [(ngModel)]="email" name="email" required autocomplete="email" />
+      <input
+        matInput
+        type="email"
+        formControlName="email"
+        autocomplete="email"
+        placeholder="you@example.com"
+      />
+      <mat-icon matPrefix class="text-neutral-400">mail_outline</mat-icon>
     </mat-form-field>
 
-    <mat-form-field appearance="outline">
+    <il-form-error
+      [show]="email.invalid && email.touched"
+      [message]="email.hasError('required') ? 'Email is required' : 'Enter a valid email address'"
+    />
+
+    <mat-form-field appearance="outline" class="w-full">
       <mat-label>Password</mat-label>
-      <input matInput type="password" [(ngModel)]="password" name="password" required autocomplete="current-password" />
+      <input
+        matInput
+        [type]="hidePassword ? 'password' : 'text'"
+        formControlName="password"
+        autocomplete="current-password"
+        placeholder="Enter your password"
+      />
+      <mat-icon matPrefix class="text-neutral-400">lock_outline</mat-icon>
+      <button
+        mat-icon-button
+        matSuffix
+        type="button"
+        (click)="hidePassword = !hidePassword"
+        [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'"
+      >
+        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+      </button>
     </mat-form-field>
 
-    <button
-      mat-raised-button
-      color="primary"
+    <il-form-error
+      [show]="password.invalid && password.touched"
+      [message]="password.hasError('required') ? 'Password is required' : 'Password must be at least 8 characters'"
+    />
+
+    <il-button
+      label="Sign In"
       type="submit"
-      class="w-full h-11 mt-2"
+      variant="primary"
+      size="lg"
+      [loading]="authStore.loading()"
       [disabled]="authStore.loading()"
-    >
-      @if (authStore.loading()) {
-        <mat-progress-spinner diameter="20" mode="indeterminate" />
-      } @else {
-        Sign In
-      }
-    </button>
+    />
   </form>
 
-  <p class="text-center text-sm mt-5">
-    Don't have an account?
-    <a routerLink="/auth/register">Create one</a>
-  </p>
+  <div class="mt-5 text-center">
+    <a routerLink="/auth/forgot-password" class="text-sm text-primary-500 hover:text-primary-600 transition-colors">
+      Forgot your password?
+    </a>
+  </div>
+
+  <div class="mt-6 pt-5 border-t border-neutral-200 text-center">
+    <span class="text-sm text-neutral-400">
+      Don't have an account?
+      <a routerLink="/auth/register" class="text-primary-500 hover:text-primary-600 font-medium transition-colors">
+        Create one
+      </a>
+    </span>
+  </div>
 </div>

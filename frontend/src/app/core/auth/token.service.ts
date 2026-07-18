@@ -3,11 +3,15 @@ import { Injectable } from '@angular/core';
 const ACCESS_TOKEN_KEY = 'il_access_token';
 const REFRESH_TOKEN_KEY = 'il_refresh_token';
 
-/**
- * TokenService — single owner of JWT storage.
- * Only this service may read/write tokens.
- * No other service accesses localStorage for tokens.
- */
+interface JwtPayload {
+  sub: string;
+  sessionId: string;
+  email?: string;
+  role?: string;
+  exp?: number;
+  iat?: number;
+}
+
 @Injectable({ providedIn: 'root' })
 export class TokenService {
   getAccessToken(): string | null {
@@ -29,6 +33,35 @@ export class TokenService {
   }
 
   hasValidToken(): boolean {
-    return !!this.getAccessToken();
+    const token = this.getAccessToken();
+    if (!token) return false;
+    return !this.isTokenExpired(token);
+  }
+
+  isTokenExpired(token: string): boolean {
+    try {
+      const payload = this.parseJwt(token);
+      if (!payload?.exp) return false;
+      const now = Math.floor(Date.now() / 1000);
+      return payload.exp < now;
+    } catch {
+      return true;
+    }
+  }
+
+  parseJwt(token: string): JwtPayload | null {
+    try {
+      const base64Url = token.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join(''),
+      );
+      return JSON.parse(jsonPayload) as JwtPayload;
+    } catch {
+      return null;
+    }
   }
 }
