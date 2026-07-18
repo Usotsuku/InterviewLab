@@ -10,7 +10,6 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
-  // Verify critical environment secrets before starting process
   const REQUIRED_SECRETS = ['DATABASE_URI', 'JWT_SECRET'];
   const missingSecrets = REQUIRED_SECRETS.filter((secret) => !process.env[secret]);
   if (missingSecrets.length > 0) {
@@ -18,7 +17,6 @@ async function bootstrap() {
     process.exit(1);
   }
 
-  // Create Fastify server adapter with structured logging config
   const app = await NestFactory.create<NestFastifyApplication>(
     AppModule,
     new FastifyAdapter({
@@ -28,9 +26,14 @@ async function bootstrap() {
     }),
   );
 
+  await app.register(await import('@fastify/multipart'), {
+    limits: {
+      fileSize: 10 * 1024 * 1024,
+    },
+  });
+
   app.setGlobalPrefix('api');
 
-  // Configure Global ValidationPipe with strict payload stripping
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -41,7 +44,6 @@ async function bootstrap() {
 
   app.enableCors();
 
-  // Configure Swagger/OpenAPI specifications
   const swaggerConfig = new DocumentBuilder()
     .setTitle('InterviewLab API')
     .setDescription('AI-powered interview preparation platform API contracts')

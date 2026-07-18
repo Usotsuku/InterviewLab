@@ -70,6 +70,18 @@ export class CandidateProfile {
   cvAnalysisStatus!: CvAnalysisStatus;
 
   @Prop({ default: null })
+  cvFileUrl?: string;
+
+  @Prop({ default: null })
+  cvFileName?: string;
+
+  @Prop({ default: null })
+  cvFileSize?: number;
+
+  @Prop({ default: null })
+  cvUploadedAt?: Date;
+
+  @Prop({ default: null })
   deletedAt?: Date;
 }
 

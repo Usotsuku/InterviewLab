@@ -4,6 +4,10 @@ import { UserSession, UserSessionSchema } from './schemas/user-session.schema';
 import { UserSessionRepository } from './repositories/user-session.repository';
 import { AuthController } from './controllers/auth.controller';
 import { AuthService } from './services/auth.service';
+import { PasswordService } from './services/password.service';
+import { TokenService } from './services/token.service';
+import { JwtStrategy } from './strategies/jwt.strategy';
+import { AuthConfig } from '@core/config/auth.config';
 import { UsersModule } from '@modules/users/users.module';
 
 @Module({
@@ -12,7 +16,14 @@ import { UsersModule } from '@modules/users/users.module';
     UsersModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserSessionRepository],
-  exports: [AuthService, UserSessionRepository],
+  providers: [
+    AuthService,
+    PasswordService,
+    TokenService,
+    JwtStrategy,
+    UserSessionRepository,
+    AuthConfig,
+  ],
+  exports: [AuthService, JwtStrategy, AuthConfig],
 })
 export class AuthModule {}

@@ -4,11 +4,13 @@ export interface JwtPayload {
   sub: string;
   sessionId: string;
   email?: string;
+  role?: string;
 }
 
 export const CurrentUser = createParamDecorator(
-  (data: unknown, ctx: ExecutionContext): JwtPayload => {
+  (data: keyof JwtPayload | undefined, ctx: ExecutionContext): JwtPayload => {
     const request = ctx.switchToHttp().getRequest();
-    return request.user;
+    const user = request.user as JwtPayload;
+    return data ? user?.[data] : user;
   },
 );
