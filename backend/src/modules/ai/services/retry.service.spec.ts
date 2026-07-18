@@ -26,9 +26,7 @@ describe('RetryService', () => {
     });
 
     it('should retry and succeed on second attempt', async () => {
-      const fn = jest.fn()
-        .mockRejectedValueOnce(new Error('fail'))
-        .mockResolvedValue('success');
+      const fn = jest.fn().mockRejectedValueOnce(new Error('fail')).mockResolvedValue('success');
       const result = await service.execute(fn, {
         maxAttempts: 3,
         baseDelayMs: 10,
@@ -53,7 +51,8 @@ describe('RetryService', () => {
     });
 
     it('should calculate exponential backoff delay', async () => {
-      const fn = jest.fn()
+      const fn = jest
+        .fn()
         .mockRejectedValueOnce(new Error('1'))
         .mockRejectedValueOnce(new Error('2'))
         .mockResolvedValue('ok');

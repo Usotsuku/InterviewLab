@@ -6,15 +6,22 @@ import { InterviewMetrics, InterviewMetricsDocument } from '../schemas/interview
 
 @Injectable()
 export class InterviewMetricsRepository extends BaseRepository<InterviewMetricsDocument> {
-  constructor(@InjectModel(InterviewMetrics.name) private readonly _metricsModel: Model<InterviewMetricsDocument>) {
+  constructor(
+    @InjectModel(InterviewMetrics.name)
+    private readonly _metricsModel: Model<InterviewMetricsDocument>,
+  ) {
     super(_metricsModel);
   }
 
-  async findByAnswerId(answerId: string | Types.ObjectId): Promise<InterviewMetricsDocument | null> {
+  async findByAnswerId(
+    answerId: string | Types.ObjectId,
+  ): Promise<InterviewMetricsDocument | null> {
     return this._metricsModel.findOne({ answerId, deletedAt: { $exists: false } }).exec();
   }
 
-  async findByInterviewId(interviewId: string | Types.ObjectId): Promise<InterviewMetricsDocument[]> {
+  async findByInterviewId(
+    interviewId: string | Types.ObjectId,
+  ): Promise<InterviewMetricsDocument[]> {
     return this._metricsModel.find({ interviewId, deletedAt: { $exists: false } }).exec();
   }
 }

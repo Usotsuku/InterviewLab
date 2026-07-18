@@ -6,7 +6,10 @@ import { CandidateProfile, CandidateProfileDocument } from '../schemas/candidate
 
 @Injectable()
 export class CandidateProfileRepository extends BaseRepository<CandidateProfileDocument> {
-  constructor(@InjectModel(CandidateProfile.name) private readonly _profileModel: Model<CandidateProfileDocument>) {
+  constructor(
+    @InjectModel(CandidateProfile.name)
+    private readonly _profileModel: Model<CandidateProfileDocument>,
+  ) {
     super(_profileModel);
   }
 

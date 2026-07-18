@@ -20,7 +20,7 @@
         autocomplete="email"
         placeholder="you@example.com"
       />
-      <mat-icon matPrefix class="text-neutral-400">mail_outline</mat-icon>
+      <mat-icon matPrefix class="text-neutral-400" aria-hidden="true">mail_outline</mat-icon>
     </mat-form-field>
 
     <il-form-error
@@ -37,7 +37,7 @@
         autocomplete="current-password"
         placeholder="Enter your password"
       />
-      <mat-icon matPrefix class="text-neutral-400">lock_outline</mat-icon>
+      <mat-icon matPrefix class="text-neutral-400" aria-hidden="true">lock_outline</mat-icon>
       <button
         mat-icon-button
         matSuffix
@@ -45,7 +45,7 @@
         (click)="hidePassword = !hidePassword"
         [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'"
       >
-        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        <mat-icon aria-hidden="true">{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
       </button>
     </mat-form-field>
 

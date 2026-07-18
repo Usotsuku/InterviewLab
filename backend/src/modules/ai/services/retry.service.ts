@@ -28,7 +28,9 @@ export class RetryService {
         return result;
       } catch (error) {
         lastError = error;
-        this._logger.warn(`[retry] ${operationName} failed on attempt ${attempt}: ${(error as Error).message}`);
+        this._logger.warn(
+          `[retry] ${operationName} failed on attempt ${attempt}: ${(error as Error).message}`,
+        );
 
         if (attempt < maxAttempts) {
           const delayMs = this._calculateDelay(attempt, baseDelayMs, maxDelayMs);
@@ -39,7 +41,10 @@ export class RetryService {
     }
 
     this._logger.error(`[retry] ${operationName} exhausted ${maxAttempts} attempts`);
-    AppException.throw(AI_ERRORS.PROVIDER_UNAVAILABLE, `All ${maxAttempts} attempts failed for ${operationName}`);
+    AppException.throw(
+      AI_ERRORS.PROVIDER_UNAVAILABLE,
+      `All ${maxAttempts} attempts failed for ${operationName}`,
+    );
   }
 
   private _calculateDelay(attempt: number, baseDelayMs: number, maxDelayMs: number): number {

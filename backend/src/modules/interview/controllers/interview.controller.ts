@@ -1,19 +1,11 @@
-import {
-  Controller,
-  Post,
-  Get,
-  Delete,
-  Param,
-  Body,
-  HttpStatus,
-  HttpCode,
-} from '@nestjs/common';
+import { Controller, Post, Get, Delete, Param, Body, HttpStatus, HttpCode } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { CheckAuth } from '@core/decorators/check-auth.decorator';
 import { CurrentUser, JwtPayload } from '@core/decorators/current-user.decorator';
 import { InterviewService } from '../services/interview.service';
 import { InterviewGenerationService } from '../services/interview-generation.service';
 import { InterviewSessionService } from '../services/interview-session.service';
+import { InterviewReportService } from '../services/interview-report.service';
 import { QuestionService } from '@modules/question/services/question.service';
 import { CreateInterviewDto } from '../dto/create-interview.dto';
 
@@ -24,6 +16,7 @@ export class InterviewController {
     private readonly _interviewService: InterviewService,
     private readonly _generationService: InterviewGenerationService,
     private readonly _sessionService: InterviewSessionService,
+    private readonly _reportService: InterviewReportService,
     private readonly _questionService: QuestionService,
   ) {}
 
@@ -122,6 +115,19 @@ export class InterviewController {
   @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
   async getQuestions(@CurrentUser() user: JwtPayload, @Param('id') id: string) {
     return this._questionService.getQuestionsForSession(id);
+  }
+
+  @Get(':id/report')
+  @CheckAuth()
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Retrieve the full interview report with questions, metrics, and AI evaluations.',
+  })
+  @ApiResponse({ status: 200, description: 'Returns the interview report.' })
+  @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
+  @ApiResponse({ status: 404, description: 'INTERVIEW_NOT_FOUND' })
+  async getReport(@CurrentUser() user: JwtPayload, @Param('id') id: string) {
+    return this._reportService.getReport(id, user.sub);
   }
 
   @Delete(':id')

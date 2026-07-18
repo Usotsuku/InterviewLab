@@ -17,10 +17,7 @@ describe('ContextService', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        ContextService,
-        { provide: AiConfig, useValue: mockAiConfig },
-      ],
+      providers: [ContextService, { provide: AiConfig, useValue: mockAiConfig }],
     }).compile();
 
     service = module.get<ContextService>(ContextService);

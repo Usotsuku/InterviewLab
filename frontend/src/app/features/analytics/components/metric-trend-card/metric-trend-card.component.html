@@ -1,0 +1,36 @@
+<il-card>
+  <div class="flex items-center justify-between mb-3">
+    <div class="flex items-center gap-2">
+      <mat-icon class="text-base w-4 h-4 text-neutral-400" aria-hidden="true">{{ icon() }}</mat-icon>
+      <h4 class="text-sm font-medium text-neutral-600">{{ title() }}</h4>
+    </div>
+    @if (showChange() && changeDirection() !== 'flat') {
+      <span class="flex items-center gap-0.5 text-xs font-semibold" [ngClass]="changeClass()">
+        <mat-icon class="text-xs w-3 h-3" aria-hidden="true">{{ changeIcon() }}</mat-icon>
+        {{ formattedChange() }}{{ unit() ? ' ' + unit() : '' }}
+      </span>
+    }
+  </div>
+
+  <p class="text-2xl font-bold text-neutral-800 mb-3 m-0">
+    {{ formattedValue() }}<span class="text-sm font-normal text-neutral-400 ml-1">{{ unit() }}</span>
+  </p>
+
+  @if (trendData().length > 1) {
+    <il-sparkline
+      [data]="trendData()"
+      [color]="color()"
+      [height]="36"
+      [showArea]="true"
+      [showDots]="trendData().length <= 8"
+    />
+  } @else if (trendData().length === 1) {
+    <div class="h-9 flex items-center text-xs text-neutral-400">
+      Only 1 data point available
+    </div>
+  } @else {
+    <div class="h-9 flex items-center text-xs text-neutral-400">
+      No data available
+    </div>
+  }
+</il-card>

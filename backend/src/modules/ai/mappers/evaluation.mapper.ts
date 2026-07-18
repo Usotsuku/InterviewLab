@@ -46,7 +46,9 @@ interface RawEvaluationResponse {
 }
 
 function isNumberInRange(value: unknown): value is number {
-  return typeof value === 'number' && !Number.isNaN(value) && value >= SCORE_MIN && value <= SCORE_MAX;
+  return (
+    typeof value === 'number' && !Number.isNaN(value) && value >= SCORE_MIN && value <= SCORE_MAX
+  );
 }
 
 function toStringArray(value: unknown): string[] {
@@ -66,13 +68,17 @@ function extractJsonFromResponse(raw: string): Record<string, unknown> {
 
   const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
   if (!jsonMatch) {
-    AppException.throw(AI_ERRORS.INVALID_RESPONSE, { reason: 'No JSON object found in AI response' });
+    AppException.throw(AI_ERRORS.INVALID_RESPONSE, {
+      reason: 'No JSON object found in AI response',
+    });
   }
 
   try {
     return JSON.parse(jsonMatch![0]) as Record<string, unknown>;
   } catch {
-    AppException.throw(AI_ERRORS.INVALID_RESPONSE, { reason: 'Failed to parse JSON from AI response' });
+    AppException.throw(AI_ERRORS.INVALID_RESPONSE, {
+      reason: 'Failed to parse JSON from AI response',
+    });
   }
 }
 
@@ -111,7 +117,8 @@ export function parseAndValidate(input: AiEvaluationInput): AiEvaluationOutput {
     promptUsed: input.promptUsed,
     rawAiResponse: input.rawAiResponse,
     tokensUsed: typeof input.tokensUsed === 'number' ? input.tokensUsed : 0,
-    evaluationDurationMs: typeof input.evaluationDurationMs === 'number' ? input.evaluationDurationMs : 0,
+    evaluationDurationMs:
+      typeof input.evaluationDurationMs === 'number' ? input.evaluationDurationMs : 0,
     provider: typeof input.provider === 'string' ? input.provider : '',
   };
 }

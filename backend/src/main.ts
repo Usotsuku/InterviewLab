@@ -1,8 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
+import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { IoAdapter } from '@nestjs/platform-socket.io';
@@ -11,10 +8,12 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
 
-  const REQUIRED_SECRETS = ['DATABASE_URI', 'JWT_SECRET'];
+  const REQUIRED_SECRETS = ['DATABASE_URI', 'JWT_SECRET', 'GEMINI_API_KEY'];
   const missingSecrets = REQUIRED_SECRETS.filter((secret) => !process.env[secret]);
   if (missingSecrets.length > 0) {
-    logger.error(`CRITICAL CONFIGURATION ERROR: Missing required secrets: ${missingSecrets.join(', ')}`);
+    logger.error(
+      `CRITICAL CONFIGURATION ERROR: Missing required configuration: ${missingSecrets.join(', ')}`,
+    );
     process.exit(1);
   }
 
@@ -29,9 +28,12 @@ async function bootstrap() {
 
   app.useWebSocketAdapter(new IoAdapter(app));
 
+  const uploadMaxBytes =
+    parseInt(process.env.UPLOAD_MAX_FILE_SIZE_MB || '10', 10) * 1024 * 1024;
+
   await app.register(await import('@fastify/multipart'), {
     limits: {
-      fileSize: 10 * 1024 * 1024,
+      fileSize: uploadMaxBytes,
     },
   });
 
@@ -45,7 +47,23 @@ async function bootstrap() {
     }),
   );
 
-  app.enableCors();
+  const corsOrigin = ((): string | string[] => {
+    if (process.env.CORS_ORIGIN) {
+      return process.env.CORS_ORIGIN.split(',').map((origin) => origin.trim());
+    }
+    if (process.env.NODE_ENV === 'production') {
+      logger.error(
+        'CRITICAL CONFIGURATION ERROR: Missing required configuration: CORS_ORIGIN (required in production)',
+      );
+      process.exit(1);
+    }
+    return ['http://localhost:4200'];
+  })();
+
+  app.enableCors({
+    origin: corsOrigin,
+    credentials: true,
+  });
 
   const swaggerConfig = new DocumentBuilder()
     .setTitle('InterviewLab API')

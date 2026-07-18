@@ -1,0 +1,38 @@
+<il-card title="Appearance">
+  <div class="space-y-5">
+    <div>
+      <p class="text-sm font-medium text-neutral-600 mb-3">Theme</p>
+      <div class="flex gap-3">
+        @for (t of themes; track t.value) {
+          <button
+            class="flex items-center gap-2 px-4 py-3 rounded-lg border transition-all duration-150 cursor-pointer"
+            [ngClass]="theme() === t.value
+              ? 'border-primary-500 bg-primary-50 text-primary-600'
+              : 'border-neutral-200 bg-neutral-50 text-neutral-500 hover:border-neutral-300'"
+            (click)="onThemeSelect(t.value)"
+            [attr.aria-pressed]="theme() === t.value"
+            [attr.aria-label]="t.label + ' theme'"
+          >
+            <mat-icon class="text-lg w-5 h-5" aria-hidden="true">{{ t.icon }}</mat-icon>
+            <span class="text-sm font-medium">{{ t.label }}</span>
+          </button>
+        }
+      </div>
+    </div>
+
+    <div>
+      <label for="language-select" class="block text-sm font-medium text-neutral-600 mb-2">Language</label>
+      <select
+        id="language-select"
+        class="w-full sm:w-auto px-3 py-2.5 rounded-lg border border-neutral-200 bg-neutral-50 text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-150"
+        [value]="language()"
+        (change)="onLanguageChange($event)"
+        aria-label="Select language"
+      >
+        @for (lang of languages; track lang.value) {
+          <option [value]="lang.value" [selected]="lang.value === language()">{{ lang.label }}</option>
+        }
+      </select>
+    </div>
+  </div>
+</il-card>

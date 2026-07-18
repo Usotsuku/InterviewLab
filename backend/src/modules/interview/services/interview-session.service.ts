@@ -60,7 +60,11 @@ export class InterviewSessionService {
       AppException.throw(INTERVIEW_ERRORS.INTERVIEW_NOT_FOUND);
     }
 
-    const doc = interview as unknown as { userId: Types.ObjectId; status: InterviewStatus; totalQuestions: number };
+    const doc = interview as unknown as {
+      userId: Types.ObjectId;
+      status: InterviewStatus;
+      totalQuestions: number;
+    };
     if (doc.userId.toString() !== userId) {
       AppException.throw(INTERVIEW_ERRORS.INTERVIEW_NOT_FOUND);
     }
@@ -92,7 +96,12 @@ export class InterviewSessionService {
       AppException.throw(INTERVIEW_ERRORS.INTERVIEW_NOT_FOUND);
     }
 
-    const doc = interview as unknown as { userId: Types.ObjectId; status: InterviewStatus; currentQuestionIndex: number; totalQuestions: number };
+    const doc = interview as unknown as {
+      userId: Types.ObjectId;
+      status: InterviewStatus;
+      currentQuestionIndex: number;
+      totalQuestions: number;
+    };
     if (doc.userId.toString() !== userId) {
       AppException.throw(INTERVIEW_ERRORS.INTERVIEW_NOT_FOUND);
     }
@@ -118,7 +127,13 @@ export class InterviewSessionService {
     }
 
     const q = questions[currentIndex];
-    const typed = q as unknown as { _id: Types.ObjectId; order: number; text: string; type: string; difficulty: string };
+    const typed = q as unknown as {
+      _id: Types.ObjectId;
+      order: number;
+      text: string;
+      type: string;
+      difficulty: string;
+    };
 
     return {
       interviewId,
@@ -142,7 +157,12 @@ export class InterviewSessionService {
       AppException.throw(INTERVIEW_ERRORS.INTERVIEW_NOT_FOUND);
     }
 
-    const doc = interview as unknown as { userId: Types.ObjectId; status: InterviewStatus; currentQuestionIndex: number; totalQuestions: number };
+    const doc = interview as unknown as {
+      userId: Types.ObjectId;
+      status: InterviewStatus;
+      currentQuestionIndex: number;
+      totalQuestions: number;
+    };
     if (doc.userId.toString() !== userId) {
       AppException.throw(INTERVIEW_ERRORS.INTERVIEW_NOT_FOUND);
     }
@@ -165,7 +185,9 @@ export class InterviewSessionService {
       currentQuestionIndex: completed ? currentIndex : nextIndex,
     });
 
-    this._logger.log(`[nextQuestion] Advanced to index ${completed ? currentIndex : nextIndex} for interview: ${interviewId}`);
+    this._logger.log(
+      `[nextQuestion] Advanced to index ${completed ? currentIndex : nextIndex} for interview: ${interviewId}`,
+    );
 
     if (completed) {
       return {
@@ -178,7 +200,13 @@ export class InterviewSessionService {
     }
 
     const q = questions[nextIndex];
-    const typed = q as unknown as { _id: Types.ObjectId; order: number; text: string; type: string; difficulty: string };
+    const typed = q as unknown as {
+      _id: Types.ObjectId;
+      order: number;
+      text: string;
+      type: string;
+      difficulty: string;
+    };
 
     return {
       interviewId,
@@ -203,7 +231,12 @@ export class InterviewSessionService {
       AppException.throw(INTERVIEW_ERRORS.INTERVIEW_NOT_FOUND);
     }
 
-    const doc = interview as unknown as { userId: Types.ObjectId; status: InterviewStatus; currentQuestionIndex: number; totalQuestions: number };
+    const doc = interview as unknown as {
+      userId: Types.ObjectId;
+      status: InterviewStatus;
+      currentQuestionIndex: number;
+      totalQuestions: number;
+    };
     if (doc.userId.toString() !== userId) {
       AppException.throw(INTERVIEW_ERRORS.INTERVIEW_NOT_FOUND);
     }

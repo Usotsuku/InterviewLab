@@ -1,0 +1,15 @@
+<div class="il-card p-5">
+  <p class="text-xs uppercase tracking-wider text-neutral-400 mb-3">Your Answer</p>
+  <div class="min-h-24 text-sm leading-relaxed text-neutral-700">
+    {{ finalTranscript() }}<span class="text-neutral-400">{{ interimTranscript() }}</span>
+    @if (!hasContent()) {
+      <span class="text-neutral-300 italic">
+        @if (isRecording()) {
+          Listening...
+        } @else {
+          Your answer will appear here as you speak.
+        }
+      </span>
+    }
+  </div>
+</div>

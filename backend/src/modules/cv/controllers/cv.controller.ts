@@ -11,7 +11,14 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiResponse, ApiConsumes, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiConsumes,
+  ApiBody,
+  ApiBearerAuth,
+} from '@nestjs/swagger';
 import { CheckAuth } from '@core/decorators/check-auth.decorator';
 import { CurrentUser, JwtPayload } from '@core/decorators/current-user.decorator';
 import { CvService } from '../services/cv.service';
@@ -40,10 +47,7 @@ export class CvController {
   @ApiResponse({ status: 201, description: 'CV uploaded and analyzed. Returns analysis status.' })
   @ApiResponse({ status: 400, description: 'INVALID_FILE_TYPE, FILE_TOO_LARGE, or EMPTY_FILE' })
   @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
-  async uploadCv(
-    @CurrentUser() user: JwtPayload,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
+  async uploadCv(@CurrentUser() user: JwtPayload, @UploadedFile() file: Express.Multer.File) {
     return this._cvService.upload(user.sub, file);
   }
 
@@ -62,13 +66,13 @@ export class CvController {
       },
     },
   })
-  @ApiResponse({ status: 200, description: 'CV replaced and re-analyzed. Returns analysis status.' })
+  @ApiResponse({
+    status: 200,
+    description: 'CV replaced and re-analyzed. Returns analysis status.',
+  })
   @ApiResponse({ status: 400, description: 'INVALID_FILE_TYPE, FILE_TOO_LARGE, or EMPTY_FILE' })
   @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
-  async replaceCv(
-    @CurrentUser() user: JwtPayload,
-    @UploadedFile() file: Express.Multer.File,
-  ) {
+  async replaceCv(@CurrentUser() user: JwtPayload, @UploadedFile() file: Express.Multer.File) {
     return this._cvService.replace(user.sub, file);
   }
 

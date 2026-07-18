@@ -1,0 +1,26 @@
+<div class="flex flex-col items-center gap-3">
+  @if (!permissionGranted()) {
+    <div class="text-center py-4">
+      <p class="text-sm text-neutral-500 mb-3">Microphone access is required to record your answer.</p>
+      <il-button
+        variant="primary"
+        icon="mic"
+        (clicked)="requestPermission.emit()"
+      >Grant Microphone Access</il-button>
+    </div>
+  } @else if (!isRecording()) {
+    <il-button
+      variant="primary"
+      icon="mic"
+      [loading]="isSubmitting()"
+      [disabled]="!canRecord()"
+      (clicked)="startRecording.emit()"
+    >Start Recording</il-button>
+  } @else {
+    <il-button
+      variant="danger"
+      icon="stop"
+      (clicked)="stopRecording.emit()"
+    >Stop &amp; Submit</il-button>
+  }
+</div>

@@ -6,7 +6,9 @@ import { Question, QuestionDocument } from '../schemas/question.schema';
 
 @Injectable()
 export class QuestionRepository extends BaseRepository<QuestionDocument> {
-  constructor(@InjectModel(Question.name) private readonly _questionModel: Model<QuestionDocument>) {
+  constructor(
+    @InjectModel(Question.name) private readonly _questionModel: Model<QuestionDocument>,
+  ) {
     super(_questionModel);
   }
 

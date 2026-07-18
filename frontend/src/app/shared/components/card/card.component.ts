@@ -9,6 +9,7 @@ import { Component, input, computed, ChangeDetectionStrategy } from '@angular/co
 })
 export class IlCardComponent {
   title = input<string>();
+  footer = input<string>();
   variant = input<'flat' | 'elevated'>('elevated');
 
   cardClass = computed(() => `il-card il-card--${this.variant()}`);

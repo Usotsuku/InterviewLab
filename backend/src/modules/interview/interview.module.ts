@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Interview, InterviewSchema } from './schemas/interview.schema';
 import { InterviewRepository } from './repositories/interview.repository';
@@ -6,9 +6,12 @@ import { InterviewController } from './controllers/interview.controller';
 import { InterviewService } from './services/interview.service';
 import { InterviewGenerationService } from './services/interview-generation.service';
 import { InterviewSessionService } from './services/interview-session.service';
+import { InterviewReportService } from './services/interview-report.service';
 import { AIModule } from '@modules/ai/ai.module';
 import { CandidateProfileModule } from '@modules/candidate-profile/candidate-profile.module';
 import { QuestionModule } from '@modules/question/question.module';
+import { AnswerModule } from '@modules/answer/answer.module';
+import { MetricsModule } from '@modules/metrics/metrics.module';
 
 @Module({
   imports: [
@@ -16,6 +19,8 @@ import { QuestionModule } from '@modules/question/question.module';
     AIModule,
     CandidateProfileModule,
     QuestionModule,
+    forwardRef(() => AnswerModule),
+    MetricsModule,
   ],
   controllers: [InterviewController],
   providers: [
@@ -23,7 +28,13 @@ import { QuestionModule } from '@modules/question/question.module';
     InterviewRepository,
     InterviewGenerationService,
     InterviewSessionService,
+    InterviewReportService,
   ],
-  exports: [InterviewService, InterviewRepository, InterviewGenerationService, InterviewSessionService],
+  exports: [
+    InterviewService,
+    InterviewRepository,
+    InterviewGenerationService,
+    InterviewSessionService,
+  ],
 })
 export class InterviewModule {}

@@ -96,8 +96,14 @@ describe('CvAnalysisService', () => {
       expect(result.profile!.summary).toBe('Experienced developer');
       expect(result.profile!.skills).toEqual(['JavaScript', 'TypeScript']);
 
-      expect(mockCandidateProfileService.updateCvAnalysisStatus).toHaveBeenCalledWith('user1', CvAnalysisStatus.PROCESSING);
-      expect(mockCandidateProfileService.updateCvAnalysisStatus).toHaveBeenCalledWith('user1', CvAnalysisStatus.COMPLETED);
+      expect(mockCandidateProfileService.updateCvAnalysisStatus).toHaveBeenCalledWith(
+        'user1',
+        CvAnalysisStatus.PROCESSING,
+      );
+      expect(mockCandidateProfileService.updateCvAnalysisStatus).toHaveBeenCalledWith(
+        'user1',
+        CvAnalysisStatus.COMPLETED,
+      );
       expect(mockCandidateProfileService.updateByUserId).toHaveBeenCalledWith('user1', {
         summary: 'Experienced developer',
         skills: ['JavaScript', 'TypeScript'],
@@ -115,7 +121,10 @@ describe('CvAnalysisService', () => {
 
       expect(result.status).toBe(CvAnalysisStatus.FAILED);
       expect(result.profile).toBeNull();
-      expect(mockCandidateProfileService.updateCvAnalysisStatus).toHaveBeenCalledWith('user1', CvAnalysisStatus.FAILED);
+      expect(mockCandidateProfileService.updateCvAnalysisStatus).toHaveBeenCalledWith(
+        'user1',
+        CvAnalysisStatus.FAILED,
+      );
     });
 
     it('should set FAILED status when AI generates invalid response', async () => {

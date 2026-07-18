@@ -52,7 +52,9 @@ export class GeminiProvider extends AIProvider {
       };
 
       const durationMs = Date.now() - startTime;
-      this._logger.log(`[generate] Completed in ${durationMs}ms, tokens: ${tokenUsage.input}+${tokenUsage.output}`);
+      this._logger.log(
+        `[generate] Completed in ${durationMs}ms, tokens: ${tokenUsage.input}+${tokenUsage.output}`,
+      );
 
       return {
         text,

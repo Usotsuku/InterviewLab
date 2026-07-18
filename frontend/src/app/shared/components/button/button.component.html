@@ -2,13 +2,14 @@
   [class]="buttonClass()"
   [disabled]="disabled() || loading()"
   [type]="type()"
+  [attr.aria-label]="ariaLabel() ?? null"
   (click)="clicked.emit($event)"
 >
   @if (loading()) {
-    <span class="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-transparent border-t-current"></span>
+    <span class="inline-block h-3.5 w-3.5 animate-spin rounded-full border-2 border-transparent border-t-current" aria-hidden="true"></span>
   }
   @if (icon() && !loading()) {
-    <mat-icon class="text-base w-4 h-4">{{ icon() }}</mat-icon>
+    <mat-icon class="text-base w-4 h-4" aria-hidden="true">{{ icon() }}</mat-icon>
   }
   <span>
     <ng-content />

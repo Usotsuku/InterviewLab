@@ -1,0 +1,12 @@
+@if (isEmpty()) {
+  <il-interview-history-empty-state (startInterview)="startInterview.emit()" />
+} @else {
+  <div class="flex flex-col gap-3">
+    @for (interview of interviews(); track interview.id) {
+      <il-interview-history-card
+        [interview]="interview"
+        (deleteClick)="onDeleteInterview($event)"
+      />
+    }
+  </div>
+}

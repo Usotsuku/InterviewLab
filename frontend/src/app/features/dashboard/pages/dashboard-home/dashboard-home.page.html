@@ -1,32 +1,46 @@
-<section class="space-y-7">
-  <header class="flex items-center justify-between">
-    <h1 class="text-2xl font-bold">Dashboard</h1>
-    <button mat-raised-button color="primary" routerLink="/interview">
-      Start New Interview
-    </button>
-  </header>
+<section class="space-y-6">
+  @if (loading()) {
+    <div class="flex items-center justify-center py-20">
+      <il-spinner label="Loading dashboard..." />
+    </div>
+  } @else if (error()) {
+    <div class="text-center py-12">
+      <p class="text-sm text-danger-500">{{ error() }}</p>
+    </div>
+  } @else {
+    <il-dashboard-hero
+      [userName]="userName()?.name ?? 'Candidate'"
+      [totalInterviews]="totalInterviews()"
+      [completionRate]="completionRate()"
+    />
 
-  <div class="grid grid-cols-4 gap-4 max-lg:grid-cols-2 max-sm:grid-cols-1">
-    <div class="il-card text-center py-5">
-      <p class="text-sm text-neutral-400 mb-2">Overall Score</p>
-      <p class="text-3xl font-bold text-primary-400 m-0">—</p>
-    </div>
-    <div class="il-card text-center py-5">
-      <p class="text-sm text-neutral-400 mb-2">Communication</p>
-      <p class="text-3xl font-bold text-primary-400 m-0">—</p>
-    </div>
-    <div class="il-card text-center py-5">
-      <p class="text-sm text-neutral-400 mb-2">Technical</p>
-      <p class="text-3xl font-bold text-primary-400 m-0">—</p>
-    </div>
-    <div class="il-card text-center py-5">
-      <p class="text-sm text-neutral-400 mb-2">Sessions</p>
-      <p class="text-3xl font-bold text-primary-400 m-0">0</p>
-    </div>
-  </div>
+    <il-statistics-cards [stats]="stats()" />
 
-  <div class="il-card p-5">
-    <h3 class="mb-3">Recent Sessions</h3>
-    <p>No interview sessions yet. <a routerLink="/interview">Start your first one.</a></p>
-  </div>
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2">
+        <il-recent-interviews-card
+          [interviews]="recentInterviews()"
+          (viewAllClick)="onViewAll()"
+        />
+      </div>
+      <div>
+        <il-progress-overview-card
+          [averageScore]="averageScore()"
+          [averageConfidence]="averageConfidence()"
+          [completionRate]="completionRate()"
+          [interviewsThisWeek]="interviewsThisWeek()"
+          [interviewsThisMonth]="interviewsThisMonth()"
+        />
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <il-skill-breakdown-card
+        [communicationScore]="store.averageCommunication()"
+        [technicalScore]="store.averageTechnical()"
+        [confidenceScore]="store.averageConfidence()"
+      />
+      <il-quick-actions-card />
+    </div>
+  }
 </section>

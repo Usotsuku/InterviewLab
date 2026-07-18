@@ -12,7 +12,7 @@ export abstract class BaseRepository<T> {
     const filter = { ...baseFilter, ...config.filter };
 
     const total = await this._model.countDocuments(filter as any).exec();
-    
+
     const query = this._model.find(filter as any);
     this._queryService.applyConfig(query, config);
     const data = await query.exec();
@@ -37,7 +37,10 @@ export abstract class BaseRepository<T> {
     return query.exec() as any;
   }
 
-  async findOne(filter: FilterQuery<T>, config: Omit<QueryConfig<T>, 'filter'> = {}): Promise<T | null> {
+  async findOne(
+    filter: FilterQuery<T>,
+    config: Omit<QueryConfig<T>, 'filter'> = {},
+  ): Promise<T | null> {
     const baseFilter = this._buildBaseFilter(config.includeDeleted);
     const query = this._model.findOne({ ...filter, ...baseFilter } as any);
     this._queryService.applyConfig(query, config);

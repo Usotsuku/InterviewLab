@@ -1,0 +1,44 @@
+<svg
+  class="il-sparkline"
+  [attr.viewBox]="'0 0 ' + viewBoxWidth + ' ' + viewBoxHeight"
+  preserveAspectRatio="none"
+  [style.height.px]="height()"
+  role="img"
+  [attr.aria-label]="'Trend chart showing ' + data().length + ' data points'"
+>
+  <defs>
+    <linearGradient [attr.id]="colorId()" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" [attr.stop-color]="color()" stop-opacity="0.15" />
+      <stop offset="100%" [attr.stop-color]="color()" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  @if (showArea() && points().length > 0) {
+    <path
+      [attr.d]="areaPath()"
+      [attr.fill]="'url(#' + colorId() + ')'"
+    />
+  }
+
+  @if (points().length > 0) {
+    <polyline
+      [attr.points]="points()"
+      fill="none"
+      [attr.stroke]="color()"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  }
+
+  @if (showDots()) {
+    @for (dot of dotPositions(); track $index) {
+      <circle
+        [attr.cx]="dot.x"
+        [attr.cy]="dot.y"
+        r="2"
+        [attr.fill]="color()"
+      />
+    }
+  }
+</svg>

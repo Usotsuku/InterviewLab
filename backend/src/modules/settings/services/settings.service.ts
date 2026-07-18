@@ -20,7 +20,10 @@ export class SettingsService {
     };
   }
 
-  async updateSettings(userId: string, _data: UpdateSettingsDto): Promise<{ userId: string; updated: true }> {
+  async updateSettings(
+    userId: string,
+    _data: UpdateSettingsDto,
+  ): Promise<{ userId: string; updated: true }> {
     // TODO: implement settings save
     return { userId, updated: true };
   }

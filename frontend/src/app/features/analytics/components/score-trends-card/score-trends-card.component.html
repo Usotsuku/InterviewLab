@@ -1,0 +1,55 @@
+<il-card title="Score Trends">
+  <div class="space-y-5">
+    <div>
+      <div class="flex items-center justify-between mb-1">
+        <span class="text-sm text-neutral-500">Overall Score</span>
+        <span class="text-sm font-semibold" [ngClass]="variantClass(averageScore())">{{ formatScore(averageScore()) }}</span>
+      </div>
+      <div class="h-1.5 rounded-full bg-neutral-200 overflow-hidden mb-2" role="progressbar" [attr.aria-valuemin]="0" [attr.aria-valuemax]="100" [attr.aria-valuenow]="barWidth(averageScore())" [attr.aria-valuetext]="formatScore(averageScore())">
+        <div class="h-full rounded-full transition-[width] duration-300" [ngClass]="barVariant(averageScore())" [style.width.%]="barWidth(averageScore())"></div>
+      </div>
+      @if (scoreTrend().length > 1) {
+        <il-sparkline [data]="scoreTrend()" color="var(--il-primary-500)" [height]="32" [showArea]="true" />
+      }
+    </div>
+
+    <div>
+      <div class="flex items-center justify-between mb-1">
+        <span class="text-sm text-neutral-500">Communication</span>
+        <span class="text-sm font-semibold" [ngClass]="variantClass(averageCommunication())">{{ formatScore(averageCommunication()) }}</span>
+      </div>
+      <div class="h-1.5 rounded-full bg-neutral-200 overflow-hidden mb-2" role="progressbar" [attr.aria-valuemin]="0" [attr.aria-valuemax]="100" [attr.aria-valuenow]="barWidth(averageCommunication())" [attr.aria-valuetext]="formatScore(averageCommunication())">
+        <div class="h-full rounded-full transition-[width] duration-300" [ngClass]="barVariant(averageCommunication())" [style.width.%]="barWidth(averageCommunication())"></div>
+      </div>
+      @if (communicationTrend().length > 1) {
+        <il-sparkline [data]="communicationTrend()" color="var(--il-info-500)" [height]="32" [showArea]="true" />
+      }
+    </div>
+
+    <div>
+      <div class="flex items-center justify-between mb-1">
+        <span class="text-sm text-neutral-500">Technical</span>
+        <span class="text-sm font-semibold" [ngClass]="variantClass(averageTechnical())">{{ formatScore(averageTechnical()) }}</span>
+      </div>
+      <div class="h-1.5 rounded-full bg-neutral-200 overflow-hidden mb-2" role="progressbar" [attr.aria-valuemin]="0" [attr.aria-valuemax]="100" [attr.aria-valuenow]="barWidth(averageTechnical())" [attr.aria-valuetext]="formatScore(averageTechnical())">
+        <div class="h-full rounded-full transition-[width] duration-300" [ngClass]="barVariant(averageTechnical())" [style.width.%]="barWidth(averageTechnical())"></div>
+      </div>
+      @if (technicalTrend().length > 1) {
+        <il-sparkline [data]="technicalTrend()" color="var(--il-success-500)" [height]="32" [showArea]="true" />
+      }
+    </div>
+
+    <div>
+      <div class="flex items-center justify-between mb-1">
+        <span class="text-sm text-neutral-500">Confidence</span>
+        <span class="text-sm font-semibold" [ngClass]="variantClass(averageConfidence())">{{ formatScore(averageConfidence()) }}</span>
+      </div>
+      <div class="h-1.5 rounded-full bg-neutral-200 overflow-hidden mb-2" role="progressbar" [attr.aria-valuemin]="0" [attr.aria-valuemax]="100" [attr.aria-valuenow]="barWidth(averageConfidence())" [attr.aria-valuetext]="formatScore(averageConfidence())">
+        <div class="h-full rounded-full transition-[width] duration-300" [ngClass]="barVariant(averageConfidence())" [style.width.%]="barWidth(averageConfidence())"></div>
+      </div>
+      @if (confidenceTrend().length > 1) {
+        <il-sparkline [data]="confidenceTrend()" color="var(--il-warning-500)" [height]="32" [showArea]="true" />
+      }
+    </div>
+  </div>
+</il-card>

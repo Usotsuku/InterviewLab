@@ -1,14 +1,14 @@
 @if (store.loading()) {
   <il-spinner label="Loading profile..." />
-} @else if (store.error()) {
-  <div class="il-card p-8 text-center">
-    <p class="text-danger-500 mb-4">{{ store.error() }}</p>
-    <button il-button variant="secondary" (click)="store.load()">Retry</button>
-  </div>
-} @else if (store.hasEntity()) {
+  } @else if (store.error()) {
+    <div class="il-card p-8 text-center">
+      <p class="text-danger-500 mb-4">{{ store.error() }}</p>
+      <il-button variant="secondary" (clicked)="store.load()">Retry</il-button>
+    </div>
+  } @else if (store.hasEntity()) {
     <il-profile-header
-      [name]="'Candidate'"
-      [email]="'candidate@example.com'"
+      [name]="userName()"
+      [email]="userEmail()"
       [completionPercent]="store.completionPercent()"
       [cvStatus]="store.cvAnalysisStatus()"
       [cvFileName]="store.cvFileName()"
@@ -59,6 +59,8 @@
         [hasProjects]="store.projects().length > 0"
       />
 
+      <il-cv-upload />
+
       <div class="il-card p-5">
         <h3 class="text-base font-semibold text-neutral-800 mb-3">Skills</h3>
         @if (store.skills().length > 0) {
@@ -108,12 +110,12 @@
       }
     </div>
   </div>
-} @else {
-  <il-empty-state
-    icon="person_add"
-    title="No profile yet"
-    description="Create your candidate profile to get started with AI-powered interview preparation."
-    actionLabel="Edit Profile"
-    (actionClick)="null"
-  />
-}
+  } @else {
+    <il-empty-state
+      icon="person_add"
+      title="No profile yet"
+      description="Create your candidate profile to get started with AI-powered interview preparation."
+      actionLabel="Edit Profile"
+      (actionClick)="onCreateProfile()"
+    />
+  }

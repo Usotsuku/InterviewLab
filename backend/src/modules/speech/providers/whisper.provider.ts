@@ -1,10 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {
-  SpeechProvider,
-  TranscribeRequest,
-  TranscribeResponse,
-} from './speech-provider.interface';
+import { SpeechProvider, TranscribeRequest, TranscribeResponse } from './speech-provider.interface';
 
 @Injectable()
 export class WhisperProvider extends SpeechProvider {
@@ -45,7 +41,8 @@ export class WhisperProvider extends SpeechProvider {
       throw new Error(`Whisper API returned status ${response.status}`);
     }
 
-    const result: WhisperVerboseJsonResponse = await response.json() as WhisperVerboseJsonResponse;
+    const result: WhisperVerboseJsonResponse =
+      (await response.json()) as WhisperVerboseJsonResponse;
 
     return {
       text: result.text,

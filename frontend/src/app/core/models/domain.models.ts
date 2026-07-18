@@ -47,6 +47,8 @@ export interface Interview {
   userId: string;
   mode: InterviewMode;
   status: InterviewStatus;
+  title?: string;
+  estimatedDuration?: number;
   overallScore?: number;
   communicationScore?: number;
   technicalScore?: number;
@@ -54,7 +56,7 @@ export interface Interview {
   totalQuestions: number;
   currentQuestionIndex: number;
   startedAt?: string;
-  endedAt?: string;
+  completedAt?: string;
   createdAt: string;
 }
 
@@ -122,4 +124,68 @@ export interface UserSettings {
   language: 'en' | 'fr' | 'ar' | 'es' | 'de';
   notificationsEnabled: boolean;
   interviewReminders: boolean;
+}
+
+export interface InterviewMetricsReport {
+  wordsPerMinute: number;
+  answerDuration: number;
+  pauseCount: number;
+  averagePause: number;
+  longestPause: number;
+  fillerCount: number;
+  vocabularyRichness: number;
+  repetitionScore: number;
+  keywordCoverage: number;
+  confidenceScore: number;
+}
+
+export interface AiEvaluationReport {
+  technicalScore: number;
+  communicationScore: number;
+  correctnessScore: number;
+  completenessScore: number;
+  strengths: string[];
+  weaknesses: string[];
+  missingConcepts: string[];
+  followUpQuestions: string[];
+  feedback: string;
+}
+
+export interface QuestionReport {
+  questionId: string;
+  text: string;
+  type: QuestionType;
+  difficulty: QuestionDifficulty;
+  order: number;
+  targetSkills?: string[];
+  estimatedAnswerDuration?: number;
+  transcript?: string;
+  durationSeconds?: number;
+  metrics?: InterviewMetricsReport;
+  evaluation?: AiEvaluationReport;
+}
+
+export interface InterviewSummary {
+  id: string;
+  userId: string;
+  mode: InterviewMode;
+  status: InterviewStatus;
+  title: string;
+  estimatedDuration: number;
+  totalQuestions: number;
+  overallScore: number;
+  communicationScore: number;
+  technicalScore: number;
+  confidenceScore: number;
+  startedAt?: string;
+  completedAt?: string;
+  createdAt: string;
+}
+
+export interface InterviewReport {
+  interview: InterviewSummary;
+  questions: QuestionReport[];
+  totalAnswered: number;
+  totalQuestions: number;
+  durationMinutes: number;
 }

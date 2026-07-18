@@ -63,10 +63,7 @@ export class SpeechGateway implements OnGatewayDisconnect {
   }
 
   @SubscribeMessage('speech:chunk')
-  handleChunk(
-    @MessageBody() payload: SpeechChunkPayload,
-    @ConnectedSocket() client: Socket,
-  ): void {
+  handleChunk(@MessageBody() payload: SpeechChunkPayload, @ConnectedSocket() client: Socket): void {
     try {
       this._speechService.receiveChunk(payload.sessionId, payload.chunk);
     } catch (error) {

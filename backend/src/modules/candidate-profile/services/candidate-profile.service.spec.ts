@@ -67,19 +67,22 @@ describe('CandidateProfileService', () => {
       const mockDoc = createMockProfile();
       mockProfileRepo.findByUserId.mockResolvedValue(mockDoc);
       mockProfileRepo.updateById.mockResolvedValue(mockDoc);
-      mockProfileRepo.findByUserId.mockResolvedValueOnce(mockDoc).mockResolvedValueOnce(
-        createMockProfile({ summary: 'Updated', skills: ['React'] }),
-      );
+      mockProfileRepo.findByUserId
+        .mockResolvedValueOnce(mockDoc)
+        .mockResolvedValueOnce(createMockProfile({ summary: 'Updated', skills: ['React'] }));
 
-      const result = await service.updateByUserId('user1', { summary: 'Updated', skills: ['React'] });
+      const result = await service.updateByUserId('user1', {
+        summary: 'Updated',
+        skills: ['React'],
+      });
       expect(result.summary).toBe('Updated');
       expect(result.skills).toEqual(['React']);
     });
 
     it('should create profile if not found during update', async () => {
-      mockProfileRepo.findByUserId.mockResolvedValueOnce(null).mockResolvedValueOnce(
-        createMockProfile({ summary: 'New' }),
-      );
+      mockProfileRepo.findByUserId
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(createMockProfile({ summary: 'New' }));
       mockProfileRepo.create.mockResolvedValue(createMockProfile());
 
       const result = await service.updateByUserId('user1', { summary: 'New' });

@@ -95,22 +95,14 @@ describe('PromptService', () => {
     });
 
     it('should include all metrics values', () => {
-      const result = service.buildAnswerEvaluationPrompt(
-        'Q?',
-        'TECHNICAL',
-        'MEDIUM',
-        [],
-        'A',
-        '',
-        {
-          wordsPerMinute: 140,
-          confidenceScore: 75,
-          vocabularyRichness: 0.85,
-          keywordCoverage: 60,
-          fillerCount: 3,
-          repetitionScore: 0.1,
-        },
-      );
+      const result = service.buildAnswerEvaluationPrompt('Q?', 'TECHNICAL', 'MEDIUM', [], 'A', '', {
+        wordsPerMinute: 140,
+        confidenceScore: 75,
+        vocabularyRichness: 0.85,
+        keywordCoverage: 60,
+        fillerCount: 3,
+        repetitionScore: 0.1,
+      });
       expect(result.prompt).toContain('Words per minute: 140');
       expect(result.prompt).toContain('Confidence score: 75');
       expect(result.prompt).toContain('Vocabulary richness: 0.85');
@@ -168,15 +160,7 @@ describe('PromptService', () => {
     });
 
     it('should handle empty profile summary', () => {
-      const result = service.buildAnswerEvaluationPrompt(
-        'Q?',
-        'HR',
-        'EASY',
-        [],
-        'A',
-        '',
-        {},
-      );
+      const result = service.buildAnswerEvaluationPrompt('Q?', 'HR', 'EASY', [], 'A', '', {});
       expect(result.prompt).toContain('No profile available');
     });
 

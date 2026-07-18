@@ -7,7 +7,8 @@ describe('WhisperProvider', () => {
   const mockConfig: jest.Mocked<ConfigService> = {
     get: jest.fn((key: string) => {
       if (key === 'SPEECH_PROVIDER_API_KEY') return 'test-api-key';
-      if (key === 'SPEECH_PROVIDER_API_URL') return 'https://api.openai.com/v1/audio/transcriptions';
+      if (key === 'SPEECH_PROVIDER_API_URL')
+        return 'https://api.openai.com/v1/audio/transcriptions';
       return undefined;
     }),
   } as unknown as jest.Mocked<ConfigService>;

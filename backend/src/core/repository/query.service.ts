@@ -4,10 +4,7 @@ import { QueryConfig } from './query-config.types';
 
 @Injectable()
 export class QueryService {
-  applyConfig<T, Doc>(
-    query: Query<T, Doc>,
-    config: QueryConfig<Doc>,
-  ): Query<T, Doc> {
+  applyConfig<T, Doc>(query: Query<T, Doc>, config: QueryConfig<Doc>): Query<T, Doc> {
     if (config.projection) {
       query.select(config.projection);
     }
@@ -17,11 +14,9 @@ export class QueryService {
     }
 
     if (config.populate) {
-      const populates = Array.isArray(config.populate)
-        ? config.populate
-        : [config.populate];
+      const populates = Array.isArray(config.populate) ? config.populate : [config.populate];
       for (const p of populates) {
-        query.populate(typeof p === 'string' ? { path: p } : p as PopulateOptions);
+        query.populate(typeof p === 'string' ? { path: p } : (p as PopulateOptions));
       }
     }
 

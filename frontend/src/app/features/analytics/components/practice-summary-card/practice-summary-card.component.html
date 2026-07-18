@@ -1,0 +1,31 @@
+<il-card title="Practice Summary">
+  <div class="grid grid-cols-2 gap-4 mb-4">
+    @for (stat of stats(); track stat.label) {
+      <div class="flex items-center gap-2.5">
+        <mat-icon class="text-base w-4 h-4 text-neutral-400" aria-hidden="true">{{ stat.icon }}</mat-icon>
+        <div>
+          <p class="text-xs text-neutral-400 m-0">{{ stat.label }}</p>
+          <p class="text-sm font-semibold text-neutral-700 m-0">{{ stat.value }}</p>
+        </div>
+      </div>
+    }
+  </div>
+
+  <div class="pt-3 border-t border-neutral-200 space-y-2">
+    @if (strongestCategory() != null) {
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-neutral-400">Strongest:</span>
+        <span class="text-xs font-semibold text-success-500">{{ strongestCategory() }}</span>
+      </div>
+    }
+    @if (weakestCategory() != null) {
+      <div class="flex items-center gap-2">
+        <span class="text-xs text-neutral-400">Focus area:</span>
+        <span class="text-xs font-semibold text-warning-500">{{ weakestCategory() }}</span>
+      </div>
+    }
+    @if (strongestCategory() == null && weakestCategory() == null) {
+      <p class="text-xs text-neutral-400 m-0">Complete more interviews to see skill breakdown</p>
+    }
+  </div>
+</il-card>

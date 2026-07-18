@@ -6,7 +6,9 @@ import { UserSettings, UserSettingsDocument } from '../schemas/user-settings.sch
 
 @Injectable()
 export class UserSettingsRepository extends BaseRepository<UserSettingsDocument> {
-  constructor(@InjectModel(UserSettings.name) private readonly _settingsModel: Model<UserSettingsDocument>) {
+  constructor(
+    @InjectModel(UserSettings.name) private readonly _settingsModel: Model<UserSettingsDocument>,
+  ) {
     super(_settingsModel);
   }
 

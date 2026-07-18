@@ -24,9 +24,7 @@ export class FillerCalculator {
       .split(/\s+/)
       .filter((w) => w.length > 0);
 
-    const singleFillerSet = new Set(
-      FILLER_WORDS.filter((w) => !FILLER_PHRASES.includes(w)),
-    );
+    const singleFillerSet = new Set(FILLER_WORDS.filter((w) => !FILLER_PHRASES.includes(w)));
 
     for (const word of words) {
       if (singleFillerSet.has(word)) {

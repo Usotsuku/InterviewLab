@@ -15,7 +15,10 @@ export class AuthController {
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Register a new user account.' })
-  @ApiResponse({ status: 201, description: 'User registered successfully. Returns user profile and tokens.' })
+  @ApiResponse({
+    status: 201,
+    description: 'User registered successfully. Returns user profile and tokens.',
+  })
   @ApiResponse({ status: 409, description: 'USER_ALREADY_EXISTS' })
   @ApiResponse({ status: 400, description: 'Validation error.' })
   async register(@Body() body: RegisterDto) {

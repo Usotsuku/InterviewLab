@@ -1,7 +1,7 @@
-<div [class]="avatarClass()">
+<div [class]="avatarClass()" role="img" [attr.aria-label]="name() || 'User'">
   @if (src()) {
     <img [src]="src()" [alt]="name()" class="w-full h-full object-cover" />
   } @else {
-    <span class="select-none">{{ initials() }}</span>
+    <span class="select-none" aria-hidden="true">{{ initials() }}</span>
   }
 </div>

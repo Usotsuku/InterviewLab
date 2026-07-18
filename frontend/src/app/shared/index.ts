@@ -7,6 +7,8 @@ export { IlSkeletonComponent } from './components/skeleton/skeleton.component';
 export { IlEmptyStateComponent } from './components/empty-state/empty-state.component';
 export { IlSpinnerComponent } from './components/spinner/spinner.component';
 export { IlFormErrorComponent } from './components/form-error/form-error.component';
+export { IlSparklineComponent } from './components/sparkline/sparkline.component';
+export type { SparklineDataPoint } from './components/sparkline/sparkline.component';
 
 export { DurationPipe, ScorePipe, RelativeDatePipe, TruncatePipe } from './pipes/index';
 

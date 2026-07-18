@@ -11,6 +11,8 @@ export class UsersRepository extends BaseRepository<UserDocument> {
   }
 
   async findByEmail(email: string): Promise<UserDocument | null> {
-    return this._userModel.findOne({ email: email.toLowerCase(), deletedAt: { $exists: false } }).exec();
+    return this._userModel
+      .findOne({ email: email.toLowerCase(), deletedAt: { $exists: false } })
+      .exec();
   }
 }

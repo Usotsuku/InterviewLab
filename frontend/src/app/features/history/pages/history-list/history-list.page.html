@@ -1,7 +1,33 @@
-<section>
-  <h1 class="text-2xl font-bold mb-2">Interview History</h1>
-  <p class="text-neutral-400 mb-6">Review all your past interview sessions and results.</p>
-  <div class="il-card text-center py-10">
-    <p>No sessions yet. <a routerLink="/interview">Start your first interview.</a></p>
-  </div>
+<section class="space-y-6">
+  <header>
+    <h1 class="text-2xl font-bold text-neutral-800">Interview History</h1>
+    <p class="text-sm text-neutral-400 mt-1">Review all your past interview sessions and results.</p>
+  </header>
+
+  @if (store.loading()) {
+    <div class="flex items-center justify-center py-20">
+      <il-spinner label="Loading interviews..." />
+    </div>
+  } @else if (store.error()) {
+    <div class="text-center py-12">
+      <p class="text-sm text-danger-500">{{ store.error() }}</p>
+    </div>
+  } @else {
+    <il-interview-history-filters
+      [filter]="store.filter()"
+      [sortBy]="store.sortBy()"
+      [sortOrder]="store.sortOrder()"
+      [search]="store.search()"
+      (filterChange)="onFilterChange($event)"
+      (sortChange)="onSortChange($event)"
+      (searchChange)="onSearchChange($event)"
+    />
+
+    <il-interview-history-list
+      [interviews]="store.filteredItems()"
+      [isEmpty]="store.isEmpty()"
+      (deleteInterview)="onDeleteInterview($event)"
+      (startInterview)="onStartInterview()"
+    />
+  }
 </section>

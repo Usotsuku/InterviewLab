@@ -31,7 +31,15 @@ describe('CvService', () => {
   const mockAnalysisService = {
     analyze: jest.fn().mockResolvedValue({
       status: CvAnalysisStatus.COMPLETED,
-      profile: { summary: 'test', skills: [], technologies: [], strengths: [], weaknesses: [], experience: [], projects: [] },
+      profile: {
+        summary: 'test',
+        skills: [],
+        technologies: [],
+        strengths: [],
+        weaknesses: [],
+        experience: [],
+        projects: [],
+      },
     }),
   };
 

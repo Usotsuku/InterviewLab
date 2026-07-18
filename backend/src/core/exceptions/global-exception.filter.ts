@@ -30,7 +30,10 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     } else if (exception instanceof HttpException) {
       status = exception.getStatus();
       const resContent = exception.getResponse();
-      message = typeof resContent === 'string' ? resContent : (resContent as { message?: string }).message || exception.message;
+      message =
+        typeof resContent === 'string'
+          ? resContent
+          : (resContent as { message?: string }).message || exception.message;
     } else if (exception instanceof Error) {
       // General database errors, mongo exceptions, etc.
       const errName = exception.name;

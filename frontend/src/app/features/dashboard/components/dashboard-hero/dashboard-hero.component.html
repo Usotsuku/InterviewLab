@@ -1,0 +1,13 @@
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+  <div>
+    <h1 class="text-2xl font-bold text-neutral-800 mb-1">Welcome back, {{ userName() }}</h1>
+    <p class="text-sm text-neutral-400">
+      @if (totalInterviews() === 0) {
+        Start your first interview to begin tracking your progress.
+      } @else {
+        You've completed {{ totalInterviews() }} interview{{ totalInterviews() === 1 ? '' : 's' }} with a {{ completionRate() }}% completion rate.
+      }
+    </p>
+  </div>
+  <il-button icon="add" routerLink="/interview">Start Interview</il-button>
+</div>

@@ -29,7 +29,11 @@ export class AnswerService {
     private readonly _questionRepository: QuestionRepository,
   ) {}
 
-  async submit(userId: string, interviewId: string, dto: SubmitAnswerDto): Promise<SubmitAnswerResponse> {
+  async submit(
+    userId: string,
+    interviewId: string,
+    dto: SubmitAnswerDto,
+  ): Promise<SubmitAnswerResponse> {
     this._logger.log(`[submit] Processing answer for session: ${interviewId}`);
 
     let audioUrl = '';
@@ -77,7 +81,8 @@ export class AnswerService {
       success: true,
       audioUrl,
       metrics: metricsResult.status === 'fulfilled' ? metricsResult.value : null,
-      evaluation: aiResult.status === 'fulfilled' ? (aiResult.value as Record<string, unknown>) : null,
+      evaluation:
+        aiResult.status === 'fulfilled' ? (aiResult.value as Record<string, unknown>) : null,
     };
   }
 }

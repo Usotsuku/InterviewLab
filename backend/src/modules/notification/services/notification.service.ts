@@ -40,9 +40,18 @@ export class NotificationService {
       isRead: false,
     });
 
-    this._logger.log(`[create] Notification created for user: ${input.userId}, type: ${input.type}`);
+    this._logger.log(
+      `[create] Notification created for user: ${input.userId}, type: ${input.type}`,
+    );
 
-    const typed = doc as unknown as { _id: Types.ObjectId; userId: Types.ObjectId; type: string; title: string; body: string; isRead: boolean };
+    const typed = doc as unknown as {
+      _id: Types.ObjectId;
+      userId: Types.ObjectId;
+      type: string;
+      title: string;
+      body: string;
+      isRead: boolean;
+    };
 
     return {
       id: typed._id.toString(),
@@ -67,7 +76,14 @@ export class NotificationService {
     const docs = await this._notificationRepo.findByUserId(userId);
 
     return docs.map((doc) => {
-      const typed = doc as unknown as { _id: Types.ObjectId; userId: Types.ObjectId; type: string; title: string; body: string; isRead: boolean };
+      const typed = doc as unknown as {
+        _id: Types.ObjectId;
+        userId: Types.ObjectId;
+        type: string;
+        title: string;
+        body: string;
+        isRead: boolean;
+      };
       return {
         id: typed._id.toString(),
         userId: typed.userId.toString(),

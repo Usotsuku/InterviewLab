@@ -1,0 +1,20 @@
+<div class="mb-8">
+  <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+    <div>
+      <h1 class="text-2xl font-bold text-neutral-800 mb-1">{{ title() }}</h1>
+      @if (formattedDate()) {
+        <p class="text-sm text-neutral-400">
+          {{ formattedDate() }}@if (formattedTime()) { &middot; {{ formattedTime() }} }
+        </p>
+      }
+    </div>
+    <div class="flex items-center gap-2">
+      @if (modeLabel()) {
+        <il-badge variant="neutral">{{ modeLabel() }}</il-badge>
+      }
+      <il-badge [variant]="completionBadgeVariant()" [icon]="isCompleted() ? 'check_circle' : 'schedule'">
+        {{ isCompleted() ? 'Completed' : 'In Progress' }}
+      </il-badge>
+    </div>
+  </div>
+</div>

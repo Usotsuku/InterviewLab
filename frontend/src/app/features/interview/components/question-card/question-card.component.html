@@ -1,0 +1,20 @@
+<div class="il-card p-6">
+  <div class="flex flex-wrap gap-2 mb-4">
+    @if (typeLabel()) {
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-50 text-primary-600">
+        {{ typeLabel() }}
+      </span>
+    }
+    @if (difficultyLabel()) {
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium" [class]="difficultyClass()">
+        {{ difficultyLabel() }}
+      </span>
+    }
+    @if (topic()) {
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-500">
+        {{ topic() }}
+      </span>
+    }
+  </div>
+  <h2 class="text-lg leading-relaxed text-neutral-800">{{ questionText() }}</h2>
+</div>

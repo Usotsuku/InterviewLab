@@ -5,11 +5,11 @@ import { CvAnalysisStatus } from '../models/domain.enums';
 import { BaseApiService } from '../http/base-api.service';
 
 export interface CvMetadata {
-  cvFileUrl: string | null;
-  cvFileName: string | null;
-  cvFileSize: number | null;
-  cvUploadedAt: string | null;
-  cvAnalysisStatus: CvAnalysisStatus;
+  fileName: string;
+  fileUrl: string;
+  fileSize: number;
+  uploadedAt: string;
+  analysisStatus: CvAnalysisStatus;
 }
 
 export interface UploadCvResponse {

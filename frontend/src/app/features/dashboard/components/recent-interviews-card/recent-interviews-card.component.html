@@ -1,0 +1,33 @@
+<il-card title="Recent Interviews">
+  <div card-header>
+    <il-button variant="ghost" size="sm" icon="arrow_forward" (clicked)="viewAllClick.emit()">View All</il-button>
+  </div>
+
+  @if (interviews().length === 0) {
+    <div class="text-center py-6">
+      <p class="text-sm text-neutral-400 m-0">No interviews yet. <a routerLink="/interview" class="text-primary-500 hover:text-primary-600">Start your first one.</a></p>
+    </div>
+  } @else {
+    <div class="flex flex-col divide-y divide-neutral-100">
+      @for (interview of interviews(); track interview.id) {
+        <a
+          [routerLink]="['/history', interview.id]"
+          class="flex items-center justify-between py-3 px-1 -mx-1 rounded-lg hover:bg-neutral-50 transition-colors duration-150 no-underline"
+        >
+          <div class="flex items-center gap-3 min-w-0 flex-1">
+            <il-interview-status-badge [status]="interview.status" />
+            <div class="min-w-0 flex-1">
+              <p class="text-sm font-medium text-neutral-800 truncate m-0">
+                {{ interview.title || 'Untitled' }}
+              </p>
+              <p class="text-xs text-neutral-400 m-0">{{ formattedDate(interview.createdAt) }} &middot; {{ interview.mode }}</p>
+            </div>
+          </div>
+          @if (interview.overallScore != null) {
+            <span class="text-sm font-bold text-primary-500 shrink-0 ml-3">{{ interview.overallScore }}</span>
+          }
+        </a>
+      }
+    </div>
+  }
+</il-card>

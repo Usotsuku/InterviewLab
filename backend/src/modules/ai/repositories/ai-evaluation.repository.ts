@@ -6,7 +6,9 @@ import { AiEvaluation, AiEvaluationDocument } from '../schemas/ai-evaluation.sch
 
 @Injectable()
 export class AiEvaluationRepository extends BaseRepository<AiEvaluationDocument> {
-  constructor(@InjectModel(AiEvaluation.name) private readonly _evalModel: Model<AiEvaluationDocument>) {
+  constructor(
+    @InjectModel(AiEvaluation.name) private readonly _evalModel: Model<AiEvaluationDocument>,
+  ) {
     super(_evalModel);
   }
 

@@ -6,7 +6,7 @@
         @if (entry().url) {
           <a [href]="entry().url" target="_blank" rel="noopener noreferrer"
             class="text-primary-500 hover:text-primary-600 transition-colors" aria-label="Open project link">
-            <mat-icon class="text-base w-4 h-4">open_in_new</mat-icon>
+            <mat-icon class="text-base w-4 h-4" aria-hidden="true">open_in_new</mat-icon>
           </a>
         }
       </div>
@@ -29,7 +29,7 @@
         (click)="removeClicked.emit(index())"
         aria-label="Remove project entry"
       >
-        <mat-icon>close</mat-icon>
+        <mat-icon aria-hidden="true">close</mat-icon>
       </button>
     }
   </div>

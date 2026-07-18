@@ -102,11 +102,7 @@ ${cvText}`,
     };
   }
 
-  buildInterviewPrompt(
-    profileSummary: string,
-    mode: string,
-    count: number,
-  ): PromptPayload {
+  buildInterviewPrompt(profileSummary: string, mode: string, count: number): PromptPayload {
     return {
       prompt: `Generate a ${mode} interview with approximately ${count} questions for a candidate with the following profile:
 
@@ -125,13 +121,11 @@ Rules:
     };
   }
 
-  buildEvaluationPrompt(
-    question: string,
-    transcript: string,
-  ): PromptPayload {
+  buildEvaluationPrompt(question: string, transcript: string): PromptPayload {
     return {
       prompt: `Evaluate the following answer to the interview question.\n\nQuestion: ${question}\nAnswer: ${transcript}`,
-      systemInstruction: 'You are an expert interview evaluator. Assess technical accuracy, communication clarity, and completeness.',
+      systemInstruction:
+        'You are an expert interview evaluator. Assess technical accuracy, communication clarity, and completeness.',
     };
   }
 

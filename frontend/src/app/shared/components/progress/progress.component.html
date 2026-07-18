@@ -1,5 +1,12 @@
 <div class="flex items-center gap-3 w-full">
-  <div class="flex-1 h-1.5 rounded-full overflow-hidden bg-neutral-200">
+  <div
+    class="flex-1 h-1.5 rounded-full overflow-hidden bg-neutral-200"
+    role="progressbar"
+    [attr.aria-valuemin]="0"
+    [attr.aria-valuemax]="100"
+    [attr.aria-valuenow]="clampedValue()"
+    [attr.aria-valuetext]="clampedValue() + '%'"
+  >
     <div
       class="h-full rounded-full transition-[width] duration-slow"
       [class]="fillClass()"

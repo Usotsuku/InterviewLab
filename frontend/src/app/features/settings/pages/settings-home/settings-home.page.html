@@ -1,32 +1,52 @@
-<section>
-  <h1 class="text-2xl font-bold mb-2">Settings</h1>
-  <p class="text-neutral-400 mb-6">Manage your application preferences.</p>
-
-  <div class="il-card mb-5 max-w-lg p-5">
-    <h3 id="language-section" class="mb-4">Language &amp; Region</h3>
-    <mat-form-field appearance="outline">
-      <mat-label>Language</mat-label>
-      <mat-select [(ngModel)]="language" name="language" aria-describedby="language-section">
-        <mat-option value="en">English</mat-option>
-        <mat-option value="fr">Français</mat-option>
-        <mat-option value="ar">العربية</mat-option>
-        <mat-option value="es">Español</mat-option>
-        <mat-option value="de">Deutsch</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
-
-  <div class="il-card mb-5 max-w-lg p-5">
-    <h3 id="notifications-section" class="mb-4">Notifications</h3>
-    <div class="flex justify-between items-center py-2.5 border-b border-neutral-200">
-      <span>Enable Notifications</span>
-      <mat-slide-toggle [(ngModel)]="notificationsEnabled" aria-label="Enable notifications" />
+<section class="space-y-6">
+  <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+    <div>
+      <h1 class="text-2xl font-bold text-neutral-800 m-0">Settings</h1>
+      <p class="text-sm text-neutral-400 m-0 mt-1">Manage your application preferences and account.</p>
     </div>
-    <div class="flex justify-between items-center py-2.5 border-b border-neutral-200">
-      <span>Interview Reminders</span>
-      <mat-slide-toggle [(ngModel)]="interviewReminders" aria-label="Interview reminders" />
-    </div>
-  </div>
+    <il-button variant="secondary" size="md" icon="logout" (clicked)="onLogout()">
+      Logout
+    </il-button>
+  </header>
 
-  <button mat-raised-button color="primary" class="mt-2" (click)="onSave()">Save Settings</button>
+  <il-account-section
+    [userName]="store.userName()"
+    [userEmail]="store.userEmail()"
+    [userId]="store.userId()"
+    [createdAt]="store.userCreatedAt()"
+  />
+
+  <il-appearance-section
+    [theme]="store.theme()"
+    [language]="store.language()"
+    (themeChange)="onThemeChange($event)"
+    (languageChange)="onLanguageChange($event)"
+  />
+
+  <il-notification-section
+    [notificationsEnabled]="store.notificationsEnabled()"
+    [interviewReminders]="store.interviewReminders()"
+    (notificationsChange)="onNotificationsChange($event)"
+    (remindersChange)="onRemindersChange($event)"
+  />
+
+  <il-device-section
+    [micEnabled]="store.micEnabled()"
+    [autoTranscribe]="store.autoTranscribe()"
+    (micChange)="onMicChange($event)"
+    (autoTranscribeChange)="onAutoTranscribeChange($event)"
+  />
+
+  <il-password-section
+    [isLoading]="store.isChangingPassword()"
+    [error]="store.getError('password')"
+    (passwordChange)="onPasswordChange($event)"
+  />
+
+  <il-about-section />
+
+  <il-delete-account-section
+    [isLoading]="store.isDeleting()"
+    (deleteClick)="onDeleteAccount()"
+  />
 </section>

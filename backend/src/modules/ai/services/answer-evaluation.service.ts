@@ -71,7 +71,9 @@ export class AnswerEvaluationService {
     const startTime = Date.now();
     this._logger.log(`[evaluate] Starting evaluation for answer: ${input.answerId}`);
 
-    const answerDoc = await this._answerRepository.findById(input.answerId) as unknown as AnswerDocument | null;
+    const answerDoc = (await this._answerRepository.findById(
+      input.answerId,
+    )) as unknown as AnswerDocument | null;
     if (!answerDoc) {
       this._logger.error(`[evaluate] Answer not found: ${input.answerId}`);
       throw new Error(`Answer not found: ${input.answerId}`);
@@ -80,11 +82,11 @@ export class AnswerEvaluationService {
     const interviewIdStr = answerDoc.interviewId.toString();
     const questionIdStr = answerDoc.questionId.toString();
 
-    const [questionDoc, interviewDoc, metricsDoc] = await Promise.all([
+    const [questionDoc, interviewDoc, metricsDoc] = (await Promise.all([
       this._questionRepository.findById(questionIdStr),
       this._interviewRepository.findById(interviewIdStr),
       this._metricsRepository.findByAnswerId(input.answerId),
-    ]) as [QuestionDocument | null, InterviewDocument | null, MetricsDocument | null];
+    ])) as [QuestionDocument | null, InterviewDocument | null, MetricsDocument | null];
 
     let candidateProfileDoc: CandidateProfileDocument | null = null;
     if (interviewDoc) {

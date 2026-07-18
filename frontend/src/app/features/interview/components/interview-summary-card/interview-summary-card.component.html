@@ -1,0 +1,30 @@
+<div class="il-card p-5" [class.opacity-50]="disabled()">
+  <h3 class="text-base font-semibold text-neutral-800 mb-4">Interview Summary</h3>
+
+  <div class="flex flex-col gap-3">
+    <div class="flex items-center justify-between">
+      <span class="text-sm text-neutral-400">Mode</span>
+      <span class="text-sm font-medium text-neutral-800">{{ modeLabel() }}</span>
+    </div>
+
+    <div class="flex items-center justify-between">
+      <span class="text-sm text-neutral-400">Difficulty</span>
+      <div class="flex items-center gap-1.5">
+        <mat-icon class="text-sm w-4 h-4 text-neutral-500" aria-hidden="true">{{ difficultyIcon() }}</mat-icon>
+        <span class="text-sm font-medium text-neutral-800">{{ difficultyLabel() }}</span>
+      </div>
+    </div>
+
+    <div class="flex items-center justify-between">
+      <span class="text-sm text-neutral-400">Questions</span>
+      <span class="text-sm font-medium text-neutral-800">{{ questionCount() }}</span>
+    </div>
+
+    <div class="h-px bg-neutral-200"></div>
+
+    <div class="flex items-center justify-between">
+      <span class="text-sm text-neutral-400">Estimated Duration</span>
+      <span class="text-sm font-semibold text-neutral-800">{{ durationText() }}</span>
+    </div>
+  </div>
+</div>

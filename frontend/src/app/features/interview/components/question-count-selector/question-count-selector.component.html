@@ -1,0 +1,38 @@
+<div class="flex flex-col gap-4">
+  <div class="flex gap-2" role="radiogroup" aria-label="Number of questions">
+    @for (count of options; track count) {
+      <button
+        [class]="buttonClass(count)"
+        role="radio"
+        [attr.aria-checked]="value() === count"
+        [attr.aria-disabled]="disabled()"
+        [attr.aria-label]="count + ' questions'"
+        [disabled]="disabled()"
+        (click)="onSelect(count)"
+        (keydown)="onKeydown($event, count)"
+      >
+        {{ count }}
+      </button>
+    }
+  </div>
+
+  <div class="flex flex-col gap-2">
+    <input
+      type="range"
+      [min]="5"
+      [max]="20"
+      [step]="1"
+      [value]="value()"
+      [disabled]="disabled()"
+      class="w-full h-1.5 bg-neutral-200 rounded-full appearance-none cursor-pointer accent-neutral-800 disabled:opacity-50 disabled:cursor-not-allowed"
+      aria-label="Question count slider"
+      (input)="onSliderInput($event)"
+    />
+    <div class="flex justify-between text-xs text-neutral-400">
+      <span>5</span>
+      <span>20</span>
+    </div>
+  </div>
+
+  <p class="text-sm text-neutral-400">{{ description() }}</p>
+</div>

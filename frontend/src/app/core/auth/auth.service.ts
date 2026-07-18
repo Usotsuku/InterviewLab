@@ -50,4 +50,8 @@ export class AuthService {
   getCurrentUser(): Observable<ApiResponse<AuthUser>> {
     return this._http.get<ApiResponse<AuthUser>>('auth/me');
   }
+
+  changePassword(currentPassword: string, newPassword: string): Observable<ApiResponse<{ message: string }>> {
+    return this._http.post<ApiResponse<{ message: string }>>('auth/change-password', { currentPassword, newPassword });
+  }
 }

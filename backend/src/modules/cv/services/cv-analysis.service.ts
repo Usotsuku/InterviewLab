@@ -51,7 +51,10 @@ export class CvAnalysisService {
         weaknesses: mappedProfile.weaknesses,
       });
 
-      await this._candidateProfileService.updateCvAnalysisStatus(userId, CvAnalysisStatus.COMPLETED);
+      await this._candidateProfileService.updateCvAnalysisStatus(
+        userId,
+        CvAnalysisStatus.COMPLETED,
+      );
 
       this._logger.log(`[analyze] CV analysis completed for user: ${userId}`);
 
@@ -64,7 +67,9 @@ export class CvAnalysisService {
       return { status: CvAnalysisStatus.COMPLETED, profile: mappedProfile };
     } catch (error) {
       if (error instanceof AppException) {
-        this._logger.error(`[analyze] Analysis failed for user: ${userId}, error: ${error.message}`);
+        this._logger.error(
+          `[analyze] Analysis failed for user: ${userId}, error: ${error.message}`,
+        );
         await this._candidateProfileService.updateCvAnalysisStatus(userId, CvAnalysisStatus.FAILED);
         return { status: CvAnalysisStatus.FAILED, profile: null };
       }

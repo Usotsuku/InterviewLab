@@ -8,8 +8,5 @@ export interface AuthOptions {
 }
 
 export function CheckAuth(options: AuthOptions = { jwt: true }) {
-  return applyDecorators(
-    SetMetadata(AUTH_OPTIONS_KEY, options),
-    UseGuards(JwtAuthGuard),
-  );
+  return applyDecorators(SetMetadata(AUTH_OPTIONS_KEY, options), UseGuards(JwtAuthGuard));
 }

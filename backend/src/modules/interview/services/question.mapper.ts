@@ -25,11 +25,7 @@ export interface MappedQuestion {
   text: string;
 }
 
-const REQUIRED_FIELDS: (keyof AiInterviewResponse)[] = [
-  'title',
-  'estimatedDuration',
-  'questions',
-];
+const REQUIRED_FIELDS: (keyof AiInterviewResponse)[] = ['title', 'estimatedDuration', 'questions'];
 
 const VALID_QUESTION_TYPES = new Set<string>(Object.values(QuestionType));
 const VALID_DIFFICULTIES = new Set<string>(Object.values(QuestionDifficulty));
@@ -118,7 +114,9 @@ export function mapAiResponseToQuestions(raw: string): AiInterviewResponse {
     };
   });
 
-  _logger.log(`[mapAiResponseToQuestions] Mapped ${questions.length} questions, title: "${data.title}"`);
+  _logger.log(
+    `[mapAiResponseToQuestions] Mapped ${questions.length} questions, title: "${data.title}"`,
+  );
 
   return {
     title: data.title.trim(),

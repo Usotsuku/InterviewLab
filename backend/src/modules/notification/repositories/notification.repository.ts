@@ -6,7 +6,9 @@ import { Notification, NotificationDocument } from '../schemas/notification.sche
 
 @Injectable()
 export class NotificationRepository extends BaseRepository<NotificationDocument> {
-  constructor(@InjectModel(Notification.name) private readonly _notifModel: Model<NotificationDocument>) {
+  constructor(
+    @InjectModel(Notification.name) private readonly _notifModel: Model<NotificationDocument>,
+  ) {
     super(_notifModel);
   }
 

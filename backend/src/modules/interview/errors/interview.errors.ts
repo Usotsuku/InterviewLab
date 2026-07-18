@@ -9,7 +9,8 @@ export const INTERVIEW_ERRORS = {
   PROFILE_INCOMPLETE: {
     message: 'PROFILE_INCOMPLETE',
     statusCode: 400,
-    description: 'Candidate profile is incomplete. Complete your profile before generating an interview.',
+    description:
+      'Candidate profile is incomplete. Complete your profile before generating an interview.',
   },
   GENERATION_FAILED: {
     message: 'GENERATION_FAILED',

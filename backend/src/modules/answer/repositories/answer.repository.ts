@@ -11,9 +11,7 @@ export class AnswerRepository extends BaseRepository<AnswerDocument> {
   }
 
   async findByInterviewId(interviewId: string | Types.ObjectId): Promise<AnswerDocument[]> {
-    return this._answerModel
-      .find({ interviewId, deletedAt: { $exists: false } })
-      .exec();
+    return this._answerModel.find({ interviewId, deletedAt: { $exists: false } }).exec();
   }
 
   async findByQuestionId(questionId: string | Types.ObjectId): Promise<AnswerDocument | null> {

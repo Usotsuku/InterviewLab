@@ -25,15 +25,9 @@ export class MetricsCalculationService {
   calculate(input: MetricsInput): MetricsResult {
     const wordCount = this._countWords(input.transcript);
 
-    const wordsPerMinute = this._speakingSpeed.calculate(
-      input.transcript,
-      input.durationSeconds,
-    );
+    const wordsPerMinute = this._speakingSpeed.calculate(input.transcript, input.durationSeconds);
 
-    const pauseMetrics = this._pause.calculate(
-      input.transcript,
-      input.durationSeconds,
-    );
+    const pauseMetrics = this._pause.calculate(input.transcript, input.durationSeconds);
 
     const vocabularyRichness = this._vocabulary.calculate(input.transcript);
     const fillerCount = this._filler.calculate(input.transcript);

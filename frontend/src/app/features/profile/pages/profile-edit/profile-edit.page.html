@@ -102,13 +102,12 @@
 
     <div class="flex items-center gap-3 pt-2">
       <il-button
-        label="Save Profile"
         type="submit"
         variant="primary"
         size="lg"
         [loading]="store.saving()"
         [disabled]="store.saving()"
-      />
+      >Save Profile</il-button>
       <button routerLink="/profile" type="button" il-button variant="secondary" size="lg">
         Cancel
       </button>

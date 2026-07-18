@@ -11,10 +11,7 @@ describe('PasswordService', () => {
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        PasswordService,
-        { provide: AuthConfig, useValue: mockAuthConfig },
-      ],
+      providers: [PasswordService, { provide: AuthConfig, useValue: mockAuthConfig }],
     }).compile();
 
     service = module.get<PasswordService>(PasswordService);

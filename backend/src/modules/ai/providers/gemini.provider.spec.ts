@@ -32,13 +32,11 @@ describe('GeminiProvider', () => {
 
   beforeAll(async () => {
     const mod = await import('@google/generative-ai');
-    mockGenerateContent = (mod as unknown as { __mockGenerateContent: jest.Mock }).__mockGenerateContent;
+    mockGenerateContent = (mod as unknown as { __mockGenerateContent: jest.Mock })
+      .__mockGenerateContent;
 
     const module: TestingModule = await Test.createTestingModule({
-      providers: [
-        GeminiProvider,
-        { provide: AiConfig, useValue: mockAiConfig },
-      ],
+      providers: [GeminiProvider, { provide: AiConfig, useValue: mockAiConfig }],
     }).compile();
 
     provider = module.get<GeminiProvider>(GeminiProvider);

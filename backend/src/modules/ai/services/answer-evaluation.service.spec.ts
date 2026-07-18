@@ -168,7 +168,9 @@ describe('AnswerEvaluationService', () => {
       expect(mockAnswerRepo.findById).toHaveBeenCalledWith('666666666666666666666601');
       expect(mockQuestionRepo.findById).toHaveBeenCalledWith(mockAnswerDoc.questionId.toString());
       expect(mockInterviewRepo.findById).toHaveBeenCalledWith(mockAnswerDoc.interviewId.toString());
-      expect(mockCandidateProfileRepo.findByUserId).toHaveBeenCalledWith(mockInterviewDoc.userId.toString());
+      expect(mockCandidateProfileRepo.findByUserId).toHaveBeenCalledWith(
+        mockInterviewDoc.userId.toString(),
+      );
       expect(mockMetricsRepo.findByAnswerId).toHaveBeenCalledWith('666666666666666666666601');
     });
 
@@ -214,7 +216,9 @@ describe('AnswerEvaluationService', () => {
     it('should handle missing answer document', async () => {
       mockAnswerRepo.findById.mockResolvedValueOnce(null);
 
-      await expect(service.evaluate({ answerId: '000000000000000000000099' })).rejects.toThrow('Answer not found: 000000000000000000000099');
+      await expect(service.evaluate({ answerId: '000000000000000000000099' })).rejects.toThrow(
+        'Answer not found: 000000000000000000000099',
+      );
     });
 
     it('should handle missing question document gracefully', async () => {

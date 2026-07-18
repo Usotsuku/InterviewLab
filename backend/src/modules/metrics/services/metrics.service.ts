@@ -23,9 +23,7 @@ export class MetricsService {
   ) {}
 
   async compute(input: MetricsComputeInput): Promise<MetricsResult> {
-    this._logger.log(
-      `[compute] Running deterministic metrics for answer: ${input.answerId}`,
-    );
+    this._logger.log(`[compute] Running deterministic metrics for answer: ${input.answerId}`);
 
     const result = this._calculationService.calculate({
       transcript: input.transcript,

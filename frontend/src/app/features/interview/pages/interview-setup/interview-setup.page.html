@@ -1,37 +1,95 @@
-<section>
-  <h1 class="text-2xl font-bold mb-2">Start Interview Session</h1>
-  <p class="text-neutral-400 mb-7">Configure your session parameters before we begin.</p>
-
-  <div class="il-card max-w-md flex flex-col gap-2 p-5">
-    <mat-form-field appearance="outline">
-      <mat-label>Interview Mode</mat-label>
-      <mat-select [(ngModel)]="mode" name="mode">
-        <mat-option value="TECHNICAL">Technical</mat-option>
-        <mat-option value="HR">HR</mat-option>
-        <mat-option value="MIXED">Mixed</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Difficulty</mat-label>
-      <mat-select [(ngModel)]="difficulty" name="difficulty">
-        <mat-option value="EASY">Easy</mat-option>
-        <mat-option value="MEDIUM">Medium</mat-option>
-        <mat-option value="HARD">Hard</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field appearance="outline">
-      <mat-label>Number of Questions</mat-label>
-      <mat-select [(ngModel)]="questionCount" name="count">
-        <mat-option [value]="5">5 Questions</mat-option>
-        <mat-option [value]="10">10 Questions</mat-option>
-        <mat-option [value]="15">15 Questions</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <button mat-raised-button color="primary" class="h-11 mt-2" (click)="onStart()">
-      Begin Session
-    </button>
+<section class="max-w-2xl mx-auto">
+  <div class="mb-7">
+    <h1 class="text-2xl font-bold text-neutral-800 mb-2">Create Interview</h1>
+    <p class="text-sm text-neutral-400">
+      Configure your interview session. AI will generate personalized questions based on your profile.
+    </p>
   </div>
+
+  @if (store.isProfileLoading()) {
+    <il-spinner label="Loading profile..." />
+  } @else if (store.profileError()) {
+    <div class="il-card p-8 text-center">
+      <p class="text-danger-500 mb-4">{{ store.profileError() }}</p>
+      <il-button variant="secondary" (clicked)="store.loadProfile()">Retry</il-button>
+    </div>
+  } @else if (!store.hasProfile() || !store.isProfileSufficient()) {
+    <il-empty-state
+      icon="person_add"
+      title="Profile required"
+      [description]="store.hasProfile()
+        ? 'Your profile needs at least 20% completion. Add a CV or fill in your skills and experience to generate interview questions.'
+        : 'Create a candidate profile before starting an interview. Upload your CV or fill in your skills and experience.'"
+      actionLabel="Complete Profile"
+      (actionClick)="router.navigate(['/profile'])"
+    />
+  } @else {
+    <div class="flex flex-col gap-7">
+      <div>
+        <h2 class="text-sm font-semibold text-neutral-800 uppercase tracking-wider mb-3">Interview Mode</h2>
+        <div class="flex flex-col gap-3">
+          @for (mode of modes; track mode) {
+            <il-mode-card
+              [mode]="mode"
+              [selected]="store.mode() === mode"
+              [disabled]="store.isCreating()"
+              (selectedChange)="onModeChange($event)"
+            />
+          }
+        </div>
+      </div>
+
+      <div>
+        <h2 class="text-sm font-semibold text-neutral-800 uppercase tracking-wider mb-3">Difficulty</h2>
+        <il-difficulty-selector
+          [selected]="store.difficulty()"
+          [disabled]="store.isCreating()"
+          (selectedChange)="store.setDifficulty($event)"
+        />
+      </div>
+
+      <div>
+        <h2 class="text-sm font-semibold text-neutral-800 uppercase tracking-wider mb-3">Number of Questions</h2>
+        <il-question-count-selector
+          [value]="store.questionCount()"
+          [disabled]="store.isCreating()"
+          (valueChange)="store.setQuestionCount($event)"
+        />
+      </div>
+
+      <il-interview-summary-card
+        [mode]="store.mode()"
+        [difficulty]="store.difficulty()"
+        [questionCount]="store.questionCount()"
+        [estimatedMinutes]="store.estimatedMinutes()"
+        [disabled]="store.isCreating()"
+      />
+
+      @if (store.createError()) {
+        <div class="bg-danger-50 text-danger-500 px-4 py-3 rounded-lg text-sm border border-danger-400/20" role="alert">
+          {{ store.createError() }}
+        </div>
+      }
+
+      <div class="flex items-center gap-3 pt-2">
+        <il-button
+          variant="primary"
+          size="lg"
+          [loading]="store.isCreating()"
+          [disabled]="!store.canCreate()"
+          (clicked)="onCreate()"
+        >
+          Generate Interview
+        </il-button>
+        <il-button
+          variant="secondary"
+          size="lg"
+          [disabled]="store.isCreating()"
+          (clicked)="onCancel()"
+        >
+          Cancel
+        </il-button>
+      </div>
+    </div>
+  }
 </section>

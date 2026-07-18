@@ -54,9 +54,18 @@ describe('AuthService', () => {
   describe('register', () => {
     it('should register a new user and return tokens', async () => {
       mockUsersRepo.findByEmail.mockResolvedValue(null);
-      mockUsersRepo.create.mockResolvedValue({ _id: { toString: () => 'user1' }, email: 'new@test.com', name: 'New', role: 'user' });
+      mockUsersRepo.create.mockResolvedValue({
+        _id: { toString: () => 'user1' },
+        email: 'new@test.com',
+        name: 'New',
+        role: 'user',
+      });
 
-      const result = await service.register({ email: 'new@test.com', password: 'pass1234', name: 'New' });
+      const result = await service.register({
+        email: 'new@test.com',
+        password: 'pass1234',
+        name: 'New',
+      });
       expect(result.user.email).toBe('new@test.com');
       expect(result.accessToken).toBe('access-token');
       expect(result.refreshToken).toBe('plain-refresh-token');
@@ -90,9 +99,7 @@ describe('AuthService', () => {
 
     it('should throw INVALID_CREDENTIALS if user not found', async () => {
       mockUsersRepo.findByEmail.mockResolvedValue(null);
-      await expect(
-        service.login({ email: 'noone@test.com', password: 'pass' }),
-      ).rejects.toThrow();
+      await expect(service.login({ email: 'noone@test.com', password: 'pass' })).rejects.toThrow();
     });
 
     it('should throw INVALID_CREDENTIALS if password wrong', async () => {
@@ -105,9 +112,7 @@ describe('AuthService', () => {
       });
       mockPasswordService.compare.mockResolvedValue(false);
 
-      await expect(
-        service.login({ email: 'user@test.com', password: 'wrong' }),
-      ).rejects.toThrow();
+      await expect(service.login({ email: 'user@test.com', password: 'wrong' })).rejects.toThrow();
     });
   });
 
@@ -138,9 +143,7 @@ describe('AuthService', () => {
 
     it('should throw INVALID_REFRESH_TOKEN if no matching session', async () => {
       mockSessionRepo.findActiveByUserId.mockResolvedValue([]);
-      await expect(
-        service.refresh({ refreshToken: 'nonexistent-token' }),
-      ).rejects.toThrow();
+      await expect(service.refresh({ refreshToken: 'nonexistent-token' })).rejects.toThrow();
     });
 
     it('should throw EXPIRED_REFRESH_TOKEN if session expired', async () => {
@@ -155,9 +158,7 @@ describe('AuthService', () => {
         },
       ]);
 
-      await expect(
-        service.refresh({ refreshToken: 'plain-refresh-token' }),
-      ).rejects.toThrow();
+      await expect(service.refresh({ refreshToken: 'plain-refresh-token' })).rejects.toThrow();
     });
   });
 

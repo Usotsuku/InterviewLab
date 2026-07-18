@@ -44,7 +44,12 @@ describe('InterviewGenerationService', () => {
     questions: [
       { order: 1, type: 'TECHNICAL', difficulty: 'MEDIUM', text: 'Explain Dependency Injection.' },
       { order: 2, type: 'HR', difficulty: 'EASY', text: 'Tell me about yourself.' },
-      { order: 3, type: 'COMMUNICATION', difficulty: 'MEDIUM', text: 'How do you handle disagreements?' },
+      {
+        order: 3,
+        type: 'COMMUNICATION',
+        difficulty: 'MEDIUM',
+        text: 'How do you handle disagreements?',
+      },
     ],
   });
 
@@ -96,8 +101,12 @@ describe('InterviewGenerationService', () => {
       expect(result.totalQuestions).toBe(3);
       expect(result.estimatedDuration).toBe(30);
 
-      expect(mockInterviewRepo.updateById).toHaveBeenCalledWith(INTERVIEW_ID, { status: InterviewStatus.GENERATING });
-      expect(mockInterviewRepo.updateById).toHaveBeenCalledWith(INTERVIEW_ID, { status: InterviewStatus.READY });
+      expect(mockInterviewRepo.updateById).toHaveBeenCalledWith(INTERVIEW_ID, {
+        status: InterviewStatus.GENERATING,
+      });
+      expect(mockInterviewRepo.updateById).toHaveBeenCalledWith(INTERVIEW_ID, {
+        status: InterviewStatus.READY,
+      });
       expect(mockInterviewRepo.updateById).toHaveBeenCalledWith(INTERVIEW_ID, {
         title: 'Backend Developer Interview',
         estimatedDuration: 30,
@@ -128,7 +137,9 @@ describe('InterviewGenerationService', () => {
       mockInterviewRepo.updateById.mockResolvedValue(undefined);
 
       await expect(service.generate(USER_ID, INTERVIEW_ID, 'TECHNICAL')).rejects.toThrow();
-      expect(mockInterviewRepo.updateById).toHaveBeenCalledWith(INTERVIEW_ID, { status: InterviewStatus.FAILED });
+      expect(mockInterviewRepo.updateById).toHaveBeenCalledWith(INTERVIEW_ID, {
+        status: InterviewStatus.FAILED,
+      });
     });
 
     it('should set FAILED status when AI returns invalid JSON', async () => {
@@ -153,7 +164,9 @@ describe('InterviewGenerationService', () => {
       mockInterviewRepo.updateById.mockResolvedValue(undefined);
 
       await expect(service.generate(USER_ID, INTERVIEW_ID, 'TECHNICAL')).rejects.toThrow();
-      expect(mockInterviewRepo.updateById).toHaveBeenCalledWith(INTERVIEW_ID, { status: InterviewStatus.FAILED });
+      expect(mockInterviewRepo.updateById).toHaveBeenCalledWith(INTERVIEW_ID, {
+        status: InterviewStatus.FAILED,
+      });
     });
   });
 });

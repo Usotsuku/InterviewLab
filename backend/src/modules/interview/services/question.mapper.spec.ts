@@ -6,9 +6,19 @@ describe('QuestionMapper', () => {
       title: 'Backend Developer Interview',
       estimatedDuration: 30,
       questions: [
-        { order: 1, type: 'TECHNICAL', difficulty: 'MEDIUM', text: 'Explain Dependency Injection.' },
+        {
+          order: 1,
+          type: 'TECHNICAL',
+          difficulty: 'MEDIUM',
+          text: 'Explain Dependency Injection.',
+        },
         { order: 2, type: 'HR', difficulty: 'EASY', text: 'Tell me about yourself.' },
-        { order: 3, type: 'COMMUNICATION', difficulty: 'MEDIUM', text: 'How do you handle disagreements?' },
+        {
+          order: 3,
+          type: 'COMMUNICATION',
+          difficulty: 'MEDIUM',
+          text: 'How do you handle disagreements?',
+        },
       ],
     };
 
@@ -105,7 +115,9 @@ describe('QuestionMapper', () => {
       const response = {
         title: 'Test',
         estimatedDuration: 30,
-        questions: [{ order: 1, type: 'TECHNICAL', difficulty: 'MEDIUM', text: '  Question with spaces  ' }],
+        questions: [
+          { order: 1, type: 'TECHNICAL', difficulty: 'MEDIUM', text: '  Question with spaces  ' },
+        ],
       };
       const result = mapAiResponseToQuestions(JSON.stringify(response));
       expect(result.questions[0].text).toBe('Question with spaces');

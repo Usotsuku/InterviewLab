@@ -131,7 +131,9 @@ export class SpeechService {
     }
 
     session.status = SpeechSessionStatus.COMPLETED;
-    this._logger.log(`[finishSession] Session completed: ${sessionId}, transcript length: ${session.transcript.length}`);
+    this._logger.log(
+      `[finishSession] Session completed: ${sessionId}, transcript length: ${session.transcript.length}`,
+    );
     return session;
   }
 
@@ -157,7 +159,8 @@ export class SpeechService {
     for (const session of this._sessions.values()) {
       if (
         session.questionId === questionId &&
-        (session.status === SpeechSessionStatus.ACTIVE || session.status === SpeechSessionStatus.FINALIZING)
+        (session.status === SpeechSessionStatus.ACTIVE ||
+          session.status === SpeechSessionStatus.FINALIZING)
       ) {
         return session;
       }

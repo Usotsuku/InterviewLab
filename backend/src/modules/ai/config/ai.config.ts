@@ -34,7 +34,7 @@ export class AiConfig {
   }
 
   get retryMaxAttempts(): number {
-    return this._config.get<number>('config.ai.retry.maxAttempts')!;
+    return this._config.get<number>('config.ai.maxRetries')!;
   }
 
   get retryBaseDelayMs(): number {
@@ -46,6 +46,6 @@ export class AiConfig {
   }
 
   get timeoutMs(): number {
-    return this._config.get<number>('config.ai.timeout.cvAnalysisMs')!;
+    return this._config.get<number>('config.ai.timeoutMs')!;
   }
 }

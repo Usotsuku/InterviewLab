@@ -45,7 +45,9 @@ describe('SpeechGateway', () => {
         mockClient,
       );
 
-      expect(mockClient.emit).toHaveBeenCalledWith('speech:started', { sessionId: 'speech-q1-123' });
+      expect(mockClient.emit).toHaveBeenCalledWith('speech:started', {
+        sessionId: 'speech-q1-123',
+      });
     });
 
     it('should emit speech:error on failure', async () => {

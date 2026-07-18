@@ -1,22 +1,111 @@
-<section>
-  <h1 class="text-2xl font-bold mb-2">Analytics</h1>
-  <p class="text-neutral-400">Detailed performance charts and trend analysis will be available here.</p>
-  <div class="grid grid-cols-2 gap-5 mt-6 max-lg:grid-cols-1">
-    <div class="il-card p-5">
-      <h3>Score Over Time</h3>
-      <div class="h-40 flex items-center justify-center text-neutral-400 bg-neutral-100 rounded-sm mt-4 text-sm italic">Chart placeholder</div>
+<section class="space-y-6">
+  @if (loading()) {
+    <div class="flex items-center justify-center py-20">
+      <il-spinner label="Loading analytics..." />
     </div>
-    <div class="il-card p-5">
-      <h3>Communication Metrics</h3>
-      <div class="h-40 flex items-center justify-center text-neutral-400 bg-neutral-100 rounded-sm mt-4 text-sm italic">Chart placeholder</div>
+  } @else if (error()) {
+    <div class="text-center py-12">
+      <p class="text-sm text-danger-500">{{ error() }}</p>
     </div>
-    <div class="il-card p-5">
-      <h3>Words Per Minute</h3>
-      <div class="h-40 flex items-center justify-center text-neutral-400 bg-neutral-100 rounded-sm mt-4 text-sm italic">Chart placeholder</div>
+  } @else if (completedCount() === 0) {
+    <il-empty-state
+      icon="bar_chart"
+      title="No analytics yet"
+      description="Complete your first interview to see performance analytics and improvement insights."
+      actionLabel="Start Interview"
+    />
+  } @else {
+    <il-analytics-hero
+      [userName]="userName()?.name ?? 'Candidate'"
+      [totalInterviews]="store.totalInterviews()"
+      [completedCount]="store.completedCount()"
+      [averageScore]="store.averageScore()"
+    />
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <il-metric-trend-card
+        title="Overall Score"
+        icon="star"
+        [trendData]="store.scoreTrend()"
+        [currentValue]="store.averageScore()"
+        unit="%"
+        color="var(--il-primary-500)"
+        [showChange]="false"
+      />
+      <il-metric-trend-card
+        title="Confidence"
+        icon="psychology"
+        [trendData]="store.confidenceTrend()"
+        [currentValue]="store.averageConfidence()"
+        unit="%"
+        color="var(--il-warning-500)"
+        [showChange]="false"
+      />
+      <il-metric-trend-card
+        title="Speaking Pace"
+        icon="record_voice_over"
+        [trendData]="store.wpmTrend()"
+        [currentValue]="store.averageWordsPerMinute()"
+        unit="wpm"
+        color="var(--il-info-500)"
+        [showChange]="false"
+      />
+      <il-metric-trend-card
+        title="Vocabulary"
+        icon="menu_book"
+        [trendData]="store.vocabTrend()"
+        [currentValue]="store.averageVocabularyRichness() * 100"
+        unit="%"
+        color="var(--il-success-500)"
+        [showChange]="false"
+      />
     </div>
-    <div class="il-card p-5">
-      <h3>Filler Word Frequency</h3>
-      <div class="h-40 flex items-center justify-center text-neutral-400 bg-neutral-100 rounded-sm mt-4 text-sm italic">Chart placeholder</div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="lg:col-span-2">
+        <il-score-trends-card
+          [scoreTrend]="store.scoreTrend()"
+          [confidenceTrend]="store.confidenceTrend()"
+          [communicationTrend]="store.communicationTrend()"
+          [technicalTrend]="store.technicalTrend()"
+          [averageScore]="store.averageScore()"
+          [averageConfidence]="store.averageConfidence()"
+          [averageCommunication]="store.averageCommunication()"
+          [averageTechnical]="store.averageTechnical()"
+        />
+      </div>
+      <div>
+        <il-skill-radar-card
+          [data]="store.skillRadarData()"
+        />
+      </div>
     </div>
-  </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <il-speaking-metrics-card
+        [averageWordsPerMinute]="store.averageWordsPerMinute()"
+        [averageVocabularyRichness]="store.averageVocabularyRichness()"
+        [averageKeywordCoverage]="store.averageKeywordCoverage()"
+        [averageFillerCount]="store.averageFillerCount()"
+        [averageRepetitionScore]="store.averageRepetitionScore()"
+        [averagePauseCount]="store.averagePauseCount()"
+        [wpmTrend]="store.wpmTrend()"
+        [vocabTrend]="store.vocabTrend()"
+        [fillerTrend]="store.fillerTrend()"
+      />
+      <il-practice-summary-card
+        [totalInterviews]="store.totalInterviews()"
+        [completedCount]="store.completedCount()"
+        [totalPracticeMinutes]="store.totalPracticeMinutes()"
+        [averageDuration]="store.averageDuration()"
+        [interviewsPerWeek]="store.interviewsPerWeek()"
+        [strongestCategory]="store.strongestCategory()"
+        [weakestCategory]="store.weakestCategory()"
+      />
+    </div>
+
+    <il-improvement-insights-card
+      [insights]="store.improvements()"
+    />
+  }
 </section>

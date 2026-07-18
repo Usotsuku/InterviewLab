@@ -1,6 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
-import { AI_PROVIDER, AIProvider, GenerateRequest, GenerateResponse } from '../providers/ai-provider.interface';
+import {
+  AI_PROVIDER,
+  AIProvider,
+  GenerateRequest,
+  GenerateResponse,
+} from '../providers/ai-provider.interface';
 import { RetryService } from './retry.service';
 import { ContextService } from './context.service';
 import { PromptService } from './prompt.service';
@@ -19,24 +24,29 @@ export class AIService {
   ) {}
 
   async generate(request: GenerateRequest): Promise<GenerateResponse> {
-    return this._retryService.execute(
-      () => this._provider.generate(request),
-      {
-        maxAttempts: this._aiConfig.retryMaxAttempts,
-        baseDelayMs: this._aiConfig.retryBaseDelayMs,
-        maxDelayMs: this._aiConfig.retryMaxDelayMs,
-        operationName: `generate:${request.prompt.substring(0, 50)}...`,
-      },
-    );
+    return this._retryService.execute(() => this._provider.generate(request), {
+      maxAttempts: this._aiConfig.retryMaxAttempts,
+      baseDelayMs: this._aiConfig.retryBaseDelayMs,
+      maxDelayMs: this._aiConfig.retryMaxDelayMs,
+      operationName: `generate:${request.prompt.substring(0, 50)}...`,
+    });
   }
 
-  async generateQuestions(profileSummary: string, mode: string, count: number): Promise<{ id: string; text: string; type: string }[]> {
+  async generateQuestions(
+    profileSummary: string,
+    mode: string,
+    count: number,
+  ): Promise<{ id: string; text: string; type: string }[]> {
     this._logger.log(`[generateQuestions] Generating ${count} questions for mode: ${mode}`);
     // TODO: implement in Sprint 6 using generate() + PromptService
     return [];
   }
 
-  async evaluateAnswer(question: string, transcript: string, _sessionId?: string): Promise<Record<string, unknown>> {
+  async evaluateAnswer(
+    question: string,
+    transcript: string,
+    _sessionId?: string,
+  ): Promise<Record<string, unknown>> {
     this._logger.log('[evaluateAnswer] Evaluating candidate answer');
     // TODO: implement in Sprint 6 using generate() + PromptService
     return {

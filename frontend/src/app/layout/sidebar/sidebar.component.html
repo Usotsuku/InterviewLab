@@ -14,7 +14,7 @@
         class="flex items-center gap-3 px-3 py-2 rounded-md text-neutral-400 text-sm font-medium transition-all duration-fast no-underline hover:bg-primary-50 hover:text-primary-400"
         [attr.aria-label]="item.label"
       >
-        <mat-icon class="text-xl w-5 h-5 shrink-0">{{ item.icon }}</mat-icon>
+        <mat-icon class="text-xl w-5 h-5 shrink-0" aria-hidden="true">{{ item.icon }}</mat-icon>
         @if (!collapsed()) {
           <span class="whitespace-nowrap">{{ item.label }}</span>
         }

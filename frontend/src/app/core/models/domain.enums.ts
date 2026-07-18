@@ -7,15 +7,19 @@ export enum InterviewMode {
 }
 
 export enum InterviewStatus {
-  PENDING = 'PENDING',
+  CREATED = 'CREATED',
+  GENERATING = 'GENERATING',
+  READY = 'READY',
   IN_PROGRESS = 'IN_PROGRESS',
   COMPLETED = 'COMPLETED',
+  FAILED = 'FAILED',
   CANCELLED = 'CANCELLED',
 }
 
 export enum QuestionType {
   HR = 'HR',
   TECHNICAL = 'TECHNICAL',
+  COMMUNICATION = 'COMMUNICATION',
 }
 
 export enum QuestionDifficulty {

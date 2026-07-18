@@ -19,7 +19,7 @@
         autocomplete="name"
         placeholder="John Doe"
       />
-      <mat-icon matPrefix class="text-neutral-400">person_outline</mat-icon>
+      <mat-icon matPrefix class="text-neutral-400" aria-hidden="true">person_outline</mat-icon>
     </mat-form-field>
 
     <il-form-error
@@ -36,7 +36,7 @@
         autocomplete="email"
         placeholder="you@example.com"
       />
-      <mat-icon matPrefix class="text-neutral-400">mail_outline</mat-icon>
+      <mat-icon matPrefix class="text-neutral-400" aria-hidden="true">mail_outline</mat-icon>
     </mat-form-field>
 
     <il-form-error
@@ -53,7 +53,7 @@
         autocomplete="new-password"
         placeholder="Create a strong password"
       />
-      <mat-icon matPrefix class="text-neutral-400">lock_outline</mat-icon>
+      <mat-icon matPrefix class="text-neutral-400" aria-hidden="true">lock_outline</mat-icon>
       <button
         mat-icon-button
         matSuffix
@@ -61,7 +61,7 @@
         (click)="hidePassword = !hidePassword"
         [attr.aria-label]="hidePassword ? 'Show password' : 'Hide password'"
       >
-        <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+        <mat-icon aria-hidden="true">{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
       </button>
     </mat-form-field>
 
@@ -69,22 +69,22 @@
       <div class="flex flex-col gap-1.5 -mt-2 mb-1">
         <div class="flex items-center gap-2 text-xs"
           [class]="passwordStrength.minLength ? 'text-success-500' : 'text-neutral-400'">
-          <mat-icon class="text-sm w-4 h-4">{{ passwordStrength.minLength ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+          <mat-icon class="text-sm w-4 h-4" aria-hidden="true">{{ passwordStrength.minLength ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
           At least 8 characters
         </div>
         <div class="flex items-center gap-2 text-xs"
           [class]="passwordStrength.upperCase ? 'text-success-500' : 'text-neutral-400'">
-          <mat-icon class="text-sm w-4 h-4">{{ passwordStrength.upperCase ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+          <mat-icon class="text-sm w-4 h-4" aria-hidden="true">{{ passwordStrength.upperCase ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
           One uppercase letter
         </div>
         <div class="flex items-center gap-2 text-xs"
           [class]="passwordStrength.lowerCase ? 'text-success-500' : 'text-neutral-400'">
-          <mat-icon class="text-sm w-4 h-4">{{ passwordStrength.lowerCase ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+          <mat-icon class="text-sm w-4 h-4" aria-hidden="true">{{ passwordStrength.lowerCase ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
           One lowercase letter
         </div>
         <div class="flex items-center gap-2 text-xs"
           [class]="passwordStrength.number ? 'text-success-500' : 'text-neutral-400'">
-          <mat-icon class="text-sm w-4 h-4">{{ passwordStrength.number ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
+          <mat-icon class="text-sm w-4 h-4" aria-hidden="true">{{ passwordStrength.number ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
           One number
         </div>
       </div>
@@ -99,7 +99,7 @@
         autocomplete="new-password"
         placeholder="Re-enter your password"
       />
-      <mat-icon matPrefix class="text-neutral-400">lock_outline</mat-icon>
+      <mat-icon matPrefix class="text-neutral-400" aria-hidden="true">lock_outline</mat-icon>
       <button
         mat-icon-button
         matSuffix
@@ -107,7 +107,7 @@
         (click)="hideConfirm = !hideConfirm"
         [attr.aria-label]="hideConfirm ? 'Show confirm password' : 'Hide confirm password'"
       >
-        <mat-icon>{{ hideConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
+        <mat-icon aria-hidden="true">{{ hideConfirm ? 'visibility_off' : 'visibility' }}</mat-icon>
       </button>
     </mat-form-field>
 

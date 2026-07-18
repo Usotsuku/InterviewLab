@@ -1,6 +1,6 @@
 <span [class]="badgeClass()">
   @if (icon()) {
-    <mat-icon class="text-xs w-3 h-3">{{ icon() }}</mat-icon>
+    <mat-icon class="text-xs w-3 h-3" aria-hidden="true">{{ icon() }}</mat-icon>
   }
   <ng-content />
 </span>

@@ -14,7 +14,10 @@ export class UsersService {
     return { id: userId, email: 'user@example.com', name: 'Developer User' };
   }
 
-  async updateProfile(userId: string, _data: UpdateUserDto): Promise<{ id: string; updated: true }> {
+  async updateProfile(
+    userId: string,
+    _data: UpdateUserDto,
+  ): Promise<{ id: string; updated: true }> {
     // TODO: implement profile update save
     return { id: userId, updated: true };
   }

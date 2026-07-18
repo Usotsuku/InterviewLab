@@ -12,7 +12,13 @@ interface ProfileResponse {
   summary: string;
   skills: string[];
   technologies: string[];
-  experience: { company: string; position: string; startDate: Date; endDate?: Date; description?: string }[];
+  experience: {
+    company: string;
+    position: string;
+    startDate: Date;
+    endDate?: Date;
+    description?: string;
+  }[];
   projects: { name: string; description?: string; technologies: string[]; url?: string }[];
   strengths: string[];
   weaknesses: string[];
@@ -51,7 +57,13 @@ export class CandidateProfileService {
       summary: string;
       skills: string[];
       technologies: string[];
-      experience: { company: string; position: string; startDate: Date; endDate?: Date; description?: string }[];
+      experience: {
+        company: string;
+        position: string;
+        startDate: Date;
+        endDate?: Date;
+        description?: string;
+      }[];
       projects: { name: string; description?: string; technologies: string[]; url?: string }[];
       strengths: string[];
       weaknesses: string[];
@@ -206,16 +218,22 @@ export class CandidateProfileService {
     const profile = await this._profileRepo.findByUserId(userId);
     if (!profile) return false;
 
-    const completion = this.calculateProfileCompletion(profile as unknown as Record<string, unknown>);
+    const completion = this.calculateProfileCompletion(
+      profile as unknown as Record<string, unknown>,
+    );
     return completion.percent === 100;
   }
 
   calculateProfileCompletion(profile: Record<string, unknown>): ProfileCompletion {
-    const hasSummary = typeof profile.summary === 'string' && (profile.summary as string).trim().length > 0;
+    const hasSummary =
+      typeof profile.summary === 'string' && (profile.summary as string).trim().length > 0;
     const hasSkills = Array.isArray(profile.skills) && (profile.skills as unknown[]).length > 0;
-    const hasTechnologies = Array.isArray(profile.technologies) && (profile.technologies as unknown[]).length > 0;
-    const hasExperience = Array.isArray(profile.experience) && (profile.experience as unknown[]).length > 0;
-    const hasProjects = Array.isArray(profile.projects) && (profile.projects as unknown[]).length > 0;
+    const hasTechnologies =
+      Array.isArray(profile.technologies) && (profile.technologies as unknown[]).length > 0;
+    const hasExperience =
+      Array.isArray(profile.experience) && (profile.experience as unknown[]).length > 0;
+    const hasProjects =
+      Array.isArray(profile.projects) && (profile.projects as unknown[]).length > 0;
 
     const fields = [hasSummary, hasSkills, hasTechnologies, hasExperience, hasProjects];
     const filledCount = fields.filter(Boolean).length;

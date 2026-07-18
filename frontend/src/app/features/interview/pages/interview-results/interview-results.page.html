@@ -1,40 +1,59 @@
-<section>
-  <h1 class="text-2xl font-bold mb-2">Session Results</h1>
-  <p class="text-neutral-400 mb-7">Here is a breakdown of your performance.</p>
-
-  <div class="grid grid-cols-4 gap-4 mb-7 max-lg:grid-cols-2">
-    <div class="il-card text-center py-5">
-      <p class="text-sm text-neutral-400 mb-2">Overall</p>
-      <p class="text-3xl font-bold text-primary-400 m-0">—</p>
-    </div>
-    <div class="il-card text-center py-5">
-      <p class="text-sm text-neutral-400 mb-2">Communication</p>
-      <p class="text-3xl font-bold text-primary-400 m-0">—</p>
-    </div>
-    <div class="il-card text-center py-5">
-      <p class="text-sm text-neutral-400 mb-2">Technical</p>
-      <p class="text-3xl font-bold text-primary-400 m-0">—</p>
-    </div>
-    <div class="il-card text-center py-5">
-      <p class="text-sm text-neutral-400 mb-2">Confidence</p>
-      <p class="text-3xl font-bold text-primary-400 m-0">—</p>
-    </div>
+@if (store.loading()) {
+  <div class="flex items-center justify-center min-h-[60vh]">
+    <il-spinner size="lg" label="Loading results..." />
   </div>
-
-  <mat-tab-group class="mb-7">
-    <mat-tab label="Answer Breakdown">
-      <p class="py-6 text-neutral-400 italic">Answer details will appear here.</p>
-    </mat-tab>
-    <mat-tab label="AI Feedback">
-      <p class="py-6 text-neutral-400 italic">AI evaluation feedback will appear here.</p>
-    </mat-tab>
-    <mat-tab label="Metrics">
-      <p class="py-6 text-neutral-400 italic">Communication metrics will appear here.</p>
-    </mat-tab>
-  </mat-tab-group>
-
-  <div class="flex gap-3 justify-end">
-    <button mat-stroked-button routerLink="/dashboard">Back to Dashboard</button>
-    <button mat-raised-button color="primary" routerLink="/interview">New Session</button>
+} @else if (store.error()) {
+  <div class="max-w-lg mx-auto text-center py-16">
+    <h2 class="text-xl font-semibold text-neutral-800 mb-2">Failed to load results</h2>
+    <p class="text-neutral-400 mb-6">{{ store.error() }}</p>
+    <il-button variant="secondary" routerLink="/interview">Back to Interview</il-button>
   </div>
-</section>
+} @else if (store.interview()) {
+  <section class="max-w-3xl mx-auto">
+    <il-results-hero
+      [title]="store.title()"
+      [mode]="store.mode()"
+      [completedAt]="store.completedAt()"
+      [isCompleted]="store.isCompleted()"
+      [overallScore]="store.overallScore()"
+    />
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+      <il-overall-score-card
+        [score]="store.overallScore()"
+        [grade]="store.overallGrade()"
+        [summary]="store.overallSummary()"
+      />
+      <il-metrics-grid
+        [overallScore]="store.overallScore()"
+        [communicationScore]="store.communicationScore()"
+        [technicalScore]="store.technicalScore()"
+        [confidenceScore]="store.confidenceScore()"
+      />
+    </div>
+
+    @if (store.interviewDurationMinutes()) {
+      <div class="il-card p-5 mb-8">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center bg-neutral-100">
+              <mat-icon class="text-base text-neutral-500" aria-hidden="true">schedule</mat-icon>
+            </div>
+            <span class="text-sm font-medium text-neutral-600">Session Duration</span>
+          </div>
+          <span class="text-sm font-semibold text-neutral-800">{{ store.interviewDurationMinutes() }} min</span>
+        </div>
+      </div>
+    }
+
+    <div class="mb-8">
+      <h2 class="text-lg font-semibold text-neutral-800 mb-4">Questions Review</h2>
+      <il-question-review-accordion [questions]="store.sortedQuestions()" />
+    </div>
+
+    <div class="flex gap-3 justify-end pt-2 pb-8">
+      <il-button variant="secondary" routerLink="/dashboard">Back to Dashboard</il-button>
+      <il-button variant="primary" routerLink="/interview">New Session</il-button>
+    </div>
+  </section>
+}

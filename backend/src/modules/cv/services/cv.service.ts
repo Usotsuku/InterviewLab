@@ -141,9 +141,13 @@ export class CvService {
     return dotIndex >= 0 ? filename.substring(dotIndex) : '.pdf';
   }
 
-  private async _getCvMetadata(
-    userId: string,
-  ): Promise<{ fileUrl: string; fileName: string; fileSize: number; uploadedAt: Date; analysisStatus: string } | null> {
+  private async _getCvMetadata(userId: string): Promise<{
+    fileUrl: string;
+    fileName: string;
+    fileSize: number;
+    uploadedAt: Date;
+    analysisStatus: string;
+  } | null> {
     const profile = await this._candidateProfileService.findByUserId(userId).catch(() => null);
     if (!profile) return null;
 

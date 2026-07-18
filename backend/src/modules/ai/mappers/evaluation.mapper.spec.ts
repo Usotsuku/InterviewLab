@@ -4,7 +4,8 @@ describe('EvaluationMapper', () => {
   const baseInput: AiEvaluationInput = {
     answerId: 'answer-123',
     interviewId: 'interview-456',
-    rawAiResponse: '{"technicalScore":50,"communicationScore":50,"correctnessScore":50,"completenessScore":50,"strengths":[],"weaknesses":[],"missingConcepts":[],"followUpQuestions":[],"feedback":""}',
+    rawAiResponse:
+      '{"technicalScore":50,"communicationScore":50,"correctnessScore":50,"completenessScore":50,"strengths":[],"weaknesses":[],"missingConcepts":[],"followUpQuestions":[],"feedback":""}',
     promptUsed: 'test prompt',
     provider: 'gemini',
   };
@@ -49,7 +50,8 @@ describe('EvaluationMapper', () => {
     it('should handle response wrapped in markdown code blocks', () => {
       const input: AiEvaluationInput = {
         ...baseInput,
-        rawAiResponse: '```json\n{"technicalScore": 70, "communicationScore": 80, "correctnessScore": 65, "completenessScore": 60, "strengths": ["Good"], "weaknesses": ["Needs work"], "missingConcepts": [], "followUpQuestions": [], "feedback": "OK answer"}\n```',
+        rawAiResponse:
+          '```json\n{"technicalScore": 70, "communicationScore": 80, "correctnessScore": 65, "completenessScore": 60, "strengths": ["Good"], "weaknesses": ["Needs work"], "missingConcepts": [], "followUpQuestions": [], "feedback": "OK answer"}\n```',
       };
 
       const result = parseAndValidate(input);
@@ -63,7 +65,8 @@ describe('EvaluationMapper', () => {
     it('should handle response with extra text before/after JSON', () => {
       const input: AiEvaluationInput = {
         ...baseInput,
-        rawAiResponse: 'Here is the evaluation:\n{"technicalScore": 50, "communicationScore": 60, "correctnessScore": 55, "completenessScore": 45, "strengths": ["A"], "weaknesses": ["B"], "missingConcepts": [], "followUpQuestions": [], "feedback": "Fair"}\nHope this helps!',
+        rawAiResponse:
+          'Here is the evaluation:\n{"technicalScore": 50, "communicationScore": 60, "correctnessScore": 55, "completenessScore": 45, "strengths": ["A"], "weaknesses": ["B"], "missingConcepts": [], "followUpQuestions": [], "feedback": "Fair"}\nHope this helps!',
       };
 
       const result = parseAndValidate(input);
@@ -253,7 +256,8 @@ describe('EvaluationMapper', () => {
       const input: AiEvaluationInput = {
         answerId: 'a1',
         interviewId: 'i1',
-        rawAiResponse: '{"technicalScore":50,"communicationScore":50,"correctnessScore":50,"completenessScore":50,"strengths":[],"weaknesses":[],"missingConcepts":[],"followUpQuestions":[],"feedback":""}',
+        rawAiResponse:
+          '{"technicalScore":50,"communicationScore":50,"correctnessScore":50,"completenessScore":50,"strengths":[],"weaknesses":[],"missingConcepts":[],"followUpQuestions":[],"feedback":""}',
         promptUsed: 'prompt',
       };
 
@@ -305,7 +309,8 @@ describe('EvaluationMapper', () => {
     });
 
     it('should preserve rawAiResponse and promptUsed', () => {
-      const rawResponse = '{"technicalScore":50,"communicationScore":50,"correctnessScore":50,"completenessScore":50,"strengths":[],"weaknesses":[],"missingConcepts":[],"followUpQuestions":[],"feedback":"good"}';
+      const rawResponse =
+        '{"technicalScore":50,"communicationScore":50,"correctnessScore":50,"completenessScore":50,"strengths":[],"weaknesses":[],"missingConcepts":[],"followUpQuestions":[],"feedback":"good"}';
       const input: AiEvaluationInput = {
         ...baseInput,
         rawAiResponse: rawResponse,

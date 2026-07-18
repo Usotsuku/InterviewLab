@@ -1,0 +1,38 @@
+<div class="il-card p-8 text-center">
+  <div class="score-ring-wrapper mx-auto mb-5">
+    <svg class="score-ring" viewBox="0 0 120 120" aria-hidden="true">
+      <circle
+        class="score-ring-bg"
+        cx="60"
+        cy="60"
+        r="54"
+        fill="none"
+        stroke-width="8"
+      />
+      <circle
+        class="score-ring-fill"
+        cx="60"
+        cy="60"
+        r="54"
+        fill="none"
+        stroke-width="8"
+        stroke-linecap="round"
+        [attr.stroke]="scoreColor()"
+        [attr.stroke-dasharray]="circumference"
+        [attr.stroke-dashoffset]="strokeDashoffset()"
+      />
+    </svg>
+    <div class="score-ring-label">
+      <span class="text-3xl font-bold text-neutral-800">{{ scoreLabel() }}</span>
+      @if (grade()) {
+        <span class="text-sm font-medium text-neutral-400">Grade {{ grade() }}</span>
+      }
+    </div>
+  </div>
+  @if (summary()) {
+    <p class="text-sm text-neutral-400 max-w-xs mx-auto">{{ summary() }}</p>
+  }
+  @if (!hasScore()) {
+    <p class="text-sm text-neutral-300 italic">Score pending</p>
+  }
+</div>

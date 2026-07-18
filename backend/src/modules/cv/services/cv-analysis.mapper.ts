@@ -150,7 +150,9 @@ export function mapAiResponseToProfile(raw: string): MappedProfile {
   const data = parseJsonFromAiResponse(raw);
   validateResponse(data);
 
-  _logger.log(`[mapAiResponseToProfile] Mapping ${data.skills.length} skills, ${data.technologies.length} technologies`);
+  _logger.log(
+    `[mapAiResponseToProfile] Mapping ${data.skills.length} skills, ${data.technologies.length} technologies`,
+  );
 
   return {
     summary: String(data.summary),

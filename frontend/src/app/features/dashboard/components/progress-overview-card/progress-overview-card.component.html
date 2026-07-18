@@ -1,0 +1,32 @@
+<il-card title="Progress Overview">
+  <div class="space-y-4">
+    <div class="flex items-center justify-between">
+      <span class="text-sm text-neutral-500">Average Score</span>
+      <span class="text-sm font-semibold text-neutral-800">{{ formatScore(averageScore()) }}</span>
+    </div>
+    <il-progress [value]="averageScore() ?? 0" [variant]="scoreVariant(averageScore())" [showLabel]="true" />
+
+    <div class="flex items-center justify-between">
+      <span class="text-sm text-neutral-500">Confidence</span>
+      <span class="text-sm font-semibold text-neutral-800">{{ formatScore(averageConfidence()) }}</span>
+    </div>
+    <il-progress [value]="averageConfidence() ?? 0" [variant]="scoreVariant(averageConfidence())" [showLabel]="true" />
+
+    <div class="flex items-center justify-between">
+      <span class="text-sm text-neutral-500">Completion Rate</span>
+      <span class="text-sm font-semibold text-neutral-800">{{ completionRate() }}%</span>
+    </div>
+    <il-progress [value]="completionRate()" [variant]="scoreVariant(completionRate())" [showLabel]="true" />
+
+    <div class="pt-2 border-t border-neutral-100 grid grid-cols-2 gap-4">
+      <div>
+        <p class="text-xs text-neutral-400 m-0">This Week</p>
+        <p class="text-lg font-bold text-neutral-800 m-0">{{ interviewsThisWeek() }}</p>
+      </div>
+      <div>
+        <p class="text-xs text-neutral-400 m-0">This Month</p>
+        <p class="text-lg font-bold text-neutral-800 m-0">{{ interviewsThisMonth() }}</p>
+      </div>
+    </div>
+  </div>
+</il-card>

@@ -31,9 +31,30 @@ describe('InterviewSessionService', () => {
   };
 
   const mockQuestions = [
-    { _id: new Types.ObjectId(), interviewId: new Types.ObjectId(INTERVIEW_ID), order: 1, text: 'Q1?', type: 'TECHNICAL', difficulty: 'MEDIUM' },
-    { _id: new Types.ObjectId(), interviewId: new Types.ObjectId(INTERVIEW_ID), order: 2, text: 'Q2?', type: 'HR', difficulty: 'EASY' },
-    { _id: new Types.ObjectId(), interviewId: new Types.ObjectId(INTERVIEW_ID), order: 3, text: 'Q3?', type: 'COMMUNICATION', difficulty: 'HARD' },
+    {
+      _id: new Types.ObjectId(),
+      interviewId: new Types.ObjectId(INTERVIEW_ID),
+      order: 1,
+      text: 'Q1?',
+      type: 'TECHNICAL',
+      difficulty: 'MEDIUM',
+    },
+    {
+      _id: new Types.ObjectId(),
+      interviewId: new Types.ObjectId(INTERVIEW_ID),
+      order: 2,
+      text: 'Q2?',
+      type: 'HR',
+      difficulty: 'EASY',
+    },
+    {
+      _id: new Types.ObjectId(),
+      interviewId: new Types.ObjectId(INTERVIEW_ID),
+      order: 3,
+      text: 'Q3?',
+      type: 'COMMUNICATION',
+      difficulty: 'HARD',
+    },
   ];
 
   beforeAll(async () => {
@@ -72,7 +93,10 @@ describe('InterviewSessionService', () => {
     });
 
     it('should throw when interview not READY', async () => {
-      mockInterviewRepo.findById.mockResolvedValue({ ...mockInterview, status: InterviewStatus.IN_PROGRESS });
+      mockInterviewRepo.findById.mockResolvedValue({
+        ...mockInterview,
+        status: InterviewStatus.IN_PROGRESS,
+      });
 
       await expect(service.startInterview(INTERVIEW_ID, USER_ID)).rejects.toThrow();
     });

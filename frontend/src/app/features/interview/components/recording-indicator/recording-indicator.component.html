@@ -1,0 +1,6 @@
+@if (active()) {
+  <div class="flex items-center gap-2 text-sm text-danger-500" role="status" aria-live="polite">
+    <span class="il-recording-dot" aria-hidden="true"></span>
+    <span class="font-mono tabular-nums">{{ formattedDuration() }}</span>
+  </div>
+}

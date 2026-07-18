@@ -6,7 +6,9 @@ import { Interview, InterviewDocument } from '../schemas/interview.schema';
 
 @Injectable()
 export class InterviewRepository extends BaseRepository<InterviewDocument> {
-  constructor(@InjectModel(Interview.name) private readonly _interviewModel: Model<InterviewDocument>) {
+  constructor(
+    @InjectModel(Interview.name) private readonly _interviewModel: Model<InterviewDocument>,
+  ) {
     super(_interviewModel);
   }
 

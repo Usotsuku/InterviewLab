@@ -46,7 +46,9 @@ export class InterviewService {
 
     const created = doc as unknown as { _id: Types.ObjectId };
 
-    this._logger.log(`[createInterview] Interview created: ${created._id}, user: ${userId}, mode: ${mode}`);
+    this._logger.log(
+      `[createInterview] Interview created: ${created._id}, user: ${userId}, mode: ${mode}`,
+    );
 
     return {
       id: created._id.toString(),
@@ -56,7 +58,10 @@ export class InterviewService {
     };
   }
 
-  async getInterviewDetails(interviewId: string, userId: string): Promise<InterviewDetailsResponse> {
+  async getInterviewDetails(
+    interviewId: string,
+    userId: string,
+  ): Promise<InterviewDetailsResponse> {
     const interview = await this._interviewRepo.findById(interviewId);
     if (!interview) {
       return null as unknown as InterviewDetailsResponse;

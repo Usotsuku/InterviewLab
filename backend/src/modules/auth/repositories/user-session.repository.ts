@@ -6,7 +6,9 @@ import { UserSession, UserSessionDocument } from '../schemas/user-session.schema
 
 @Injectable()
 export class UserSessionRepository extends BaseRepository<UserSessionDocument> {
-  constructor(@InjectModel(UserSession.name) private readonly _sessionModel: Model<UserSessionDocument>) {
+  constructor(
+    @InjectModel(UserSession.name) private readonly _sessionModel: Model<UserSessionDocument>,
+  ) {
     super(_sessionModel);
   }
 

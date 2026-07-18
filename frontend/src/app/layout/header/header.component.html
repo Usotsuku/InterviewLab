@@ -8,21 +8,21 @@
       (click)="themeService.toggleTheme()"
       [attr.aria-label]="themeService.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
     >
-      <mat-icon>{{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      <mat-icon aria-hidden="true">{{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
     </button>
 
     <button mat-icon-button aria-label="Notifications">
-      <mat-icon>notifications_none</mat-icon>
+      <mat-icon aria-hidden="true">notifications_none</mat-icon>
     </button>
 
     <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
       <il-avatar [name]="authStore.user()?.name ?? 'U'" size="sm" />
     </button>
-    <mat-menu #userMenu="matMenu">
-      <button mat-menu-item (click)="onLogout()">
-        <mat-icon>logout</mat-icon>
-        <span>Logout</span>
-      </button>
-    </mat-menu>
+      <mat-menu #userMenu="matMenu">
+        <button mat-menu-item (click)="onLogout()">
+          <mat-icon aria-hidden="true">logout</mat-icon>
+          <span>Logout</span>
+        </button>
+      </mat-menu>
   </div>
 </header>

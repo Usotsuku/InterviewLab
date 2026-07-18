@@ -30,11 +30,7 @@ export class InterviewGenerationService {
     private readonly _questionRepo: QuestionRepository,
   ) {}
 
-  async generate(
-    userId: string,
-    interviewId: string,
-    mode: string,
-  ): Promise<GenerationResult> {
+  async generate(userId: string, interviewId: string, mode: string): Promise<GenerationResult> {
     this._logger.log(`[generate] Starting interview generation for user: ${userId}, mode: ${mode}`);
 
     const profile = await this._candidateProfileService.findByUserId(userId).catch(() => null);
@@ -81,7 +77,9 @@ export class InterviewGenerationService {
         await this._questionRepo.create(doc);
       }
 
-      this._logger.log(`[generate] Interview generated: ${mapped.questions.length} questions, title: "${mapped.title}"`);
+      this._logger.log(
+        `[generate] Interview generated: ${mapped.questions.length} questions, title: "${mapped.title}"`,
+      );
 
       return {
         interviewId,
@@ -92,12 +90,16 @@ export class InterviewGenerationService {
       };
     } catch (error) {
       if (error instanceof AppException) {
-        this._logger.error(`[generate] Generation failed for interview: ${interviewId}: ${error.message}`);
+        this._logger.error(
+          `[generate] Generation failed for interview: ${interviewId}: ${error.message}`,
+        );
         await this._updateStatus(interviewId, InterviewStatus.FAILED);
         throw error;
       }
 
-      this._logger.error(`[generate] Unexpected error for interview: ${interviewId}: ${String(error)}`);
+      this._logger.error(
+        `[generate] Unexpected error for interview: ${interviewId}: ${String(error)}`,
+      );
       await this._updateStatus(interviewId, InterviewStatus.FAILED);
       AppException.throw(INTERVIEW_ERRORS.GENERATION_FAILED);
     }
