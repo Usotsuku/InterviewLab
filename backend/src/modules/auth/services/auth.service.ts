@@ -18,24 +18,24 @@ interface AuthUser {
   role: string;
 }
 
-interface RegisterResponse {
+export interface RegisterResponse {
   user: AuthUser;
   accessToken: string;
   refreshToken: string;
 }
 
-interface LoginResponse {
+export interface LoginResponse {
   user: AuthUser;
   accessToken: string;
   refreshToken: string;
 }
 
-interface RefreshResponse {
+export interface RefreshResponse {
   accessToken: string;
   refreshToken: string;
 }
 
-interface MeResponse {
+export interface MeResponse {
   id: string;
   email: string;
   name: string;
@@ -62,7 +62,7 @@ export class AuthService {
 
     const hashedPassword = await this._passwordService.hash(dto.password);
     const user = await this._usersRepo.create({
-      email: dto.email.toLowerCase(),
+      email: dto.email.trim().toLowerCase(),
       password: hashedPassword,
       name: dto.name,
       role: 'user',
@@ -82,6 +82,10 @@ export class AuthService {
   async login(dto: LoginDto): Promise<LoginResponse> {
     const user = await this._usersRepo.findByEmail(dto.email);
     if (!user) {
+      AppException.throw(AUTH_ERRORS.INVALID_CREDENTIALS);
+    }
+
+    if (!user.password) {
       AppException.throw(AUTH_ERRORS.INVALID_CREDENTIALS);
     }
 

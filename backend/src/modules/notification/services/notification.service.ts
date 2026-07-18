@@ -12,7 +12,7 @@ interface CreateNotificationInput {
   body: string;
 }
 
-interface NotificationResponse {
+export interface NotificationResponse {
   id: string;
   userId: string;
   type: string;
@@ -21,7 +21,7 @@ interface NotificationResponse {
   isRead: boolean;
 }
 
-interface MarkAsReadResponse {
+export interface MarkAsReadResponse {
   notificationId: string;
   userId: string;
   isRead: true;

@@ -1,7 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Inject, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { SpeechSessionStatus } from '@shared/enums/domain.enums';
-import { SpeechProvider } from '../providers/speech-provider.interface';
+import { SPEECH_PROVIDER, SpeechProvider } from '../providers/speech-provider.interface';
 import { SpeechErrors } from '../errors/speech.errors';
 import { AppException } from '@core/exceptions/app.exception';
 import { AnswerRepository } from '@modules/answer/repositories/answer.repository';
@@ -36,7 +36,7 @@ export class SpeechService {
   private readonly _sessions = new Map<string, SpeechSession>();
 
   constructor(
-    private readonly _speechProvider: SpeechProvider,
+    @Inject(SPEECH_PROVIDER) private readonly _speechProvider: SpeechProvider,
     private readonly _storageService: StorageService,
     private readonly _answerRepository: AnswerRepository,
     private readonly _questionRepository: QuestionRepository,

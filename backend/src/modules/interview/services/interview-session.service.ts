@@ -6,7 +6,7 @@ import { AppException } from '@core/exceptions/app.exception';
 import { InterviewStatus } from '@shared/enums/domain.enums';
 import { Types } from 'mongoose';
 
-interface QuestionResponse {
+export interface QuestionResponse {
   id: string;
   order: number;
   text: string;
@@ -14,21 +14,21 @@ interface QuestionResponse {
   difficulty: string;
 }
 
-interface StartResponse {
+export interface StartResponse {
   interviewId: string;
   status: InterviewStatus;
   startedAt: Date;
   totalQuestions: number;
 }
 
-interface CurrentQuestionResponse {
+export interface CurrentQuestionResponse {
   interviewId: string;
   currentQuestionIndex: number;
   totalQuestions: number;
   question: QuestionResponse | null;
 }
 
-interface NextQuestionResponse {
+export interface NextQuestionResponse {
   interviewId: string;
   currentQuestionIndex: number;
   totalQuestions: number;
@@ -36,7 +36,7 @@ interface NextQuestionResponse {
   completed: boolean;
 }
 
-interface FinishResponse {
+export interface FinishResponse {
   interviewId: string;
   status: InterviewStatus;
   completedAt: Date;

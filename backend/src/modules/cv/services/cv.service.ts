@@ -8,7 +8,7 @@ import { CV_ERRORS, CV_CONSTRAINTS } from '../errors/cv.errors';
 import { AppException } from '@core/exceptions/app.exception';
 import { CvAnalysisStatus } from '@shared/enums/domain.enums';
 
-interface CvMetadataResponse {
+export interface CvMetadataResponse {
   fileName: string;
   fileUrl: string;
   fileSize: number;
@@ -16,7 +16,7 @@ interface CvMetadataResponse {
   analysisStatus: string;
 }
 
-interface UploadCvResponse {
+export interface UploadCvResponse {
   message: string;
   fileName: string;
   fileUrl: string;

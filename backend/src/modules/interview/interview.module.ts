@@ -16,7 +16,7 @@ import { MetricsModule } from '@modules/metrics/metrics.module';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Interview.name, schema: InterviewSchema }]),
-    AIModule,
+    forwardRef(() => AIModule),
     CandidateProfileModule,
     QuestionModule,
     forwardRef(() => AnswerModule),

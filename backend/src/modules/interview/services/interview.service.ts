@@ -5,7 +5,7 @@ import { InterviewMode, InterviewStatus } from '@shared/enums/domain.enums';
 import { AppException } from '@core/exceptions/app.exception';
 import { INTERVIEW_ERRORS } from '../errors/interview.errors';
 
-interface InterviewListItem {
+export interface InterviewListItem {
   id: string;
   userId: string;
   mode: InterviewMode;
@@ -15,7 +15,7 @@ interface InterviewListItem {
   createdAt: Date;
 }
 
-interface InterviewDetailsResponse {
+export interface InterviewDetailsResponse {
   id: string;
   userId: string;
   mode: InterviewMode;

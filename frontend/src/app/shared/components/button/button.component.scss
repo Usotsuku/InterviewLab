@@ -10,28 +10,68 @@ button {
   font-family: var(--il-font);
   font-weight: 500;
   cursor: pointer;
-  transition: all var(--il-transition-fast);
+  transition: background-color var(--il-transition-fast),
+    box-shadow var(--il-transition-fast),
+    transform var(--il-transition-fast),
+    color var(--il-transition-fast),
+    border-color var(--il-transition-fast);
   white-space: nowrap;
   line-height: 1;
+  user-select: none;
 }
 
 button:disabled {
-  opacity: 0.5;
+  opacity: 0.55;
   cursor: not-allowed;
+}
+
+button:not(:disabled):active {
+  transform: translateY(0.5px) scale(0.98);
+}
+
+button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--il-bg-subtle), 0 0 0 4px var(--il-primary-500);
 }
 
 .il-btn--sm { padding: 6px 12px; font-size: var(--il-font-sm); }
 .il-btn--md { padding: 8px 16px; font-size: var(--il-font-sm); }
-.il-btn--lg { padding: 12px 24px; font-size: var(--il-font-base); }
+.il-btn--lg { padding: 11px 22px; font-size: var(--il-font-base); }
 
-.il-btn--primary { background: var(--il-primary-500); color: white; }
-.il-btn--primary:hover:not(:disabled) { background: var(--il-primary-600); }
+.il-btn--primary {
+  background: var(--il-primary-500);
+  color: #fff;
+  box-shadow: var(--il-shadow-xs);
+}
+.il-btn--primary:hover:not(:disabled) {
+  background: var(--il-primary-600);
+  box-shadow: var(--il-shadow-sm);
+}
 
-.il-btn--secondary { background: var(--il-surface-2); color: var(--il-text); border: 1px solid var(--il-border); }
-.il-btn--secondary:hover:not(:disabled) { background: var(--il-surface-3); }
+.il-btn--secondary {
+  background: var(--il-surface-2);
+  color: var(--il-text);
+  border: 1px solid var(--il-border);
+}
+.il-btn--secondary:hover:not(:disabled) {
+  background: var(--il-surface-3);
+}
 
-.il-btn--ghost { background: transparent; color: var(--il-text-secondary); }
-.il-btn--ghost:hover:not(:disabled) { background: var(--il-surface-2); color: var(--il-text); }
+.il-btn--ghost {
+  background: transparent;
+  color: var(--il-text-secondary);
+}
+.il-btn--ghost:hover:not(:disabled) {
+  background: var(--il-surface-2);
+  color: var(--il-text);
+}
 
-.il-btn--danger { background: var(--il-danger-500); color: white; }
-.il-btn--danger:hover:not(:disabled) { background: var(--il-danger-600); }
+.il-btn--danger {
+  background: var(--il-danger-500);
+  color: #fff;
+  box-shadow: var(--il-shadow-xs);
+}
+.il-btn--danger:hover:not(:disabled) {
+  background: var(--il-danger-600);
+  box-shadow: var(--il-shadow-sm);
+}

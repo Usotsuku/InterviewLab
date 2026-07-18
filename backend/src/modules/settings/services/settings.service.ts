@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateSettingsDto } from '../dto/update-settings.dto';
 
-interface SettingsResponse {
+export interface SettingsResponse {
   userId: string;
   language: string;
   notificationsEnabled: boolean;

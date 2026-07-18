@@ -1,4 +1,4 @@
-import { Global, Module } from '@nestjs/common';
+import { Global, Module, ExecutionContext } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { APP_FILTER, APP_INTERCEPTOR, APP_GUARD } from '@nestjs/core';
@@ -24,8 +24,8 @@ import configuration from '../config/configuration';
         throttlers: [
           {
             name: 'default',
-            ttl: configService.get<number>('config.throttle.ttl'),
-            limit: configService.get<number>('config.throttle.limit'),
+            ttl: configService.get<number>('config.throttle.ttl') ?? 60000,
+            limit: configService.get<number>('config.throttle.limit') ?? 100,
           },
         ],
       }),

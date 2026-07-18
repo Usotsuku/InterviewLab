@@ -1,0 +1,77 @@
+// ============================================================
+// InterviewLab — Angular Material Theme (M3, native to v18)
+// Maps Material to the existing design tokens. Loaded before
+// reset.scss so the app background from reset wins over Material's.
+// ============================================================
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+$il-typography: (
+  brand-family: 'Inter',
+  plain-family: 'Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+);
+
+:root {
+  $il-dark-theme: mat.define-theme((
+    color: (
+      primary: mat.$violet-palette,
+      tertiary: mat.$blue-palette,
+      theme-type: dark,
+    ),
+    typography: $il-typography,
+    density: (scale: -1),
+  ));
+  @include mat.all-component-themes($il-dark-theme);
+}
+
+.il-theme-light {
+  $il-light-theme: mat.define-theme((
+    color: (
+      primary: mat.$violet-palette,
+      tertiary: mat.$blue-palette,
+      theme-type: light,
+    ),
+    typography: $il-typography,
+    density: (scale: -1),
+  ));
+  @include mat.all-component-themes($il-light-theme);
+}
+
+// ============================================================
+// Form field overrides — align Material inputs with the design
+// system (radius, border, focus ring, label, error, disabled).
+// Uses MDC CSS custom properties so no component restyling needed.
+// ============================================================
+.mat-mdc-form-field {
+  --mdc-outlined-text-field-outline-color: var(--il-border-strong);
+  --mdc-outlined-text-field-hover-outline-color: var(--il-text-muted);
+  --mdc-outlined-text-field-focus-outline-color: var(--il-primary-500);
+  --mdc-outlined-text-field-focus-outline-width: 1.5px;
+  --mdc-outlined-text-field-label-text-color: var(--il-text-secondary);
+  --mdc-outlined-text-field-focus-label-text-color: var(--il-primary-500);
+  --mdc-outlined-text-field-input-text-color: var(--il-text);
+  --mdc-outlined-text-field-input-text-placeholder-color: var(--il-text-muted);
+  --mdc-outlined-text-field-disabled-outline-color: var(--il-border);
+  --mdc-outlined-text-field-disabled-input-text-color: var(--il-text-muted);
+  --mdc-outlined-text-field-error-outline-color: var(--il-danger-500);
+  --mdc-outlined-text-field-error-hover-outline-color: var(--il-danger-600);
+  --mdc-outlined-text-field-error-focus-outline-color: var(--il-danger-500);
+  --mdc-outlined-text-field-error-label-text-color: var(--il-danger-500);
+  --mdc-outlined-text-field-container-shape: var(--il-radius-md);
+
+  --mat-form-field-leading-icon-color: var(--il-text-muted);
+  --mat-form-field-trailing-icon-color: var(--il-text-muted);
+  --mat-form-field-hover-leading-icon-color: var(--il-text-secondary);
+  --mat-form-field-hover-trailing-icon-color: var(--il-text-secondary);
+  --mat-form-field-focus-leading-icon-color: var(--il-primary-500);
+  --mat-form-field-focus-trailing-icon-color: var(--il-primary-500);
+
+  --mat-form-field-container-text-font: var(--il-font);
+}
+
+// Password visibility / suffix buttons keep a calm, contained look.
+.mat-mdc-form-field .mat-mdc-icon-button.mat-mdc-button-base {
+  --mdc-icon-button-state-layer-size: 36px;
+  --mat-mdc-icon-button-ripple-color: var(--il-primary-500);
+}

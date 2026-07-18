@@ -1,9 +1,3 @@
-.il-card {
-  background: var(--il-surface-1);
-  border: 1px solid var(--il-border);
-  border-radius: var(--il-radius-xl);
-  overflow: hidden;
-}
-
-.il-card--elevated { box-shadow: var(--il-shadow-sm); }
-.il-card--flat { box-shadow: none; }
+// Card base styles are global (see src/styles/utilities.scss) so that the
+// `il-card` utility class can be reused on plain elements across the app.
+// The <il-card> component applies the same `il-card il-card--*` classes.

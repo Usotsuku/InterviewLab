@@ -36,3 +36,63 @@
   background: var(--il-danger-500);
   animation: il-recording-dot 1s ease-in-out infinite;
 }
+
+// ============================================================
+// Card surface — applied globally so any element using the
+// `il-card` utility class (page wrappers, feature cards) gets a
+// consistent surface, border, radius and elevation. The
+// <il-card> component reuses the same classes via cardClass().
+// ============================================================
+.il-card {
+  background: var(--il-surface-card);
+  border: 1px solid var(--il-border);
+  border-radius: var(--il-radius-lg);
+  box-shadow: var(--il-shadow-sm);
+}
+
+.il-card--elevated { box-shadow: var(--il-shadow-md); }
+.il-card--flat { box-shadow: none; }
+
+// ============================================================
+// Page container — consistent max-width, horizontal centering
+// and vertical rhythm for centered page layouts (auth, settings).
+// ============================================================
+.il-page {
+  width: 100%;
+  max-width: 64rem;
+  margin-inline: auto;
+}
+
+.il-page--narrow {
+  max-width: 28rem;
+}
+
+.il-stack > * + * {
+  margin-top: var(--il-space-5);
+}
+
+// ============================================================
+// Interactive card — subtle lift + shadow on hover for clickable
+// cards (lists, selectable options). Respects reduced motion.
+// ============================================================
+.il-card--interactive {
+  transition: box-shadow var(--il-transition-base),
+    border-color var(--il-transition-base),
+    transform var(--il-transition-base);
+  cursor: pointer;
+}
+
+.il-card--interactive:hover {
+  box-shadow: var(--il-shadow-lg);
+  border-color: var(--il-border-strong);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .il-card--interactive,
+  .il-fade-in,
+  .il-fade-in-up {
+    transition: none;
+    animation: none;
+  }
+}

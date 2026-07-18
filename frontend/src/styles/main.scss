@@ -2,6 +2,9 @@
 // InterviewLab — Global Styles Entry Point
 // ============================================================
 
+// --- Angular Material Theme (must precede reset so app bg wins) ---
+@use 'material';
+
 // --- Design Tokens (generates CSS custom properties) ---
 @use 'tokens';
 

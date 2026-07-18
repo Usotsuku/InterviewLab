@@ -14,8 +14,10 @@ export const apiPrefixInterceptor: HttpInterceptorFn = (
     return next(req);
   }
 
+  const base = environment.apiUrl.replace(/\/+$/, '');
+  const path = req.url.replace(/^\/+/, '');
   const apiReq = req.clone({
-    url: `${environment.apiUrl}${req.url}`,
+    url: `${base}/${path}`,
   });
 
   return next(apiReq);

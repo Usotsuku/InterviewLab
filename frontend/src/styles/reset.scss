@@ -81,6 +81,13 @@ code, pre {
 
 // --- Focus Visible ---
 :focus-visible {
-  outline: 2px solid var(--il-primary-500);
-  outline-offset: 2px;
+  outline: none;
+  box-shadow: 0 0 0 2px var(--il-bg-subtle), 0 0 0 4px var(--il-primary-500);
+  border-radius: var(--il-radius-sm);
+}
+
+button:focus-visible,
+a:focus-visible,
+[role='button']:focus-visible {
+  border-radius: var(--il-radius-md);
 }

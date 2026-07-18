@@ -7,7 +7,7 @@ import { AppException } from '@core/exceptions/app.exception';
 import { INTERVIEW_ERRORS } from '@modules/interview/errors/interview.errors';
 import { Types } from 'mongoose';
 
-interface QuestionResponse {
+export interface QuestionResponse {
   id: string;
   interviewId: string;
   order: number;

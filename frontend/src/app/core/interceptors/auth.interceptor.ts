@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { catchError, switchMap, throwError, Subject, filter, take } from 'rxjs';
 import { TokenService } from '../auth/token.service';
 import { ApiResponse } from '../http/api-response.interface';
+import { environment } from '../../../environments/environment';
 
 let isRefreshing = false;
 const refreshCompleted$ = new Subject<boolean>();
@@ -61,7 +62,9 @@ export const authInterceptor: HttpInterceptorFn = (
         return throwError(() => error);
       }
 
-      const refreshReq = new HttpRequest('POST', '/auth/refresh', { refreshToken });
+      const refreshReq = new HttpRequest('POST', `${environment.apiUrl}/auth/refresh`, {
+        refreshToken,
+      });
       return backend.handle(refreshReq).pipe(
         switchMap((event) => {
           const body = (event as { body?: ApiResponse<{ accessToken: string; refreshToken: string }> }).body;

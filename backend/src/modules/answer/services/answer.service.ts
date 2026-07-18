@@ -9,7 +9,7 @@ import { AnswerRepository } from '../repositories/answer.repository';
 import { QuestionRepository } from '@modules/question/repositories/question.repository';
 import { SubmitAnswerDto } from '../dto/submit-answer.dto';
 
-interface SubmitAnswerResponse {
+export interface SubmitAnswerResponse {
   success: true;
   audioUrl: string;
   metrics: MetricsResult | null;
@@ -47,7 +47,7 @@ export class AnswerService {
       interviewId: new Types.ObjectId(interviewId),
       questionId: new Types.ObjectId(dto.questionId),
       transcript: dto.transcript ?? '',
-      audioUrl: audioUrl || null,
+      audioUrl: audioUrl || undefined,
       durationSeconds: dto.durationSeconds ?? 0,
     });
     const answerId = (answerDoc as unknown as { _id: Types.ObjectId })._id.toString();
@@ -84,7 +84,9 @@ export class AnswerService {
       audioUrl,
       metrics: metricsResult.status === 'fulfilled' ? metricsResult.value : null,
       evaluation:
-        aiResult.status === 'fulfilled' ? (aiResult.value as Record<string, unknown>) : null,
+        aiResult.status === 'fulfilled'
+          ? (aiResult.value as unknown as Record<string, unknown>)
+          : null,
     };
   }
 }

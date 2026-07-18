@@ -22,7 +22,7 @@ import { MetricsModule } from '@modules/metrics/metrics.module';
     forwardRef(() => AnswerModule),
     QuestionModule,
     CandidateProfileModule,
-    InterviewModule,
+    forwardRef(() => InterviewModule),
     MetricsModule,
   ],
   providers: [

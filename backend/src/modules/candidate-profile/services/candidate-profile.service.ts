@@ -6,7 +6,7 @@ import { CANDIDATE_PROFILE_ERRORS } from '../errors/candidate-profile.errors';
 import { AppException } from '@core/exceptions/app.exception';
 import { CvAnalysisStatus } from '@shared/enums/domain.enums';
 
-interface ProfileResponse {
+export interface ProfileResponse {
   id: string;
   userId: string;
   summary: string;
