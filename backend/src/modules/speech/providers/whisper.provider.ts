@@ -17,6 +17,10 @@ export class WhisperProvider extends SpeechProvider {
       'https://api.openai.com/v1/audio/transcriptions';
   }
 
+  isAvailable(): boolean {
+    return this._apiKey.length > 0;
+  }
+
   async transcribe(request: TranscribeRequest): Promise<TranscribeResponse> {
     const blob = new Blob([new Uint8Array(request.audioBuffer)], { type: request.mimeType });
     const fileName = `audio-${Date.now()}.webm`;

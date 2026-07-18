@@ -13,6 +13,7 @@ describe('SpeechService', () => {
 
   const mockSpeechProvider: jest.Mocked<SpeechProvider> = {
     name: 'whisper',
+    isAvailable: jest.fn().mockReturnValue(true),
     transcribe: jest.fn(),
     healthCheck: jest.fn(),
   };
@@ -31,6 +32,7 @@ describe('SpeechService', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    mockSpeechProvider.isAvailable.mockReturnValue(true);
 
     service = new SpeechService(
       mockSpeechProvider,
@@ -55,6 +57,18 @@ describe('SpeechService', () => {
       expect(result.userId).toBe('user-1');
       expect(result.chunks).toEqual([]);
       expect(result.transcript).toBe('');
+    });
+
+    it('should throw PROVIDER_UNAVAILABLE if the speech provider is not configured', async () => {
+      mockSpeechProvider.isAvailable.mockReturnValue(false);
+
+      await expect(
+        service.startSession({
+          interviewId: 'int-1',
+          questionId: 'q-1',
+          userId: 'user-1',
+        }),
+      ).rejects.toThrow();
     });
 
     it('should throw SESSION_ALREADY_ACTIVE if a session already exists for the question', async () => {

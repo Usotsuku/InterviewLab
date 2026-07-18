@@ -39,7 +39,7 @@ export class CvService {
   async upload(userId: string, file: Express.Multer.File): Promise<UploadCvResponse> {
     this._validateFile(file);
 
-    const ext = this._getExtension(file.originalname);
+    const ext = CV_CONSTRAINTS.ALLOWED_EXTENSION;
     const storagePath = `cv/${userId}/${userId}_cv${ext}`;
     const fileBuffer = file.buffer;
 
@@ -132,6 +132,10 @@ export class CvService {
 
     const ext = this._getExtension(file.originalname);
     if (ext.toLowerCase() !== CV_CONSTRAINTS.ALLOWED_EXTENSION) {
+      AppException.throw(CV_ERRORS.INVALID_FILE_TYPE);
+    }
+
+    if (!file.buffer || file.buffer.subarray(0, 4).toString('latin1') !== '%PDF') {
       AppException.throw(CV_ERRORS.INVALID_FILE_TYPE);
     }
   }

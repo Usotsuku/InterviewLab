@@ -40,7 +40,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       if (errName === 'ValidationError' || errName === 'MongoServerError') {
         status = HttpStatus.BAD_REQUEST;
         message = CORE_ERRORS.VALIDATION_ERROR.message;
-        details = exception.message;
+        details = null;
       } else {
         this._logger.error(`Unhandled Exception: ${exception.message}`, exception.stack);
       }

@@ -44,6 +44,10 @@ export class SpeechService {
   ) {}
 
   async startSession(input: StartSessionInput): Promise<SpeechSession> {
+    if (!this._speechProvider.isAvailable()) {
+      AppException.throw(SpeechErrors.PROVIDER_UNAVAILABLE);
+    }
+
     const existing = this._findActiveByQuestion(input.questionId);
     if (existing) {
       AppException.throw(SpeechErrors.SESSION_ALREADY_ACTIVE, { questionId: input.questionId });

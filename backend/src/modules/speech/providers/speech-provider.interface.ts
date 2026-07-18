@@ -14,6 +14,7 @@ export interface TranscribeResponse {
 
 export abstract class SpeechProvider {
   abstract readonly name: string;
+  abstract isAvailable(): boolean;
   abstract transcribe(request: TranscribeRequest): Promise<TranscribeResponse>;
   abstract healthCheck(): Promise<boolean>;
 }

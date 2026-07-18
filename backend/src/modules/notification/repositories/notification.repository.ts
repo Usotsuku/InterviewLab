@@ -26,9 +26,12 @@ export class NotificationRepository extends BaseRepository<NotificationDocument>
       .exec();
   }
 
-  async markAsRead(notificationId: string): Promise<boolean> {
+  async markAsRead(notificationId: string, userId: string): Promise<boolean> {
     const result = await this._notifModel
-      .updateOne({ _id: notificationId }, { isRead: true })
+      .updateOne(
+        { _id: notificationId, userId: new Types.ObjectId(userId) },
+        { isRead: true },
+      )
       .exec();
     return result.modifiedCount > 0;
   }

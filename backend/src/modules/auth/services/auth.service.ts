@@ -103,9 +103,7 @@ export class AuthService {
 
   async refresh(dto: RefreshTokenDto): Promise<RefreshResponse> {
     const hashedToken = this._tokenService.hashRefreshToken(dto.refreshToken);
-    const sessions = await this._sessionRepo.findActiveByUserId(new Types.ObjectId());
-
-    const session = sessions.find((s) => s.refreshToken === hashedToken);
+    const session = await this._sessionRepo.findByRefreshTokenHash(hashedToken);
     if (!session) {
       AppException.throw(AUTH_ERRORS.INVALID_REFRESH_TOKEN);
     }
@@ -121,7 +119,7 @@ export class AuthService {
     const sessionId = (session as unknown as { _id: Types.ObjectId })._id.toString();
     await this._sessionRepo.invalidateSession(sessionId);
 
-    const userId = session.userId.toString();
+    const userId = (session.userId as Types.ObjectId).toString();
     const user = await this._usersRepo.findById(userId);
     if (!user) {
       AppException.throw(AUTH_ERRORS.USER_NOT_FOUND);
@@ -139,9 +137,7 @@ export class AuthService {
 
   async logout(dto: RefreshTokenDto): Promise<{ message: string }> {
     const hashedToken = this._tokenService.hashRefreshToken(dto.refreshToken);
-    const sessions = await this._sessionRepo.findActiveByUserId(new Types.ObjectId());
-
-    const session = sessions.find((s) => s.refreshToken === hashedToken);
+    const session = await this._sessionRepo.findByRefreshTokenHash(hashedToken);
     if (session) {
       const sessionId = (session as unknown as { _id: Types.ObjectId })._id.toString();
       await this._sessionRepo.invalidateSession(sessionId);

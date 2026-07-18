@@ -1,5 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { QuestionRepository } from '../repositories/question.repository';
+import { Interview, InterviewDocument } from '@modules/interview/schemas/interview.schema';
+import { AppException } from '@core/exceptions/app.exception';
+import { INTERVIEW_ERRORS } from '@modules/interview/errors/interview.errors';
 import { Types } from 'mongoose';
 
 interface QuestionResponse {
@@ -15,9 +20,26 @@ interface QuestionResponse {
 export class QuestionService {
   private readonly _logger = new Logger(QuestionService.name);
 
-  constructor(private readonly _questionRepo: QuestionRepository) {}
+  constructor(
+    private readonly _questionRepo: QuestionRepository,
+    @InjectModel(Interview.name) private readonly _interviewModel: Model<InterviewDocument>,
+  ) {}
 
-  async getQuestionsForSession(interviewId: string): Promise<QuestionResponse[]> {
+  async getQuestionsForSession(
+    interviewId: string,
+    userId: string,
+  ): Promise<QuestionResponse[]> {
+    const interview = await this._interviewModel
+      .findOne({
+        _id: new Types.ObjectId(interviewId),
+        userId: new Types.ObjectId(userId),
+        deletedAt: { $exists: false },
+      })
+      .exec();
+    if (!interview) {
+      AppException.throw(INTERVIEW_ERRORS.INTERVIEW_NOT_FOUND);
+    }
+
     const questions = await this._questionRepo.findByInterviewId(interviewId);
 
     return questions.map((doc) => {

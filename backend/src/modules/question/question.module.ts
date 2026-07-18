@@ -1,12 +1,18 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Question, QuestionSchema } from './schemas/question.schema';
+import { Interview, InterviewSchema } from '@modules/interview/schemas/interview.schema';
 import { QuestionRepository } from './repositories/question.repository';
 import { QuestionController } from './controllers/question.controller';
 import { QuestionService } from './services/question.service';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: Question.name, schema: QuestionSchema }])],
+  imports: [
+    MongooseModule.forFeature([
+      { name: Question.name, schema: QuestionSchema },
+      { name: Interview.name, schema: InterviewSchema },
+    ]),
+  ],
   controllers: [QuestionController],
   providers: [QuestionService, QuestionRepository],
   exports: [QuestionService, QuestionRepository],

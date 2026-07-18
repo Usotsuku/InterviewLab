@@ -36,6 +36,8 @@ export class AnswerService {
   ): Promise<SubmitAnswerResponse> {
     this._logger.log(`[submit] Processing answer for session: ${interviewId}`);
 
+    await this._interviewService.assertOwnedBy(interviewId, userId);
+
     let audioUrl = '';
     if (dto.audioBlob) {
       audioUrl = await this._speechService.storeAudio(dto.audioBlob, interviewId, dto.questionId);

@@ -1,7 +1,7 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { mkdir, writeFile, unlink, access, stat } from 'fs/promises';
-import { join, dirname } from 'path';
+import { join, dirname, resolve, sep } from 'path';
 
 @Injectable()
 export class StorageService {
@@ -14,6 +14,7 @@ export class StorageService {
 
   async store(fileBuffer: Buffer, relativePath: string): Promise<string> {
     const fullPath = join(this._basePath, relativePath);
+    this._assertWithinBase(fullPath);
     const dir = dirname(fullPath);
 
     await mkdir(dir, { recursive: true });
@@ -43,11 +44,20 @@ export class StorageService {
 
   async deleteFile(relativePath: string): Promise<void> {
     const fullPath = join(this._basePath, relativePath);
+    this._assertWithinBase(fullPath);
     try {
       await unlink(fullPath);
       this._logger.log(`[deleteFile] File deleted: ${fullPath}`);
     } catch (error) {
       this._logger.warn(`[deleteFile] File not found or already deleted: ${fullPath}`);
+    }
+  }
+
+  private _assertWithinBase(fullPath: string): void {
+    const resolvedBase = resolve(this._basePath);
+    const resolvedFull = resolve(fullPath);
+    if (resolvedFull !== resolvedBase && !resolvedFull.startsWith(resolvedBase + sep)) {
+      throw new BadRequestException('Invalid file path.');
     }
   }
 }

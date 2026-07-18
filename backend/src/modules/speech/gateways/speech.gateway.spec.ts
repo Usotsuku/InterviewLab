@@ -6,6 +6,7 @@ describe('SpeechGateway', () => {
   let gateway: SpeechGateway;
 
   const mockSpeechService: jest.Mocked<SpeechService> = {
+    isAvailable: jest.fn().mockReturnValue(true),
     startSession: jest.fn(),
     receiveChunk: jest.fn(),
     finishSession: jest.fn(),
@@ -20,7 +21,7 @@ describe('SpeechGateway', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
-    gateway = new SpeechGateway(mockSpeechService);
+    gateway = new SpeechGateway(mockSpeechService, { get: jest.fn() } as any);
     gateway.server = { to: jest.fn().mockReturnThis(), emit: jest.fn() } as any;
   });
 

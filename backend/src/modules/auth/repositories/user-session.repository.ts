@@ -36,4 +36,15 @@ export class UserSessionRepository extends BaseRepository<UserSessionDocument> {
       .exec();
     return result.modifiedCount;
   }
+
+  async findByRefreshTokenHash(refreshTokenHash: string): Promise<UserSessionDocument | null> {
+    return this._sessionModel
+      .findOne({
+        refreshToken: refreshTokenHash,
+        isValid: true,
+        expiresAt: { $gt: new Date() },
+        deletedAt: { $exists: false },
+      })
+      .exec();
+  }
 }

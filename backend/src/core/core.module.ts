@@ -1,12 +1,12 @@
 import { Global, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { APP_FILTER, APP_INTERCEPTOR } from '@nestjs/core';
+import { APP_FILTER, APP_INTERCEPTOR, APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { GlobalExceptionFilter } from './exceptions/global-exception.filter';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { ResponseWrapperInterceptor } from './interceptors/response-wrapper.interceptor';
 import { QueryService } from './repository/query.service';
-import { RateLimitService } from './services/rate-limit.service';
 import configuration from '../config/configuration';
 
 @Global()
@@ -15,6 +15,20 @@ import configuration from '../config/configuration';
     ConfigModule.forRoot({
       load: [configuration],
       isGlobal: true,
+    }),
+    ThrottlerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        skipIf: (context: ExecutionContext) => context.getType() !== 'http',
+        throttlers: [
+          {
+            name: 'default',
+            ttl: configService.get<number>('config.throttle.ttl'),
+            limit: configService.get<number>('config.throttle.limit'),
+          },
+        ],
+      }),
     }),
     JwtModule.registerAsync({
       imports: [ConfigModule],
@@ -29,7 +43,6 @@ import configuration from '../config/configuration';
   ],
   providers: [
     QueryService,
-    RateLimitService,
     {
       provide: APP_FILTER,
       useClass: GlobalExceptionFilter,
@@ -42,7 +55,11 @@ import configuration from '../config/configuration';
       provide: APP_INTERCEPTOR,
       useClass: ResponseWrapperInterceptor,
     },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
   ],
-  exports: [JwtModule, QueryService, RateLimitService],
+  exports: [JwtModule, QueryService],
 })
 export class CoreModule {}

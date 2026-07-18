@@ -28,7 +28,7 @@ export class AIService {
       maxAttempts: this._aiConfig.retryMaxAttempts,
       baseDelayMs: this._aiConfig.retryBaseDelayMs,
       maxDelayMs: this._aiConfig.retryMaxDelayMs,
-      operationName: `generate:${request.prompt.substring(0, 50)}...`,
+      operationName: 'ai:generate',
     });
   }
 

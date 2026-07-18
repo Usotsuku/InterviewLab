@@ -2,6 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { InterviewRepository } from '../repositories/interview.repository';
 import { InterviewMode, InterviewStatus } from '@shared/enums/domain.enums';
+import { AppException } from '@core/exceptions/app.exception';
+import { INTERVIEW_ERRORS } from '../errors/interview.errors';
 
 interface InterviewListItem {
   id: string;
@@ -64,7 +66,7 @@ export class InterviewService {
   ): Promise<InterviewDetailsResponse> {
     const interview = await this._interviewRepo.findById(interviewId);
     if (!interview) {
-      return null as unknown as InterviewDetailsResponse;
+      AppException.throw(INTERVIEW_ERRORS.INTERVIEW_NOT_FOUND);
     }
 
     const doc = interview as unknown as {
@@ -81,7 +83,7 @@ export class InterviewService {
     };
 
     if (doc.userId.toString() !== userId) {
-      return null as unknown as InterviewDetailsResponse;
+      AppException.throw(INTERVIEW_ERRORS.INTERVIEW_NOT_FOUND);
     }
 
     return {
@@ -96,6 +98,18 @@ export class InterviewService {
       startedAt: doc.startedAt ?? null,
       completedAt: doc.completedAt ?? null,
     };
+  }
+
+  async assertOwnedBy(interviewId: string, userId: string): Promise<void> {
+    const interview = await this._interviewRepo.findById(interviewId);
+    if (!interview) {
+      AppException.throw(INTERVIEW_ERRORS.INTERVIEW_NOT_FOUND);
+    }
+
+    const doc = interview as unknown as { userId: Types.ObjectId };
+    if (doc.userId.toString() !== userId) {
+      AppException.throw(INTERVIEW_ERRORS.INTERVIEW_NOT_FOUND);
+    }
   }
 
   async getUserInterviews(userId: string): Promise<InterviewListItem[]> {
@@ -127,12 +141,12 @@ export class InterviewService {
   async deleteInterview(interviewId: string, userId: string): Promise<{ deleted: true }> {
     const interview = await this._interviewRepo.findById(interviewId);
     if (!interview) {
-      return { deleted: true };
+      AppException.throw(INTERVIEW_ERRORS.INTERVIEW_NOT_FOUND);
     }
 
     const doc = interview as unknown as { userId: Types.ObjectId };
     if (doc.userId.toString() !== userId) {
-      return { deleted: true };
+      AppException.throw(INTERVIEW_ERRORS.INTERVIEW_NOT_FOUND);
     }
 
     await this._interviewRepo.softDeleteById(interviewId);

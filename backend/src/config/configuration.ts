@@ -32,6 +32,12 @@ export interface Config {
     type: 'local' | 's3';
     localUploadPath: string;
   };
+  throttle: {
+    ttl: number;
+    limit: number;
+    authTtl: number;
+    authLimit: number;
+  };
 }
 
 export default registerAs('config', (): Config => ({
@@ -65,5 +71,11 @@ export default registerAs('config', (): Config => ({
   storage: {
     type: (process.env.STORAGE_TYPE as 'local' | 's3') || 'local',
     localUploadPath: process.env.LOCAL_UPLOAD_PATH || './uploads',
+  },
+  throttle: {
+    ttl: parseInt(process.env.THROTTLE_TTL_MS || '60000', 10),
+    limit: parseInt(process.env.THROTTLE_LIMIT || '100', 10),
+    authTtl: parseInt(process.env.AUTH_THROTTLE_TTL_MS || '60000', 10),
+    authLimit: parseInt(process.env.AUTH_THROTTLE_LIMIT || '10', 10),
   },
 }));

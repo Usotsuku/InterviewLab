@@ -1,6 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { NotificationRepository } from '../repositories/notification.repository';
 import { NotificationType } from '@shared/enums/domain.enums';
+import { AppException } from '@core/exceptions/app.exception';
+import { CORE_ERRORS } from '@core/exceptions/core.errors';
 import { Types } from 'mongoose';
 
 interface CreateNotificationInput {
@@ -96,7 +98,10 @@ export class NotificationService {
   }
 
   async markAsRead(userId: string, notificationId: string): Promise<MarkAsReadResponse> {
-    await this._notificationRepo.markAsRead(notificationId);
+    const updated = await this._notificationRepo.markAsRead(notificationId, userId);
+    if (!updated) {
+      AppException.throw(CORE_ERRORS.NOT_FOUND);
+    }
     return { notificationId, userId, isRead: true };
   }
 }

@@ -54,7 +54,7 @@ describe('CvService', () => {
       encoding: '7bit',
       mimetype: 'application/pdf',
       size: 1024,
-      buffer: Buffer.from('test pdf content'),
+      buffer: Buffer.from('%PDF-1.4\ntest pdf content'),
       destination: '',
       filename: 'test-cv.pdf',
       path: '',

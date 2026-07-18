@@ -19,6 +19,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@fastify/compress": "^9.1.0",
+    "@fastify/helmet": "^13.1.0",
     "@fastify/multipart": "^8.3.0",
     "@google/generative-ai": "^0.13.0",
     "@nestjs/common": "^10.3.9",
@@ -29,6 +31,7 @@
     "@nestjs/platform-fastify": "^10.3.9",
     "@nestjs/platform-socket.io": "^10.4.22",
     "@nestjs/swagger": "^7.3.1",
+    "@nestjs/throttler": "^6.5.0",
     "@nestjs/websockets": "^10.4.22",
     "bcrypt": "^5.1.1",
     "class-transformer": "^0.5.1",

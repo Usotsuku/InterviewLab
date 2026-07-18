@@ -43,7 +43,10 @@ export class GeminiProvider extends AIProvider {
     const model = this._genAI.getGenerativeModel(modelConfig);
 
     try {
-      const result = await model.generateContent(request.prompt);
+      const result = await this._withTimeout(
+        model.generateContent(request.prompt),
+        this._aiConfig.timeoutMs,
+      );
       const response = result.response;
       const text = response.text();
       const tokenUsage = {
@@ -89,6 +92,9 @@ export class GeminiProvider extends AIProvider {
 
   private _handleApiError(error: unknown): never {
     const err = error as { status?: number; message?: string; code?: number };
+    this._logger.error(
+      `[generate] Provider error: ${err.status ?? 'n/a'} ${err.message ?? String(error)}`,
+    );
 
     if (err.status === 429 || err.code === 429) {
       AppException.throw(AI_ERRORS.RATE_LIMIT_EXCEEDED);
@@ -102,6 +108,14 @@ export class GeminiProvider extends AIProvider {
       AppException.throw(AI_ERRORS.REQUEST_TIMEOUT);
     }
 
-    AppException.throw(AI_ERRORS.PROVIDER_UNAVAILABLE, err.message);
+    AppException.throw(AI_ERRORS.PROVIDER_UNAVAILABLE);
+  }
+
+  private _withTimeout<T>(promise: Promise<T>, timeoutMs: number): Promise<T> {
+    let timer: NodeJS.Timeout;
+    const timeout = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new Error('AI request timeout')), timeoutMs);
+    });
+    return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));
   }
 }

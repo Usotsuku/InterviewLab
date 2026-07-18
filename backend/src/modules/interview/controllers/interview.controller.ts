@@ -114,6 +114,7 @@ export class InterviewController {
   @ApiResponse({ status: 200, description: 'Returns list of questions.' })
   @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
   async getQuestions(@CurrentUser() user: JwtPayload, @Param('id') id: string) {
+    await this._interviewService.assertOwnedBy(id, user.sub);
     return this._questionService.getQuestionsForSession(id);
   }
 
