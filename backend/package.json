@@ -41,6 +41,7 @@
     "dotenv": "^16.4.5",
     "fastify": "4.28.1",
     "mongoose": "^8.4.1",
+    "openai": "^6.48.0",
     "pdf-parse": "^1.1.1",
     "pino-pretty": "^11.2.1",
     "reflect-metadata": "^0.2.2",

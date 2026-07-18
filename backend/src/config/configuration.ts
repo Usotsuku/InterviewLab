@@ -21,6 +21,13 @@ export interface Config {
       topK: number;
       maxOutputTokens: number;
     };
+    kimi: {
+      apiKey: string | undefined;
+      model: string;
+      baseUrl: string;
+      temperature: number;
+      maxOutputTokens: number;
+    };
     timeoutMs: number;
     maxRetries: number;
     retry: {
@@ -60,6 +67,13 @@ export default registerAs('config', (): Config => ({
       topP: parseFloat(process.env.GEMINI_TOP_P || '0.95'),
       topK: parseInt(process.env.GEMINI_TOP_K || '40', 10),
       maxOutputTokens: parseInt(process.env.GEMINI_MAX_TOKENS || '8192', 10),
+    },
+    kimi: {
+      apiKey: process.env.KIMI_API_KEY,
+      model: process.env.KIMI_MODEL || 'kimi-k2.6',
+      baseUrl: process.env.KIMI_BASE_URL || 'https://api.moonshot.ai/v1',
+      temperature: parseFloat(process.env.KIMI_TEMPERATURE || '0.4'),
+      maxOutputTokens: parseInt(process.env.KIMI_MAX_TOKENS || '8192', 10),
     },
     timeoutMs: parseInt(process.env.AI_TIMEOUT_MS || '30000', 10),
     maxRetries: parseInt(process.env.AI_MAX_RETRIES || '3', 10),

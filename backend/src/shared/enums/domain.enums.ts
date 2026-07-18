@@ -43,6 +43,7 @@ export enum NotificationType {
 
 export enum AIProvider {
   GEMINI = 'gemini',
+  KIMI = 'kimi',
   OPENAI = 'openai',
   CLAUDE = 'claude',
   GROQ = 'groq',

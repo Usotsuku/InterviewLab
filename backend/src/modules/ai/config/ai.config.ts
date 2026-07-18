@@ -13,11 +13,17 @@ export class AiConfig {
     return this._config.get<string>('config.ai.geminiApiKey')!;
   }
 
-  get model(): string {
+  get geminiModel(): string {
     return this._config.get<string>('config.ai.gemini.model')!;
   }
 
+  get model(): string {
+    if (this.provider === 'kimi') return this.kimiModel;
+    return this.geminiModel;
+  }
+
   get temperature(): number {
+    if (this.provider === 'kimi') return this.kimiTemperature;
     return this._config.get<number>('config.ai.gemini.temperature')!;
   }
 
@@ -30,6 +36,7 @@ export class AiConfig {
   }
 
   get maxOutputTokens(): number {
+    if (this.provider === 'kimi') return this.kimiMaxOutputTokens;
     return this._config.get<number>('config.ai.gemini.maxOutputTokens')!;
   }
 
@@ -47,5 +54,25 @@ export class AiConfig {
 
   get timeoutMs(): number {
     return this._config.get<number>('config.ai.timeoutMs')!;
+  }
+
+  get kimiApiKey(): string {
+    return this._config.get<string>('config.ai.kimi.apiKey')!;
+  }
+
+  get kimiModel(): string {
+    return this._config.get<string>('config.ai.kimi.model')!;
+  }
+
+  get kimiBaseUrl(): string {
+    return this._config.get<string>('config.ai.kimi.baseUrl')!;
+  }
+
+  get kimiTemperature(): number {
+    return this._config.get<number>('config.ai.kimi.temperature')!;
+  }
+
+  get kimiMaxOutputTokens(): number {
+    return this._config.get<number>('config.ai.kimi.maxOutputTokens')!;
   }
 }
