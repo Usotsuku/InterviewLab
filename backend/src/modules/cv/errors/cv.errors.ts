@@ -33,6 +33,26 @@ export const CV_ERRORS = {
     statusCode: 500,
     description: 'Failed to delete the CV file.',
   },
+  EXTRACTION_FAILED: {
+    message: 'EXTRACTION_FAILED',
+    statusCode: 500,
+    description: 'Failed to extract text from the PDF document.',
+  },
+  EMPTY_CV_CONTENT: {
+    message: 'EMPTY_CV_CONTENT',
+    statusCode: 422,
+    description: 'The uploaded PDF contains no extractable text content.',
+  },
+  ANALYSIS_FAILED: {
+    message: 'ANALYSIS_FAILED',
+    statusCode: 500,
+    description: 'CV analysis failed due to an internal error.',
+  },
+  INVALID_AI_RESPONSE: {
+    message: 'INVALID_AI_RESPONSE',
+    statusCode: 502,
+    description: 'The AI provider returned an invalid or unparseable response.',
+  },
 } as const satisfies Record<string, IAppException>;
 
 export const CV_CONSTRAINTS = {

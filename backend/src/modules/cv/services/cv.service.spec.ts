@@ -3,8 +3,10 @@ import { CvService } from './cv.service';
 import { StorageService } from '@modules/storage/services/storage.service';
 import { CandidateProfileService } from '@modules/candidate-profile/services/candidate-profile.service';
 import { PdfExtractionService } from './pdf-extraction.service';
+import { CvAnalysisService } from './cv-analysis.service';
 import { ConfigService } from '@nestjs/config';
 import { CV_ERRORS } from '../errors/cv.errors';
+import { CvAnalysisStatus } from '@shared/enums/domain.enums';
 
 describe('CvService', () => {
   let service: CvService;
@@ -26,11 +28,18 @@ describe('CvService', () => {
     extractText: jest.fn().mockResolvedValue('extracted text'),
   };
 
+  const mockAnalysisService = {
+    analyze: jest.fn().mockResolvedValue({
+      status: CvAnalysisStatus.COMPLETED,
+      profile: { summary: 'test', skills: [], technologies: [], strengths: [], weaknesses: [], experience: [], projects: [] },
+    }),
+  };
+
   const mockConfig = {
     get: jest.fn().mockReturnValue('./uploads'),
   };
 
-  const createMockFile = (overrides: Partial<Express.Multer.File> = {}): Express.Multer.File =>
+  const createMockFile = (overrides: Record<string, unknown> = {}): Express.Multer.File =>
     ({
       fieldname: 'file',
       originalname: 'test-cv.pdf',
@@ -52,6 +61,7 @@ describe('CvService', () => {
         { provide: StorageService, useValue: mockStorageService },
         { provide: CandidateProfileService, useValue: mockProfileService },
         { provide: PdfExtractionService, useValue: mockPdfService },
+        { provide: CvAnalysisService, useValue: mockAnalysisService },
         { provide: ConfigService, useValue: mockConfig },
       ],
     }).compile();
@@ -62,13 +72,15 @@ describe('CvService', () => {
   beforeEach(() => jest.clearAllMocks());
 
   describe('upload', () => {
-    it('should upload a valid PDF', async () => {
+    it('should upload a valid PDF and trigger analysis', async () => {
       const file = createMockFile();
       const result = await service.upload('user1', file);
-      expect(result.message).toContain('uploaded successfully');
+      expect(result.message).toContain('uploaded and analyzed');
       expect(result.fileName).toBe('test-cv.pdf');
+      expect(result.status).toBe(CvAnalysisStatus.COMPLETED);
       expect(mockStorageService.store).toHaveBeenCalled();
       expect(mockProfileService.updateCvMetadata).toHaveBeenCalled();
+      expect(mockAnalysisService.analyze).toHaveBeenCalledWith('user1', file.buffer);
     });
 
     it('should throw for non-PDF file', async () => {
@@ -101,7 +113,7 @@ describe('CvService', () => {
       const file = createMockFile();
       const result = await service.replace('user1', file);
       expect(mockStorageService.deleteFile).toHaveBeenCalledWith('cv/user1/user1_cv.pdf');
-      expect(result.message).toContain('uploaded successfully');
+      expect(result.message).toContain('uploaded and analyzed');
     });
 
     it('should upload without deleting if no existing CV', async () => {
@@ -109,7 +121,7 @@ describe('CvService', () => {
       const file = createMockFile();
       const result = await service.replace('user1', file);
       expect(mockStorageService.deleteFile).not.toHaveBeenCalled();
-      expect(result.message).toContain('uploaded successfully');
+      expect(result.message).toContain('uploaded and analyzed');
     });
   });
 

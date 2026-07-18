@@ -26,7 +26,7 @@ export class CvController {
   @ApiBearerAuth()
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(FileInterceptor('file'))
-  @ApiOperation({ summary: 'Upload a CV file (PDF only, max 10MB).' })
+  @ApiOperation({ summary: 'Upload a CV file (PDF only, max 10MB). Triggers AI analysis.' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -37,7 +37,7 @@ export class CvController {
       },
     },
   })
-  @ApiResponse({ status: 201, description: 'CV uploaded. Analysis will begin shortly.' })
+  @ApiResponse({ status: 201, description: 'CV uploaded and analyzed. Returns analysis status.' })
   @ApiResponse({ status: 400, description: 'INVALID_FILE_TYPE, FILE_TOO_LARGE, or EMPTY_FILE' })
   @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
   async uploadCv(
@@ -51,7 +51,7 @@ export class CvController {
   @CheckAuth()
   @ApiBearerAuth()
   @UseInterceptors(FileInterceptor('file'))
-  @ApiOperation({ summary: 'Replace an existing CV with a new file.' })
+  @ApiOperation({ summary: 'Replace an existing CV with a new file. Triggers re-analysis.' })
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -62,7 +62,7 @@ export class CvController {
       },
     },
   })
-  @ApiResponse({ status: 200, description: 'CV replaced. Old file deleted.' })
+  @ApiResponse({ status: 200, description: 'CV replaced and re-analyzed. Returns analysis status.' })
   @ApiResponse({ status: 400, description: 'INVALID_FILE_TYPE, FILE_TOO_LARGE, or EMPTY_FILE' })
   @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
   async replaceCv(
@@ -81,6 +81,16 @@ export class CvController {
   @ApiResponse({ status: 404, description: 'CV_NOT_FOUND' })
   async getMetadata(@CurrentUser() user: JwtPayload) {
     return this._cvService.getMetadata(user.sub);
+  }
+
+  @Get('status')
+  @CheckAuth()
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get the current CV analysis status.' })
+  @ApiResponse({ status: 200, description: 'Returns analysis status.' })
+  @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
+  async getAnalysisStatus(@CurrentUser() user: JwtPayload) {
+    return this._cvService.getAnalysisStatus(user.sub);
   }
 
   @Delete()

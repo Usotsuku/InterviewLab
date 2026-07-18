@@ -8,6 +8,7 @@ import { AIModule } from '@modules/ai/ai.module';
 import { MetricsModule } from '@modules/metrics/metrics.module';
 import { SpeechModule } from '@modules/speech/speech.module';
 import { InterviewModule } from '@modules/interview/interview.module';
+import { QuestionModule } from '@modules/question/question.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { InterviewModule } from '@modules/interview/interview.module';
     forwardRef(() => MetricsModule),
     forwardRef(() => SpeechModule),
     forwardRef(() => InterviewModule),
+    QuestionModule,
   ],
   controllers: [AnswerController],
   providers: [AnswerService, AnswerRepository],

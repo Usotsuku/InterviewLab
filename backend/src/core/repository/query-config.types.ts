@@ -1,10 +1,10 @@
-import { FilterQuery, ProjectionType, QueryOptions } from 'mongoose';
+import { FilterQuery, ProjectionType, QueryOptions, PopulateOptions } from 'mongoose';
 
 export interface QueryConfig<T> {
   filter?: FilterQuery<T>;
   projection?: ProjectionType<T>;
   options?: QueryOptions<T>;
-  populate?: string | Record<string, unknown> | (string | Record<string, unknown>)[];
+  populate?: PopulateOptions | (string | PopulateOptions)[];
   includeDeleted?: boolean;
   pagination?: {
     page: number;

@@ -3,8 +3,10 @@ import { ConfigService } from '@nestjs/config';
 import { StorageService } from '@modules/storage/services/storage.service';
 import { CandidateProfileService } from '@modules/candidate-profile/services/candidate-profile.service';
 import { PdfExtractionService } from './pdf-extraction.service';
+import { CvAnalysisService } from './cv-analysis.service';
 import { CV_ERRORS, CV_CONSTRAINTS } from '../errors/cv.errors';
 import { AppException } from '@core/exceptions/app.exception';
+import { CvAnalysisStatus } from '@shared/enums/domain.enums';
 
 interface CvMetadataResponse {
   fileName: string;
@@ -30,6 +32,7 @@ export class CvService {
     private readonly _storageService: StorageService,
     private readonly _candidateProfileService: CandidateProfileService,
     private readonly _pdfExtractionService: PdfExtractionService,
+    private readonly _cvAnalysisService: CvAnalysisService,
     private readonly _config: ConfigService,
   ) {}
 
@@ -52,12 +55,14 @@ export class CvService {
 
     this._logger.log(`[upload] CV uploaded for user: ${userId}, path: ${storagePath}`);
 
+    const analysisResult = await this._cvAnalysisService.analyze(userId, fileBuffer);
+
     return {
-      message: 'CV uploaded successfully. Analysis will begin shortly.',
+      message: 'CV uploaded and analyzed successfully.',
       fileName: file.originalname,
       fileUrl,
       fileSize: file.size,
-      status: 'PENDING',
+      status: analysisResult.status,
     };
   }
 
@@ -97,6 +102,11 @@ export class CvService {
       uploadedAt: profile.uploadedAt,
       analysisStatus: profile.analysisStatus,
     };
+  }
+
+  async getAnalysisStatus(userId: string): Promise<{ status: CvAnalysisStatus }> {
+    const profile = await this._candidateProfileService.findByUserId(userId);
+    return { status: profile.cvAnalysisStatus };
   }
 
   async extractText(fileBuffer: Buffer): Promise<string> {

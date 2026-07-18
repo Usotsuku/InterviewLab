@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Query } from 'mongoose';
+import { Query, PopulateOptions } from 'mongoose';
 import { QueryConfig } from './query-config.types';
 
 @Injectable()
@@ -17,7 +17,12 @@ export class QueryService {
     }
 
     if (config.populate) {
-      query.populate(config.populate);
+      const populates = Array.isArray(config.populate)
+        ? config.populate
+        : [config.populate];
+      for (const p of populates) {
+        query.populate(typeof p === 'string' ? { path: p } : p as PopulateOptions);
+      }
     }
 
     if (config.pagination) {

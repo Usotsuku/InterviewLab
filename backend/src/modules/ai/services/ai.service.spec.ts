@@ -79,14 +79,6 @@ describe('AIService', () => {
     });
   });
 
-  describe('analyzeCv', () => {
-    it('should return placeholder result', async () => {
-      const result = await service.analyzeCv('cv text');
-      expect(result.summary).toContain('TODO');
-      expect(result.skills).toEqual([]);
-    });
-  });
-
   describe('generateQuestions', () => {
     it('should return empty array placeholder', async () => {
       const result = await service.generateQuestions('profile', 'HR', 5);

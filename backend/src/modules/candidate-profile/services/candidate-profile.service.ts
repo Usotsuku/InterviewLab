@@ -17,6 +17,7 @@ interface ProfileResponse {
   strengths: string[];
   weaknesses: string[];
   cvAnalysisStatus: CvAnalysisStatus;
+  cvFileUrl: string | null;
   cvFileName: string | null;
   cvFileSize: number | null;
   cvUploadedAt: Date | null;
@@ -55,6 +56,7 @@ export class CandidateProfileService {
       strengths: string[];
       weaknesses: string[];
       cvAnalysisStatus: CvAnalysisStatus;
+      cvFileUrl: string | null;
       cvFileName: string | null;
       cvFileSize: number | null;
       cvUploadedAt: Date | null;
@@ -73,6 +75,7 @@ export class CandidateProfileService {
       strengths: doc.strengths ?? [],
       weaknesses: doc.weaknesses ?? [],
       cvAnalysisStatus: doc.cvAnalysisStatus,
+      cvFileUrl: doc.cvFileUrl ?? null,
       cvFileName: doc.cvFileName ?? null,
       cvFileSize: doc.cvFileSize ?? null,
       cvUploadedAt: doc.cvUploadedAt ?? null,

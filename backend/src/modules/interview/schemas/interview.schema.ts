@@ -12,8 +12,14 @@ export class Interview {
   @Prop({ required: true, enum: InterviewMode })
   mode!: InterviewMode;
 
-  @Prop({ required: true, default: InterviewStatus.PENDING, enum: InterviewStatus, index: true })
+  @Prop({ required: true, default: InterviewStatus.CREATED, enum: InterviewStatus, index: true })
   status!: InterviewStatus;
+
+  @Prop({ default: '' })
+  title?: string;
+
+  @Prop({ default: 0 })
+  estimatedDuration?: number;
 
   @Prop({ default: 0 })
   currentQuestionIndex?: number;

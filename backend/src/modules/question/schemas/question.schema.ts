@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { HydratedDocument, Types } from 'mongoose';
+import { HydratedDocument, Types, Schema as MongooseSchema } from 'mongoose';
 import { QuestionType, QuestionDifficulty } from '@shared/enums/domain.enums';
 
 export type QuestionDocument = HydratedDocument<Question>;
@@ -20,6 +20,21 @@ export class Question {
 
   @Prop({ required: true })
   order!: number;
+
+  @Prop({ type: [String], default: [] })
+  targetSkills?: string[];
+
+  @Prop({ type: [String], default: [] })
+  generatedFrom?: string[];
+
+  @Prop({ type: [String], default: [] })
+  expectedKeywords?: string[];
+
+  @Prop({ default: null })
+  estimatedAnswerDuration?: number;
+
+  @Prop({ type: MongooseSchema.Types.Mixed, default: null })
+  metadata?: Record<string, unknown>;
 
   @Prop({ default: null })
   deletedAt?: Date;

@@ -1,56 +1,91 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { Types } from 'mongoose';
+import { MetricsCalculationService } from './metrics-calculation.service';
+import { InterviewMetricsRepository } from '../repositories/interview-metrics.repository';
+import { MetricsResult } from '../calculators/calculator.types';
 
-interface ComputeMetricsResponse {
-  wordsPerMinute: number;
-  avgPauseMs: number;
-  longestPauseMs: number;
-  silentTimePercent: number;
-  fillerWordCount: number;
-  repeatedWordCount: number;
-  vocabularyRichness: number;
-}
-
-interface HistoricalMetricsResponse {
-  userId: string;
-  history: never[];
-  averages: {
-    wpm: number;
-    pauseMs: number;
-    richness: number;
-    overallScore: number;
-  };
+export interface MetricsComputeInput {
+  answerId: string;
+  interviewId: string;
+  transcript: string;
+  durationSeconds: number;
+  expectedKeywords: string[];
+  estimatedAnswerDuration?: number;
 }
 
 @Injectable()
 export class MetricsService {
   private readonly _logger = new Logger(MetricsService.name);
 
-  async compute(answerId: string, _transcript: string, _durationSeconds: number): Promise<ComputeMetricsResponse> {
-    this._logger.log(`[compute] Running deterministic metrics for answerId: ${answerId}`);
-    
-    // TODO: implement deterministic calculator strategies
-    return {
-      wordsPerMinute: 130,
-      avgPauseMs: 450,
-      longestPauseMs: 1200,
-      silentTimePercent: 12.5,
-      fillerWordCount: 2,
-      repeatedWordCount: 0,
-      vocabularyRichness: 0.85,
-    };
+  constructor(
+    private readonly _calculationService: MetricsCalculationService,
+    private readonly _metricsRepository: InterviewMetricsRepository,
+  ) {}
+
+  async compute(input: MetricsComputeInput): Promise<MetricsResult> {
+    this._logger.log(
+      `[compute] Running deterministic metrics for answer: ${input.answerId}`,
+    );
+
+    const result = this._calculationService.calculate({
+      transcript: input.transcript,
+      durationSeconds: input.durationSeconds,
+      expectedKeywords: input.expectedKeywords,
+      estimatedAnswerDuration: input.estimatedAnswerDuration,
+    });
+
+    await this._metricsRepository.create({
+      answerId: new Types.ObjectId(input.answerId),
+      interviewId: new Types.ObjectId(input.interviewId),
+      wordsPerMinute: result.wordsPerMinute,
+      answerDuration: result.answerDuration,
+      pauseCount: result.pauseCount,
+      averagePause: result.averagePause,
+      longestPause: result.longestPause,
+      fillerCount: result.fillerCount,
+      vocabularyRichness: result.vocabularyRichness,
+      repetitionScore: result.repetitionScore,
+      keywordCoverage: result.keywordCoverage,
+      confidenceScore: result.confidenceScore,
+    });
+
+    this._logger.log(
+      `[compute] Metrics persisted for answer: ${input.answerId}, WPM: ${result.wordsPerMinute}, confidence: ${result.confidenceScore}`,
+    );
+
+    return result;
   }
 
-  async getHistoricalMetrics(userId: string): Promise<HistoricalMetricsResponse> {
-    // TODO: implement aggregation pipeline loading
+  async getMetricsByAnswerId(answerId: string): Promise<MetricsResult | null> {
+    const doc = await this._metricsRepository.findByAnswerId(answerId);
+    if (!doc) {
+      return null;
+    }
+
+    const typed = doc as unknown as {
+      wordsPerMinute: number;
+      answerDuration: number;
+      pauseCount: number;
+      averagePause: number;
+      longestPause: number;
+      fillerCount: number;
+      vocabularyRichness: number;
+      repetitionScore: number;
+      keywordCoverage: number;
+      confidenceScore: number;
+    };
+
     return {
-      userId,
-      history: [],
-      averages: {
-        wpm: 124,
-        pauseMs: 420,
-        richness: 0.82,
-        overallScore: 81,
-      },
+      wordsPerMinute: typed.wordsPerMinute ?? 0,
+      answerDuration: typed.answerDuration ?? 0,
+      pauseCount: typed.pauseCount ?? 0,
+      averagePause: typed.averagePause ?? 0,
+      longestPause: typed.longestPause ?? 0,
+      fillerCount: typed.fillerCount ?? 0,
+      vocabularyRichness: typed.vocabularyRichness ?? 0,
+      repetitionScore: typed.repetitionScore ?? 0,
+      keywordCoverage: typed.keywordCoverage ?? 0,
+      confidenceScore: typed.confidenceScore ?? 0,
     };
   }
 }

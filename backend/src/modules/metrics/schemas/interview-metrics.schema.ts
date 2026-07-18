@@ -15,22 +15,31 @@ export class InterviewMetrics {
   wordsPerMinute?: number;
 
   @Prop({ default: null })
-  avgPauseMs?: number;
+  answerDuration?: number;
 
   @Prop({ default: null })
-  longestPauseMs?: number;
+  pauseCount?: number;
 
   @Prop({ default: null })
-  silentTimePercent?: number;
+  averagePause?: number;
 
   @Prop({ default: null })
-  fillerWordCount?: number;
+  longestPause?: number;
 
   @Prop({ default: null })
-  repeatedWordCount?: number;
+  fillerCount?: number;
 
   @Prop({ default: null })
   vocabularyRichness?: number;
+
+  @Prop({ default: null })
+  repetitionScore?: number;
+
+  @Prop({ default: null })
+  keywordCoverage?: number;
+
+  @Prop({ default: null })
+  confidenceScore?: number;
 
   @Prop({ default: null })
   deletedAt?: Date;

@@ -5,6 +5,7 @@ import {
 } from '@nestjs/platform-fastify';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -25,6 +26,8 @@ async function bootstrap() {
       },
     }),
   );
+
+  app.useWebSocketAdapter(new IoAdapter(app));
 
   await app.register(await import('@fastify/multipart'), {
     limits: {

@@ -6,28 +6,6 @@ import { ContextService } from './context.service';
 import { PromptService } from './prompt.service';
 import { AiConfig } from '../config/ai.config';
 
-interface CvAnalysisResult {
-  summary: string;
-  skills: string[];
-  technologies: string[];
-  strengths: string[];
-  weaknesses: string[];
-}
-
-interface QuestionGenerationResult {
-  id: string;
-  text: string;
-  type: string;
-}
-
-interface AnswerEvaluationResult {
-  technicalScore: number;
-  semanticScore: number;
-  missingConcepts: string[];
-  communicationTips: string[];
-  idealAnswer: string;
-}
-
 @Injectable()
 export class AIService {
   private readonly _logger = new Logger(AIService.name);
@@ -52,27 +30,15 @@ export class AIService {
     );
   }
 
-  async analyzeCv(cvText: string): Promise<CvAnalysisResult> {
-    this._logger.log('[analyzeCv] Initiating CV analysis');
-    // TODO: implement in Sprint 5 using generate() + PromptService
-    return {
-      summary: 'TODO: summary background',
-      skills: [],
-      technologies: [],
-      strengths: [],
-      weaknesses: [],
-    };
-  }
-
-  async generateQuestions(profileSummary: string, mode: string, count: number): Promise<QuestionGenerationResult[]> {
+  async generateQuestions(profileSummary: string, mode: string, count: number): Promise<{ id: string; text: string; type: string }[]> {
     this._logger.log(`[generateQuestions] Generating ${count} questions for mode: ${mode}`);
-    // TODO: implement in Sprint 5 using generate() + PromptService
+    // TODO: implement in Sprint 6 using generate() + PromptService
     return [];
   }
 
-  async evaluateAnswer(question: string, transcript: string, _sessionId?: string): Promise<AnswerEvaluationResult> {
+  async evaluateAnswer(question: string, transcript: string, _sessionId?: string): Promise<Record<string, unknown>> {
     this._logger.log('[evaluateAnswer] Evaluating candidate answer');
-    // TODO: implement in Sprint 5 using generate() + PromptService
+    // TODO: implement in Sprint 6 using generate() + PromptService
     return {
       technicalScore: 85,
       semanticScore: 80,
