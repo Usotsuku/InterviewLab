@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Types } from 'mongoose';
-import { AIService } from '@modules/ai/services/ai.service';
+import { AnswerEvaluationService } from '@modules/ai/services/answer-evaluation.service';
 import { MetricsService, MetricsComputeInput } from '@modules/metrics/services/metrics.service';
 import { MetricsResult } from '@modules/metrics/calculators/calculator.types';
 import { SpeechService } from '@modules/speech/services/speech.service';
@@ -21,7 +21,7 @@ export class AnswerService {
   private readonly _logger = new Logger(AnswerService.name);
 
   constructor(
-    private readonly _aiService: AIService,
+    private readonly _answerEvaluationService: AnswerEvaluationService,
     private readonly _metricsService: MetricsService,
     private readonly _speechService: SpeechService,
     private readonly _interviewService: InterviewService,
@@ -61,7 +61,7 @@ export class AnswerService {
 
     const [metricsResult, aiResult] = await Promise.allSettled([
       this._metricsService.compute(metricsInput),
-      this._aiService.evaluateAnswer(dto.questionId, dto.transcript ?? '', interviewId),
+      this._answerEvaluationService.evaluate({ answerId }),
     ]);
 
     if (metricsResult.status === 'rejected') {
