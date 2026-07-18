@@ -33,7 +33,7 @@ export class QuestionService {
       .findOne({
         _id: new Types.ObjectId(interviewId),
         userId: new Types.ObjectId(userId),
-        deletedAt: { $exists: false },
+        deletedAt: null,
       })
       .exec();
     if (!interview) {

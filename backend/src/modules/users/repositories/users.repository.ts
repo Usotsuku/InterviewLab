@@ -13,7 +13,7 @@ export class UsersRepository extends BaseRepository<UserDocument> {
   async findByEmail(email: string): Promise<UserDocument | null> {
     const normalized = email.trim().toLowerCase();
     return this._userModel
-      .findOne({ email: normalized, deletedAt: { $exists: false } })
+      .findOne({ email: normalized, deletedAt: null })
       .exec();
   }
 }

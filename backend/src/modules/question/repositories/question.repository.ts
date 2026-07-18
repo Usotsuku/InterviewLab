@@ -14,7 +14,7 @@ export class QuestionRepository extends BaseRepository<QuestionDocument> {
 
   async findByInterviewId(interviewId: string | Types.ObjectId): Promise<QuestionDocument[]> {
     return this._questionModel
-      .find({ interviewId, deletedAt: { $exists: false } })
+      .find({ interviewId, deletedAt: null })
       .sort({ order: 1 })
       .exec();
   }

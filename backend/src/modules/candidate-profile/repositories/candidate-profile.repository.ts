@@ -14,6 +14,6 @@ export class CandidateProfileRepository extends BaseRepository<CandidateProfileD
   }
 
   async findByUserId(userId: string | Types.ObjectId): Promise<CandidateProfileDocument | null> {
-    return this._profileModel.findOne({ userId, deletedAt: { $exists: false } }).exec();
+    return this._profileModel.findOne({ userId, deletedAt: null }).exec();
   }
 }

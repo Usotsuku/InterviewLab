@@ -11,10 +11,10 @@ export class AnswerRepository extends BaseRepository<AnswerDocument> {
   }
 
   async findByInterviewId(interviewId: string | Types.ObjectId): Promise<AnswerDocument[]> {
-    return this._answerModel.find({ interviewId, deletedAt: { $exists: false } }).exec();
+    return this._answerModel.find({ interviewId, deletedAt: null }).exec();
   }
 
   async findByQuestionId(questionId: string | Types.ObjectId): Promise<AnswerDocument | null> {
-    return this._answerModel.findOne({ questionId, deletedAt: { $exists: false } }).exec();
+    return this._answerModel.findOne({ questionId, deletedAt: null }).exec();
   }
 }

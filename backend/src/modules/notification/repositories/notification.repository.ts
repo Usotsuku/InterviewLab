@@ -14,14 +14,14 @@ export class NotificationRepository extends BaseRepository<NotificationDocument>
 
   async findByUserId(userId: string | Types.ObjectId): Promise<NotificationDocument[]> {
     return this._notifModel
-      .find({ userId, deletedAt: { $exists: false } })
+      .find({ userId, deletedAt: null })
       .sort({ createdAt: -1 })
       .exec();
   }
 
   async findUnreadByUserId(userId: string | Types.ObjectId): Promise<NotificationDocument[]> {
     return this._notifModel
-      .find({ userId, isRead: false, deletedAt: { $exists: false } })
+      .find({ userId, isRead: false, deletedAt: null })
       .sort({ createdAt: -1 })
       .exec();
   }

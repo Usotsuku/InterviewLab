@@ -13,10 +13,10 @@ export class AiEvaluationRepository extends BaseRepository<AiEvaluationDocument>
   }
 
   async findByAnswerId(answerId: string | Types.ObjectId): Promise<AiEvaluationDocument | null> {
-    return this._evalModel.findOne({ answerId, deletedAt: { $exists: false } }).exec();
+    return this._evalModel.findOne({ answerId, deletedAt: null }).exec();
   }
 
   async findByInterviewId(interviewId: string | Types.ObjectId): Promise<AiEvaluationDocument[]> {
-    return this._evalModel.find({ interviewId, deletedAt: { $exists: false } }).exec();
+    return this._evalModel.find({ interviewId, deletedAt: null }).exec();
   }
 }

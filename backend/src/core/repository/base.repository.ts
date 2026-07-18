@@ -69,6 +69,6 @@ export abstract class BaseRepository<T> {
 
   protected _buildBaseFilter(includeDeleted = false): FilterQuery<T> {
     if (includeDeleted) return {};
-    return { deletedAt: { $exists: false } };
+    return { deletedAt: null };
   }
 }

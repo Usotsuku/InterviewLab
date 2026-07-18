@@ -18,7 +18,7 @@ export class UserSessionRepository extends BaseRepository<UserSessionDocument> {
         userId,
         isValid: true,
         expiresAt: { $gt: new Date() },
-        deletedAt: { $exists: false },
+        deletedAt: null,
       })
       .exec();
   }
@@ -43,7 +43,7 @@ export class UserSessionRepository extends BaseRepository<UserSessionDocument> {
         refreshToken: refreshTokenHash,
         isValid: true,
         expiresAt: { $gt: new Date() },
-        deletedAt: { $exists: false },
+        deletedAt: null,
       })
       .exec();
   }

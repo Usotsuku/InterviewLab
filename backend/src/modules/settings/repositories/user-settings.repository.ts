@@ -13,6 +13,6 @@ export class UserSettingsRepository extends BaseRepository<UserSettingsDocument>
   }
 
   async findByUserId(userId: string | Types.ObjectId): Promise<UserSettingsDocument | null> {
-    return this._settingsModel.findOne({ userId, deletedAt: { $exists: false } }).exec();
+    return this._settingsModel.findOne({ userId, deletedAt: null }).exec();
   }
 }
