@@ -4,11 +4,11 @@ export const profileRoutes: Routes = [
   {
     path: '',
     loadComponent: () =>
-      import('./pages/profile-view/profile-view.page').then((m) => m.ProfileViewPage),
+      import('./pages/profile-view').then((m) => m.ProfileViewPage),
   },
   {
     path: 'edit',
     loadComponent: () =>
-      import('./pages/profile-edit/profile-edit.page').then((m) => m.ProfileEditPage),
+      import('./pages/profile-edit').then((m) => m.ProfileEditPage),
   },
 ];

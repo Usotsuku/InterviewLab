@@ -19,21 +19,27 @@ export interface CandidateProfile {
   experience: ExperienceEntry[];
   projects: ProjectEntry[];
   cvAnalysisStatus: CvAnalysisStatus;
-  cvFileUrl?: string;
+  cvFileUrl: string | null;
+  cvFileName: string | null;
+  cvFileSize: number | null;
+  cvUploadedAt: string | null;
+  completionPercent: number;
   updatedAt: string;
 }
 
 export interface ExperienceEntry {
-  title: string;
   company: string;
-  years: number;
-  description: string;
+  position: string;
+  startDate: string;
+  endDate?: string | null;
+  description?: string;
 }
 
 export interface ProjectEntry {
   name: string;
-  description: string;
+  description?: string;
   technologies: string[];
+  url?: string;
 }
 
 export interface Interview {

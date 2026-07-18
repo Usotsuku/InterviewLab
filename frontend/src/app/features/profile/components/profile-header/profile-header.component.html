@@ -1,0 +1,25 @@
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-7">
+  <div class="flex items-center gap-4">
+    <div class="w-14 h-14 rounded-full bg-primary-50 flex items-center justify-center text-primary-500 font-bold text-xl flex-shrink-0">
+      {{ name().charAt(0).toUpperCase() }}
+    </div>
+    <div>
+      <h1 class="text-2xl font-bold text-neutral-800">{{ name() }}</h1>
+      <p class="text-sm text-neutral-400">{{ email() }}</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-3">
+    @if (cvFileName()) {
+      <il-badge variant="primary" icon="description">{{ cvFileName() }}</il-badge>
+    } @else {
+      <il-badge [variant]="cvStatus() === 'NOT_UPLOADED' ? 'neutral' : cvStatus() === 'COMPLETED' ? 'success' : 'warning'">
+        CV: {{ cvStatus().replace('_', ' ') }}
+      </il-badge>
+    }
+    @if (!editing()) {
+      <a routerLink="/profile/edit" il-button variant="secondary" size="sm" icon="edit">
+        Edit Profile
+      </a>
+    }
+  </div>
+</div>

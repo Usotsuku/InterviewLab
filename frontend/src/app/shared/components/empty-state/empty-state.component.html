@@ -6,10 +6,9 @@
   }
   @if (actionLabel()) {
     <il-button
-      [label]="actionLabel()!"
       (clicked)="actionClick.emit()"
       size="md"
       [attr.aria-label]="actionLabel()"
-    />
+    >{{ actionLabel() }}</il-button>
   }
 </div>

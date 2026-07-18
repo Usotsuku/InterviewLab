@@ -1,0 +1,54 @@
+<div class="il-card p-5">
+  <div class="flex items-center justify-between mb-4">
+    <h3 class="text-base font-semibold text-neutral-800">Profile Completion</h3>
+    <span class="text-sm font-semibold"
+      [class]="percent() >= 80 ? 'text-success-500' : percent() >= 40 ? 'text-warning-500' : 'text-neutral-400'">
+      {{ percent() }}%
+    </span>
+  </div>
+
+  <div class="w-full h-2 bg-neutral-200 rounded-full overflow-hidden mb-4">
+    <div class="h-full rounded-full transition-all duration-300"
+      [class]="percent() >= 80 ? 'bg-success-500' : percent() >= 40 ? 'bg-warning-500' : 'bg-primary-500'"
+      [style.width.%]="percent()">
+    </div>
+  </div>
+
+  <ul class="flex flex-col gap-2">
+    <li class="flex items-center gap-2 text-sm">
+      <mat-icon class="text-base w-4 h-4"
+        [class]="hasSummary() ? 'text-success-500' : 'text-neutral-400'">
+        {{ hasSummary() ? 'check_circle' : 'radio_button_unchecked' }}
+      </mat-icon>
+      <span [class]="hasSummary() ? 'text-neutral-800' : 'text-neutral-400'">Professional Summary</span>
+    </li>
+    <li class="flex items-center gap-2 text-sm">
+      <mat-icon class="text-base w-4 h-4"
+        [class]="hasSkills() ? 'text-success-500' : 'text-neutral-400'">
+        {{ hasSkills() ? 'check_circle' : 'radio_button_unchecked' }}
+      </mat-icon>
+      <span [class]="hasSkills() ? 'text-neutral-800' : 'text-neutral-400'">Skills</span>
+    </li>
+    <li class="flex items-center gap-2 text-sm">
+      <mat-icon class="text-base w-4 h-4"
+        [class]="hasTechnologies() ? 'text-success-500' : 'text-neutral-400'">
+        {{ hasTechnologies() ? 'check_circle' : 'radio_button_unchecked' }}
+      </mat-icon>
+      <span [class]="hasTechnologies() ? 'text-neutral-800' : 'text-neutral-400'">Technologies</span>
+    </li>
+    <li class="flex items-center gap-2 text-sm">
+      <mat-icon class="text-base w-4 h-4"
+        [class]="hasExperience() ? 'text-success-500' : 'text-neutral-400'">
+        {{ hasExperience() ? 'check_circle' : 'radio_button_unchecked' }}
+      </mat-icon>
+      <span [class]="hasExperience() ? 'text-neutral-800' : 'text-neutral-400'">Experience</span>
+    </li>
+    <li class="flex items-center gap-2 text-sm">
+      <mat-icon class="text-base w-4 h-4"
+        [class]="hasProjects() ? 'text-success-500' : 'text-neutral-400'">
+        {{ hasProjects() ? 'check_circle' : 'radio_button_unchecked' }}
+      </mat-icon>
+      <span [class]="hasProjects() ? 'text-neutral-800' : 'text-neutral-400'">Projects</span>
+    </li>
+  </ul>
+</div>

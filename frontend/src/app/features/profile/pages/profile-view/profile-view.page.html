@@ -1,33 +1,119 @@
-<section>
-  <div class="flex items-center justify-between mb-7">
-    <h1 class="text-2xl font-bold">Candidate Profile</h1>
-    <button mat-stroked-button routerLink="edit">
-      <mat-icon>edit</mat-icon> Edit Profile
-    </button>
+@if (store.loading()) {
+  <il-spinner label="Loading profile..." />
+} @else if (store.error()) {
+  <div class="il-card p-8 text-center">
+    <p class="text-danger-500 mb-4">{{ store.error() }}</p>
+    <button il-button variant="secondary" (click)="store.load()">Retry</button>
   </div>
+} @else if (store.hasEntity()) {
+    <il-profile-header
+      [name]="'Candidate'"
+      [email]="'candidate@example.com'"
+      [completionPercent]="store.completionPercent()"
+      [cvStatus]="store.cvAnalysisStatus()"
+      [cvFileName]="store.cvFileName()"
+      [editing]="false"
+    />
 
-  <div class="grid grid-cols-2 gap-5 max-lg:grid-cols-1">
-    <div class="il-card">
-      <h3>Professional Summary</h3>
-      <p class="text-neutral-400 text-sm mt-3">No summary added yet. <a routerLink="edit">Add one.</a></p>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+    <div class="lg:col-span-2 flex flex-col gap-5">
+      <div class="il-card p-5">
+        <h3 class="text-base font-semibold text-neutral-800 mb-3">Professional Summary</h3>
+        @if (store.summary()) {
+          <p class="text-sm text-neutral-500 leading-relaxed">{{ store.summary() }}</p>
+        } @else {
+          <p class="text-sm text-neutral-400 italic">No summary added yet.</p>
+        }
+      </div>
+
+      @if (store.experience().length > 0) {
+        <div>
+          <h3 class="text-base font-semibold text-neutral-800 mb-3">Experience</h3>
+          <div class="flex flex-col gap-3">
+            @for (entry of store.experience(); track entry.company + entry.position) {
+              <il-experience-card [entry]="entry" />
+            }
+          </div>
+        </div>
+      }
+
+      @if (store.projects().length > 0) {
+        <div>
+          <h3 class="text-base font-semibold text-neutral-800 mb-3">Projects</h3>
+          <div class="flex flex-col gap-3">
+            @for (entry of store.projects(); track entry.name) {
+              <il-project-card [entry]="entry" />
+            }
+          </div>
+        </div>
+      }
     </div>
 
-    <div class="il-card">
-      <h3>CV / Résumé</h3>
-      <p class="text-neutral-400 text-sm mt-3">Upload your CV for AI-powered profile extraction.</p>
-      <button mat-stroked-button color="primary" class="mt-4">
-        <mat-icon>upload_file</mat-icon> Upload CV
-      </button>
-    </div>
+    <div class="flex flex-col gap-5">
+      <il-profile-completion-card
+        [percent]="store.completionPercent()"
+        [hasSummary]="store.summary().length > 0"
+        [hasSkills]="store.skills().length > 0"
+        [hasTechnologies]="store.technologies().length > 0"
+        [hasExperience]="store.experience().length > 0"
+        [hasProjects]="store.projects().length > 0"
+      />
 
-    <div class="il-card">
-      <h3>Skills &amp; Technologies</h3>
-      <p class="text-neutral-400 text-sm mt-3">No skills added yet.</p>
-    </div>
+      <div class="il-card p-5">
+        <h3 class="text-base font-semibold text-neutral-800 mb-3">Skills</h3>
+        @if (store.skills().length > 0) {
+          <div class="flex flex-wrap gap-1.5">
+            @for (skill of store.skills(); track skill) {
+              <il-badge variant="primary">{{ skill }}</il-badge>
+            }
+          </div>
+        } @else {
+          <p class="text-sm text-neutral-400 italic">No skills added yet.</p>
+        }
+      </div>
 
-    <div class="il-card">
-      <h3>Experience</h3>
-      <p class="text-neutral-400 text-sm mt-3">No experience entries yet.</p>
+      <div class="il-card p-5">
+        <h3 class="text-base font-semibold text-neutral-800 mb-3">Technologies</h3>
+        @if (store.technologies().length > 0) {
+          <div class="flex flex-wrap gap-1.5">
+            @for (tech of store.technologies(); track tech) {
+              <il-badge variant="info">{{ tech }}</il-badge>
+            }
+          </div>
+        } @else {
+          <p class="text-sm text-neutral-400 italic">No technologies added yet.</p>
+        }
+      </div>
+
+      @if (store.strengths().length > 0) {
+        <div class="il-card p-5">
+          <h3 class="text-base font-semibold text-neutral-800 mb-3">Strengths</h3>
+          <div class="flex flex-wrap gap-1.5">
+            @for (item of store.strengths(); track item) {
+              <il-badge variant="success">{{ item }}</il-badge>
+            }
+          </div>
+        </div>
+      }
+
+      @if (store.weaknesses().length > 0) {
+        <div class="il-card p-5">
+          <h3 class="text-base font-semibold text-neutral-800 mb-3">Areas for Improvement</h3>
+          <div class="flex flex-wrap gap-1.5">
+            @for (item of store.weaknesses(); track item) {
+              <il-badge variant="warning">{{ item }}</il-badge>
+            }
+          </div>
+        </div>
+      }
     </div>
   </div>
-</section>
+} @else {
+  <il-empty-state
+    icon="person_add"
+    title="No profile yet"
+    description="Create your candidate profile to get started with AI-powered interview preparation."
+    actionLabel="Edit Profile"
+    (actionClick)="null"
+  />
+}
