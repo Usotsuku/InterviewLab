@@ -7,6 +7,7 @@ import { InterviewService } from './services/interview.service';
 import { InterviewGenerationService } from './services/interview-generation.service';
 import { InterviewSessionService } from './services/interview-session.service';
 import { InterviewReportService } from './services/interview-report.service';
+import { InterviewScoreAggregator } from './services/interview-score-aggregator';
 import { AIModule } from '@modules/ai/ai.module';
 import { CandidateProfileModule } from '@modules/candidate-profile/candidate-profile.module';
 import { QuestionModule } from '@modules/question/question.module';
@@ -16,7 +17,7 @@ import { MetricsModule } from '@modules/metrics/metrics.module';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Interview.name, schema: InterviewSchema }]),
-    forwardRef(() => AIModule),
+    forwardRef(() => AIModule.forRoot()),
     CandidateProfileModule,
     QuestionModule,
     forwardRef(() => AnswerModule),
@@ -29,6 +30,7 @@ import { MetricsModule } from '@modules/metrics/metrics.module';
     InterviewGenerationService,
     InterviewSessionService,
     InterviewReportService,
+    InterviewScoreAggregator,
   ],
   exports: [
     InterviewService,

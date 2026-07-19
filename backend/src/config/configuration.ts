@@ -28,6 +28,13 @@ export interface Config {
       temperature: number;
       maxOutputTokens: number;
     };
+    groq: {
+      apiKey: string | undefined;
+      model: string;
+      baseUrl: string;
+      temperature: number;
+      maxOutputTokens: number;
+    };
     timeoutMs: number;
     maxRetries: number;
     retry: {
@@ -73,7 +80,14 @@ export default registerAs('config', (): Config => ({
       model: process.env.KIMI_MODEL || 'kimi-k2.6',
       baseUrl: process.env.KIMI_BASE_URL || 'https://api.moonshot.ai/v1',
       temperature: parseFloat(process.env.KIMI_TEMPERATURE || '0.4'),
-      maxOutputTokens: parseInt(process.env.KIMI_MAX_TOKENS || '8192', 10),
+      maxOutputTokens: parseInt(process.env.KIMI_MAX_TOKENS || '2048', 10),
+    },
+    groq: {
+      apiKey: process.env.GROQ_API_KEY,
+      model: process.env.GROQ_MODEL || 'openai/gpt-oss-120b',
+      baseUrl: process.env.GROQ_BASE_URL || 'https://api.groq.com/openai/v1',
+      temperature: parseFloat(process.env.GROQ_TEMPERATURE || '0.4'),
+      maxOutputTokens: parseInt(process.env.GROQ_MAX_TOKENS || '2048', 10),
     },
     timeoutMs: parseInt(process.env.AI_TIMEOUT_MS || '30000', 10),
     maxRetries: parseInt(process.env.AI_MAX_RETRIES || '3', 10),

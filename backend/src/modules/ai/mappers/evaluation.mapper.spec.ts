@@ -123,7 +123,7 @@ describe('EvaluationMapper', () => {
       expect(result.completenessScore).toBe(0);
     });
 
-    it('should default to 0 for missing score fields', () => {
+    it('should default to null for missing technicalScore, 0 for other missing scores', () => {
       const input: AiEvaluationInput = {
         ...baseInput,
         rawAiResponse: JSON.stringify({
@@ -137,13 +137,13 @@ describe('EvaluationMapper', () => {
 
       const result = parseAndValidate(input);
 
-      expect(result.technicalScore).toBe(0);
+      expect(result.technicalScore).toBeNull();
       expect(result.communicationScore).toBe(0);
       expect(result.correctnessScore).toBe(0);
       expect(result.completenessScore).toBe(0);
     });
 
-    it('should default to 0 for non-numeric score fields', () => {
+    it('should default to 0 for non-numeric score fields, null for null technicalScore', () => {
       const input: AiEvaluationInput = {
         ...baseInput,
         rawAiResponse: JSON.stringify({
@@ -323,7 +323,7 @@ describe('EvaluationMapper', () => {
       expect(result.promptUsed).toBe('my prompt text');
     });
 
-    it('should handle NaN scores by defaulting to 0', () => {
+    it('should handle NaN scores — JSON serializes NaN as null, so technicalScore returns null', () => {
       const input: AiEvaluationInput = {
         ...baseInput,
         rawAiResponse: JSON.stringify({
@@ -341,7 +341,7 @@ describe('EvaluationMapper', () => {
 
       const result = parseAndValidate(input);
 
-      expect(result.technicalScore).toBe(0);
+      expect(result.technicalScore).toBeNull();
       expect(result.communicationScore).toBe(0);
       expect(result.correctnessScore).toBe(0);
       expect(result.completenessScore).toBe(0);

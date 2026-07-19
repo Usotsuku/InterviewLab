@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { InterviewGenerationService } from './interview-generation.service';
 import { AIService } from '@modules/ai/services/ai.service';
 import { PromptService } from '@modules/ai/services/prompt.service';
+import { RetryService } from '@modules/ai/services/retry.service';
 import { CandidateProfileService } from '@modules/candidate-profile/services/candidate-profile.service';
 import { InterviewRepository } from '../repositories/interview.repository';
 import { QuestionRepository } from '@modules/question/repositories/question.repository';
@@ -22,6 +23,10 @@ describe('InterviewGenerationService', () => {
       prompt: 'Generate interview...',
       systemInstruction: 'You are an expert.',
     }),
+  };
+
+  const mockRetryService = {
+    execute: jest.fn().mockImplementation((fn: () => Promise<unknown>) => fn()),
   };
 
   const mockProfileService = {
@@ -60,6 +65,7 @@ describe('InterviewGenerationService', () => {
         InterviewGenerationService,
         { provide: AIService, useValue: mockAiService },
         { provide: PromptService, useValue: mockPromptService },
+        { provide: RetryService, useValue: mockRetryService },
         { provide: CandidateProfileService, useValue: mockProfileService },
         { provide: InterviewRepository, useValue: mockInterviewRepo },
         { provide: QuestionRepository, useValue: mockQuestionRepo },
@@ -95,7 +101,7 @@ describe('InterviewGenerationService', () => {
       mockInterviewRepo.updateById.mockResolvedValue(undefined);
       mockQuestionRepo.create.mockResolvedValue({});
 
-      const result = await service.generate(USER_ID, INTERVIEW_ID, 'TECHNICAL');
+      const result = await service.generate(USER_ID, INTERVIEW_ID, 'TECHNICAL', 3);
 
       expect(result.status).toBe(InterviewStatus.READY);
       expect(result.title).toBe('Backend Developer Interview');
@@ -116,10 +122,85 @@ describe('InterviewGenerationService', () => {
       expect(mockQuestionRepo.create).toHaveBeenCalledTimes(3);
     });
 
+    it('should use default questionCount of 5 when not specified', async () => {
+      mockProfileService.findByUserId.mockResolvedValue({
+        summary: 'Dev',
+        skills: ['JS'],
+        technologies: ['Node'],
+        experience: [],
+        projects: [],
+        strengths: [],
+        weaknesses: [],
+        completionPercent: 40,
+      });
+
+      const fiveQuestions = JSON.stringify({
+        title: 'Interview',
+        estimatedDuration: 30,
+        questions: Array.from({ length: 5 }, (_, i) => ({
+          order: i + 1,
+          type: 'TECHNICAL',
+          difficulty: 'MEDIUM',
+          text: `Question ${i + 1}`,
+        })),
+      });
+
+      mockAiService.generate.mockResolvedValue({
+        text: fiveQuestions,
+        tokenUsage: { input: 100, output: 200 },
+        provider: 'gemini',
+        model: 'gemini-1.5-pro',
+        durationMs: 5000,
+      });
+      mockInterviewRepo.updateById.mockResolvedValue(undefined);
+      mockQuestionRepo.create.mockResolvedValue({});
+
+      const result = await service.generate(USER_ID, INTERVIEW_ID, 'TECHNICAL');
+      expect(result.totalQuestions).toBe(5);
+      expect(mockPromptService.buildInterviewPrompt).toHaveBeenCalledWith(
+        expect.any(String),
+        'TECHNICAL',
+        5,
+      );
+    });
+
+    it('should pass questionCount to prompt service', async () => {
+      mockProfileService.findByUserId.mockResolvedValue({
+        summary: 'Dev',
+        skills: ['JS'],
+        technologies: ['Node'],
+        experience: [],
+        projects: [],
+        strengths: [],
+        weaknesses: [],
+        completionPercent: 40,
+      });
+
+      mockAiService.generate.mockResolvedValue({
+        text: validAiResponse,
+        tokenUsage: { input: 100, output: 200 },
+        provider: 'gemini',
+        model: 'gemini-1.5-pro',
+        durationMs: 5000,
+      });
+      mockInterviewRepo.updateById.mockResolvedValue(undefined);
+      mockQuestionRepo.create.mockResolvedValue({});
+
+      await service.generate(USER_ID, INTERVIEW_ID, 'TECHNICAL', 3);
+
+      expect(mockPromptService.buildInterviewPrompt).toHaveBeenCalledWith(
+        expect.any(String),
+        'TECHNICAL',
+        3,
+      );
+    });
+
     it('should throw when profile not found', async () => {
       mockProfileService.findByUserId.mockRejectedValue(new Error('not found'));
 
-      await expect(service.generate(USER_ID, INTERVIEW_ID, 'TECHNICAL')).rejects.toThrow();
+      await expect(
+        service.generate(USER_ID, INTERVIEW_ID, 'TECHNICAL', 5),
+      ).rejects.toThrow();
     });
 
     it('should set FAILED status when AI call fails', async () => {
@@ -134,10 +215,12 @@ describe('InterviewGenerationService', () => {
         completionPercent: 40,
       });
 
-      mockAiService.generate.mockRejectedValue(new Error('AI error'));
+      mockRetryService.execute.mockRejectedValue(new Error('AI error'));
       mockInterviewRepo.updateById.mockResolvedValue(undefined);
 
-      await expect(service.generate(USER_ID, INTERVIEW_ID, 'TECHNICAL')).rejects.toThrow();
+      await expect(
+        service.generate(USER_ID, INTERVIEW_ID, 'TECHNICAL', 5),
+      ).rejects.toThrow();
       expect(mockInterviewRepo.updateById).toHaveBeenCalledWith(INTERVIEW_ID, {
         status: InterviewStatus.FAILED,
       });
@@ -164,7 +247,47 @@ describe('InterviewGenerationService', () => {
       });
       mockInterviewRepo.updateById.mockResolvedValue(undefined);
 
-      await expect(service.generate(USER_ID, INTERVIEW_ID, 'TECHNICAL')).rejects.toThrow();
+      await expect(
+        service.generate(USER_ID, INTERVIEW_ID, 'TECHNICAL', 5),
+      ).rejects.toThrow();
+      expect(mockInterviewRepo.updateById).toHaveBeenCalledWith(INTERVIEW_ID, {
+        status: InterviewStatus.FAILED,
+      });
+    });
+
+    it('should set FAILED status when AI returns wrong question count', async () => {
+      mockProfileService.findByUserId.mockResolvedValue({
+        summary: 'Dev',
+        skills: ['JS'],
+        technologies: ['Node'],
+        experience: [],
+        projects: [],
+        strengths: [],
+        weaknesses: [],
+        completionPercent: 40,
+      });
+
+      const wrongCountResponse = JSON.stringify({
+        title: 'Interview',
+        estimatedDuration: 30,
+        questions: [
+          { order: 1, type: 'TECHNICAL', difficulty: 'MEDIUM', text: 'Q1?' },
+          { order: 2, type: 'HR', difficulty: 'EASY', text: 'Q2?' },
+        ],
+      });
+
+      mockAiService.generate.mockResolvedValue({
+        text: wrongCountResponse,
+        tokenUsage: { input: 100, output: 200 },
+        provider: 'gemini',
+        model: 'gemini-1.5-pro',
+        durationMs: 5000,
+      });
+      mockInterviewRepo.updateById.mockResolvedValue(undefined);
+
+      await expect(
+        service.generate(USER_ID, INTERVIEW_ID, 'TECHNICAL', 5),
+      ).rejects.toThrow();
       expect(mockInterviewRepo.updateById).toHaveBeenCalledWith(INTERVIEW_ID, {
         status: InterviewStatus.FAILED,
       });

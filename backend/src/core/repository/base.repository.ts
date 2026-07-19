@@ -1,4 +1,4 @@
-import { Model, FilterQuery, UpdateQuery } from 'mongoose';
+import { Model, FilterQuery, UpdateQuery, Types } from 'mongoose';
 import { QueryConfig, PaginatedResult } from './query-config.types';
 import { QueryService } from './query.service';
 
@@ -65,6 +65,10 @@ export abstract class BaseRepository<T> {
       .updateOne({ _id: id } as any, { deletedAt: new Date() } as any)
       .exec();
     return res.modifiedCount > 0;
+  }
+
+  protected _toObjectId(value: string | Types.ObjectId): Types.ObjectId {
+    return value instanceof Types.ObjectId ? value : new Types.ObjectId(value);
   }
 
   protected _buildBaseFilter(includeDeleted = false): FilterQuery<T> {

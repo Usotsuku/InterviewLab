@@ -46,4 +46,52 @@ describe('KeywordCoverageCalculator', () => {
     const result = calculator.calculate('I know Node.js', ['node.js']);
     expect(result).toBe(1);
   });
+
+  it('should match punctuation-stripped variants', () => {
+    const result = calculator.calculate('I used NodeJS and ReactJS in my project', [
+      'node.js',
+      'react.js',
+    ]);
+    expect(result).toBe(1);
+  });
+
+  it('should match compound keywords with no spaces in transcript', () => {
+    const result = calculator.calculate('I have experience with machinelearning', [
+      'machine learning',
+    ]);
+    expect(result).toBe(1);
+  });
+
+  it('should match compound keywords with hyphens in transcript', () => {
+    const result = calculator.calculate('I use real-time data processing', [
+      'real time',
+    ]);
+    expect(result).toBe(1);
+  });
+
+  it('should match stem-like prefixes', () => {
+    const result = calculator.calculate('I am a developer with 5 years experience', [
+      'develop',
+    ]);
+    expect(result).toBe(1);
+  });
+
+  it('should match keyword as prefix of transcript token', () => {
+    const result = calculator.calculate('I use docker containers for deployment', [
+      'docker',
+    ]);
+    expect(result).toBe(1);
+  });
+
+  it('should match transcript token as prefix of keyword', () => {
+    const result = calculator.calculate('I work with type scripts every day', [
+      'typescript',
+    ]);
+    expect(result).toBe(1);
+  });
+
+  it('should not false-match very short tokens', () => {
+    const result = calculator.calculate('I use a big data pipeline', ['bit']);
+    expect(result).toBe(0);
+  });
 });

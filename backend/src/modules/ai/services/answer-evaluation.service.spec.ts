@@ -162,6 +162,33 @@ describe('AnswerEvaluationService', () => {
       expect(createArg.provider).toBe('gemini');
     });
 
+    it('should persist null technicalScore when AI omits it (HR/COMMUNICATION questions)', async () => {
+      const hrResponse = JSON.stringify({
+        communicationScore: 85,
+        correctnessScore: 75,
+        completenessScore: 70,
+        strengths: ['Good interpersonal skills'],
+        weaknesses: ['Could be more specific'],
+        missingConcepts: [],
+        followUpQuestions: [],
+        feedback: 'Good answer.',
+      });
+
+      mockAiService.generate.mockResolvedValueOnce({
+        text: hrResponse,
+        tokenUsage: { input: 100, output: 200 },
+        provider: 'gemini',
+        model: 'gemini-2.0-flash',
+        durationMs: 1000,
+      });
+
+      await service.evaluate({ answerId: '666666666666666666666601' });
+
+      const createArg = mockEvaluationRepo.create.mock.calls[0][0];
+      expect(createArg.technicalScore).toBeNull();
+      expect(createArg.communicationScore).toBe(85);
+    });
+
     it('should load answer, question, interview, and profile data', async () => {
       await service.evaluate({ answerId: '666666666666666666666601' });
 

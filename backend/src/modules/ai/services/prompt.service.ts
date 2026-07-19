@@ -50,11 +50,12 @@ CRITICAL RULES:
 - Do NOT wrap in code blocks.
 - Do NOT include trailing commas.
 - All string values must be non-empty strings.
-- Generate approximately 10 questions.
+- Generate EXACTLY the number of questions specified. Not fewer, not more.
 - Mix technical (TECHNICAL), behavioral (HR), and communication (COMMUNICATION) questions.
 - Difficulty must be EASY, MEDIUM, or HARD based on the candidate's experience level.
 - Do not generate company-specific questions.
-- Questions should be relevant to the candidate's skills and experience.`;
+- Questions should be relevant to the candidate's skills and experience.
+- Each question MUST include an "expectedKeywords" array with 3-6 key terms or phrases that a strong answer should mention.`;
 
 const INTERVIEW_GENERATION_JSON_SCHEMA = `{
   "title": "Interview title describing the focus area",
@@ -64,22 +65,27 @@ const INTERVIEW_GENERATION_JSON_SCHEMA = `{
       "order": 1,
       "type": "TECHNICAL",
       "difficulty": "MEDIUM",
-      "text": "Question text here"
+      "text": "Question text here",
+      "expectedKeywords": ["keyword1", "keyword2"]
     }
   ]
 }`;
 
-const ANSWER_EVALUATION_SYSTEM_INSTRUCTION = `You are an expert technical interview evaluator. Your task is to assess a candidate's answer to an interview question based on the question details, the candidate's profile, their transcript, and objective speech/communication metrics.
+const ANSWER_EVALUATION_SYSTEM_INSTRUCTION = `You are an expert interview evaluator. Your task is to assess a candidate's answer to an interview question based on the question details, the candidate's profile, their transcript, and objective speech/communication metrics.
 
 CRITICAL RULES:
 - Return ONLY a valid JSON object. No markdown, no explanation, no text before or after.
 - Do NOT wrap in code blocks.
 - Do NOT include trailing commas.
 - All scores must be numbers between 0 and 100.
-- Arrays must contain at least one element where applicable.`;
+- Arrays must contain at least one element where applicable.
+- technicalScore: ONLY include this field when the question type is "TECHNICAL". For HR or COMMUNICATION questions, omit technicalScore entirely.
+- communicationScore: Always include this field regardless of question type.
+- correctnessScore: Always include this field regardless of question type.
+- completenessScore: Always include this field regardless of question type.`;
 
 const ANSWER_EVALUATION_JSON_SCHEMA = `{
-  "technicalScore": 85,
+  "technicalScore": 85,  // ONLY for TECHNICAL questions. Omit for HR/COMMUNICATION.
   "communicationScore": 90,
   "correctnessScore": 80,
   "completenessScore": 75,
@@ -115,22 +121,39 @@ ${cvText}`,
   }
 
   buildInterviewPrompt(profileSummary: string, mode: string, count: number): PromptPayload {
+    const typeConstraint = this._buildTypeConstraint(mode);
+
     return {
-      prompt: `Generate a ${mode} interview with approximately ${count} questions for a candidate with the following profile:
+      prompt: `Generate a ${mode} interview with EXACTLY ${count} questions (not fewer, not more) for a candidate with the following profile:
 
 ${profileSummary}
 
 Return a JSON object with exactly this schema:
 ${INTERVIEW_GENERATION_JSON_SCHEMA}
 
+IMPORTANT: The "questions" array MUST contain exactly ${count} items. This is a strict requirement.
+${typeConstraint}
+
 Rules:
-- Type must be one of: TECHNICAL, HR, COMMUNICATION
 - Difficulty must be one of: EASY, MEDIUM, HARD
 - estimatedDuration is in minutes
 - Questions should be relevant to the candidate's skills and experience
 - Do not generate company-specific questions`,
       systemInstruction: INTERVIEW_GENERATION_SYSTEM_INSTRUCTION,
     };
+  }
+
+  private _buildTypeConstraint(mode: string): string {
+    switch (mode) {
+      case 'HR':
+        return 'ALL questions MUST be of type "HR". Do NOT include TECHNICAL or COMMUNICATION questions.';
+      case 'TECHNICAL':
+        return 'ALL questions MUST be of type "TECHNICAL". Do NOT include HR or COMMUNICATION questions.';
+      case 'MIXED':
+        return 'Mix question types across TECHNICAL, HR, and COMMUNICATION.';
+      default:
+        return 'Mix question types across TECHNICAL, HR, and COMMUNICATION.';
+    }
   }
 
   buildEvaluationPrompt(question: string, transcript: string): PromptPayload {

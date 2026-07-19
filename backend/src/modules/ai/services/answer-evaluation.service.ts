@@ -141,7 +141,7 @@ export class AnswerEvaluationService {
     await this._evaluationRepository.create({
       answerId: new Types.ObjectId(output.answerId),
       interviewId: new Types.ObjectId(output.interviewId),
-      technicalScore: output.technicalScore,
+      technicalScore: output.technicalScore ?? null,
       communicationScore: output.communicationScore,
       correctnessScore: output.correctnessScore,
       completenessScore: output.completenessScore,

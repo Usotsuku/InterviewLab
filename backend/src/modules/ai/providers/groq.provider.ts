@@ -6,11 +6,11 @@ import { AI_ERRORS } from '../errors/ai.errors';
 import { AppException } from '@core/exceptions/app.exception';
 
 @Injectable()
-export class KimiProvider extends AIProvider implements OnModuleInit {
-  private readonly _logger = new Logger(KimiProvider.name);
+export class GroqProvider extends AIProvider implements OnModuleInit {
+  private readonly _logger = new Logger(GroqProvider.name);
   private _client!: OpenAI;
 
-  readonly name = 'kimi';
+  readonly name = 'groq';
 
   constructor(private readonly _aiConfig: AiConfig) {
     super();
@@ -21,8 +21,8 @@ export class KimiProvider extends AIProvider implements OnModuleInit {
     this._assertApiKeyConfigured();
 
     this._client = new OpenAI({
-      apiKey: this._aiConfig.kimiApiKey,
-      baseURL: this._aiConfig.kimiBaseUrl,
+      apiKey: this._aiConfig.groqApiKey,
+      baseURL: this._aiConfig.groqBaseUrl,
     });
 
     await this._assertModelAvailable();
@@ -40,14 +40,29 @@ export class KimiProvider extends AIProvider implements OnModuleInit {
     messages.push({ role: 'user', content: request.prompt });
 
     try {
+      const requestPayload = {
+        model: this._aiConfig.groqModel,
+        messages,
+        temperature: request.temperature ?? this._aiConfig.groqTemperature,
+        max_tokens: request.maxOutputTokens ?? this._aiConfig.groqMaxOutputTokens,
+        top_p: request.topP,
+        reasoning_effort: 'none' as const,
+      };
+
+      const totalMessageChars = messages.reduce((sum, m) => sum + (m.content?.length ?? 0), 0);
+      const estPromptTokens = Math.ceil(totalMessageChars / 4);
+
+      this._logger.log(
+        `[generate] Sending to Groq: model=${requestPayload.model}, ` +
+          `messages=${messages.length} (${totalMessageChars}ch, ~${estPromptTokens} tok), ` +
+          `temperature=${requestPayload.temperature}, ` +
+          `max_tokens=${requestPayload.max_tokens}, ` +
+          `reasoning_effort=${requestPayload.reasoning_effort}, ` +
+          `top_p=${requestPayload.top_p ?? 'n/a'}`,
+      );
+
       const response = await this._withTimeout(
-        this._client.chat.completions.create({
-          model: this._aiConfig.kimiModel,
-          messages,
-          temperature: request.temperature ?? this._aiConfig.kimiTemperature,
-          max_tokens: request.maxOutputTokens ?? this._aiConfig.kimiMaxOutputTokens,
-          top_p: request.topP,
-        }),
+        this._client.chat.completions.create(requestPayload),
         this._aiConfig.timeoutMs,
       );
 
@@ -67,7 +82,7 @@ export class KimiProvider extends AIProvider implements OnModuleInit {
         text,
         tokenUsage,
         provider: this.name,
-        model: this._aiConfig.kimiModel,
+        model: this._aiConfig.groqModel,
         durationMs,
       };
     } catch (error) {
@@ -95,22 +110,22 @@ export class KimiProvider extends AIProvider implements OnModuleInit {
   }
 
   private _logStartupConfig(): void {
-    const key = this._aiConfig.kimiApiKey ?? '';
+    const key = this._aiConfig.groqApiKey ?? '';
     const fingerprint =
       key.length >= 10 ? `${key.substring(0, 6)}...${key.substring(key.length - 4)}` : '***';
     this._logger.log(`[startup] Provider: ${this.name}`);
-    this._logger.log(`[startup] Model: ${this._aiConfig.kimiModel}`);
-    this._logger.log(`[startup] Base URL: ${this._aiConfig.kimiBaseUrl}`);
+    this._logger.log(`[startup] Model: ${this._aiConfig.groqModel}`);
+    this._logger.log(`[startup] Base URL: ${this._aiConfig.groqBaseUrl}`);
     this._logger.log(`[startup] API key fingerprint: ${fingerprint}`);
     this._logger.log(`[startup] Node version: ${process.version}`);
   }
 
   private _assertApiKeyConfigured(): void {
-    if (!this._aiConfig.kimiApiKey) {
-      this._logger.error('[startup] KIMI_API_KEY is not configured');
+    if (!this._aiConfig.groqApiKey) {
+      this._logger.error('[startup] GROQ_API_KEY is not configured');
       AppException.throw(
         AI_ERRORS.CONFIGURATION_ERROR,
-        'KIMI_API_KEY is missing. The AI provider cannot start.',
+        'GROQ_API_KEY is missing. The AI provider cannot start.',
       );
     }
   }
@@ -119,7 +134,7 @@ export class KimiProvider extends AIProvider implements OnModuleInit {
     try {
       const models = await this._client.models.list();
       const availableIds = models.data.map((m) => m.id);
-      const configured = this._aiConfig.kimiModel;
+      const configured = this._aiConfig.groqModel;
 
       if (!availableIds.includes(configured)) {
         this._logger.error(
@@ -128,12 +143,9 @@ export class KimiProvider extends AIProvider implements OnModuleInit {
         AppException.throw(AI_ERRORS.INVALID_MODEL);
       }
 
-      this._logger.log(`[startup] Model "${configured}" is available`);
+      this._logger.log(`[startup] Model "${configured}" validated successfully`);
     } catch (error) {
-      if (
-        error instanceof Error &&
-        (error as any).status !== undefined
-      ) {
+      if (error instanceof Error && (error as any).status !== undefined) {
         this._handleApiError(error, 'startup validation');
       }
 

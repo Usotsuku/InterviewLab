@@ -16,12 +16,16 @@ export class InterviewMetricsRepository extends BaseRepository<InterviewMetricsD
   async findByAnswerId(
     answerId: string | Types.ObjectId,
   ): Promise<InterviewMetricsDocument | null> {
-    return this._metricsModel.findOne({ answerId, deletedAt: null }).exec();
+    return this._metricsModel
+      .findOne({ answerId: this._toObjectId(answerId), deletedAt: null })
+      .exec();
   }
 
   async findByInterviewId(
     interviewId: string | Types.ObjectId,
   ): Promise<InterviewMetricsDocument[]> {
-    return this._metricsModel.find({ interviewId, deletedAt: null }).exec();
+    return this._metricsModel
+      .find({ interviewId: this._toObjectId(interviewId), deletedAt: null })
+      .exec();
   }
 }

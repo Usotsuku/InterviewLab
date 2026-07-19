@@ -1,6 +1,8 @@
 import { Injectable, signal } from '@angular/core';
 import { SpeechError } from '../speech.types';
 
+const STOP_TIMEOUT_MS = 500;
+
 /**
  * SpeechRecognitionService
  *
@@ -8,16 +10,22 @@ import { SpeechError } from '../speech.types';
  * - Runs in continuous mode with auto-restart on Chrome's forced stop.
  * - Accumulates finalTranscript across restarts so the transcript is never lost.
  * - interimTranscript reflects unconfirmed words in real-time.
+ * - `stop()` is async: waits for native `onend` so no interim words are discarded.
  */
 @Injectable({ providedIn: 'root' })
 export class SpeechRecognitionService {
   private _recognition: SpeechRecognition | null = null;
   private _accumulatedFinal = '';
+  private _stopping = false;
+  private _stopResolve: ((transcript: string) => void) | null = null;
 
   readonly isListening = signal(false);
   readonly interimTranscript = signal('');
   readonly finalTranscript = signal('');
   readonly recognitionError = signal<{ code: string; message: string } | null>(null);
+
+  /** Called when a terminal error (not 'no-speech') occurs while listening. */
+  onTerminalError?: (code: string, message: string) => void;
 
   readonly isSupported: boolean =
     'SpeechRecognition' in window || 'webkitSpeechRecognition' in window;
@@ -29,6 +37,8 @@ export class SpeechRecognitionService {
     if (this.isListening()) return;
 
     this._accumulatedFinal = '';
+    this._stopping = false;
+    this._stopResolve = null;
     this.finalTranscript.set('');
     this.interimTranscript.set('');
     this.recognitionError.set(null);
@@ -48,7 +58,11 @@ export class SpeechRecognitionService {
     this._recognition.onresult = (event: SpeechRecognitionEvent) => this._handleResult(event);
     this._recognition.onerror = (event: SpeechRecognitionErrorEvent) => this._handleError(event);
     this._recognition.onend = () => {
-      // Auto-restart if still in listening mode (Chrome stops after ~60s silence)
+      if (this._stopping) {
+        this._finalizeStop();
+        return;
+      }
+      // Auto-restart on Chrome's forced stop (~60s silence)
       if (this.isListening()) {
         this._recognition?.start();
       }
@@ -58,21 +72,53 @@ export class SpeechRecognitionService {
     this.isListening.set(true);
   }
 
-  stop(): string {
-    if (!this.isListening()) return this.finalTranscript();
-    this._recognition?.stop();
+  stop(): Promise<string> {
+    if (!this.isListening()) return Promise.resolve(this.finalTranscript());
+    if (!this._recognition) {
+      this.isListening.set(false);
+      return Promise.resolve(this.finalTranscript());
+    }
+
+    this._stopping = true;
+
+    return new Promise<string>((resolve) => {
+      this._stopResolve = resolve;
+
+      this._recognition!.stop();
+
+      setTimeout(() => {
+        if (this._stopResolve) {
+          this._finalizeStop();
+        }
+      }, STOP_TIMEOUT_MS);
+    });
+  }
+
+  reset(): Promise<void> {
+    return this.stop().then(() => {
+      this._accumulatedFinal = '';
+      this.finalTranscript.set('');
+      this.interimTranscript.set('');
+      this.recognitionError.set(null);
+    });
+  }
+
+  private _finalizeStop(): void {
+    const interim = this.interimTranscript();
+    if (interim) {
+      this._accumulatedFinal += interim + ' ';
+    }
+
     this._recognition = null;
     this.isListening.set(false);
     this.interimTranscript.set('');
-    return this.finalTranscript();
-  }
+    this._stopping = false;
 
-  reset(): void {
-    this.stop();
-    this._accumulatedFinal = '';
-    this.finalTranscript.set('');
-    this.interimTranscript.set('');
-    this.recognitionError.set(null);
+    const transcript = this._accumulatedFinal.trim();
+    this.finalTranscript.set(transcript);
+
+    this._stopResolve?.(transcript);
+    this._stopResolve = null;
   }
 
   private _handleResult(event: SpeechRecognitionEvent): void {
@@ -92,9 +138,13 @@ export class SpeechRecognitionService {
 
   private _handleError(event: SpeechRecognitionErrorEvent): void {
     const code = event.error;
-    this.recognitionError.set({ code, message: this._mapError(code) });
-    // 'no-speech' is non-terminal — keep listening
+    const message = this._mapError(code);
+    this.recognitionError.set({ code, message });
+
     if (code !== 'no-speech') {
+      if (this.isListening()) {
+        this.onTerminalError?.(code, message);
+      }
       this.isListening.set(false);
       this._recognition = null;
     }

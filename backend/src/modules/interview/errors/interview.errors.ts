@@ -57,4 +57,9 @@ export const INTERVIEW_ERRORS = {
     statusCode: 400,
     description: 'All questions have been answered. Finish the interview.',
   },
+  WRONG_QUESTION_COUNT: {
+    message: 'WRONG_QUESTION_COUNT',
+    statusCode: 502,
+    description: 'The AI provider returned a different number of questions than requested.',
+  },
 } as const satisfies Record<string, IAppException>;

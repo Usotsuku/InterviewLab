@@ -26,11 +26,11 @@ describe('GeminiProvider', () => {
 
   const mockAiConfig = {
     geminiApiKey: 'test-api-key',
-    model: 'gemini-2.5-flash',
-    temperature: 0.4,
+    geminiModel: 'gemini-2.5-flash',
+    geminiTemperature: 0.4,
     topP: 0.95,
     topK: 40,
-    maxOutputTokens: 8192,
+    geminiMaxOutputTokens: 2048,
     timeoutMs: 30000,
   };
 
@@ -108,7 +108,7 @@ describe('GeminiProvider', () => {
       expect(call.config.temperature).toBe(0.4);
       expect(call.config.topP).toBe(0.95);
       expect(call.config.topK).toBe(40);
-      expect(call.config.maxOutputTokens).toBe(8192);
+      expect(call.config.maxOutputTokens).toBe(2048);
       expect(call.config.systemInstruction).toBeUndefined();
     });
 

@@ -27,6 +27,35 @@ describe('PromptService', () => {
       expect(result.prompt).toContain('TECHNICAL');
       expect(result.prompt).toContain('Experienced dev');
     });
+
+    it('should use exact count wording instead of approximate', () => {
+      const result = service.buildInterviewPrompt('Profile', 'HR', 10);
+      expect(result.prompt).toContain('EXACTLY 10');
+      expect(result.prompt).toContain('exactly 10');
+      expect(result.prompt).not.toContain('approximately');
+    });
+
+    it('should mention exact count in system instruction', () => {
+      const result = service.buildInterviewPrompt('Profile', 'MIXED', 3);
+      expect(result.systemInstruction).toContain('EXACTLY the number');
+    });
+
+    it('should constrain to HR-only questions for HR mode', () => {
+      const result = service.buildInterviewPrompt('Profile', 'HR', 5);
+      expect(result.prompt).toContain('ALL questions MUST be of type "HR"');
+      expect(result.prompt).toContain('Do NOT include TECHNICAL or COMMUNICATION');
+    });
+
+    it('should constrain to TECHNICAL-only questions for TECHNICAL mode', () => {
+      const result = service.buildInterviewPrompt('Profile', 'TECHNICAL', 5);
+      expect(result.prompt).toContain('ALL questions MUST be of type "TECHNICAL"');
+      expect(result.prompt).toContain('Do NOT include HR or COMMUNICATION');
+    });
+
+    it('should allow mixed types for MIXED mode', () => {
+      const result = service.buildInterviewPrompt('Profile', 'MIXED', 5);
+      expect(result.prompt).toContain('Mix question types across TECHNICAL, HR, and COMMUNICATION');
+    });
   });
 
   describe('buildEvaluationPrompt', () => {

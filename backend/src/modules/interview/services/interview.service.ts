@@ -22,8 +22,13 @@ export interface InterviewDetailsResponse {
   status: InterviewStatus;
   title: string;
   estimatedDuration: number;
+  actualDurationSeconds: number | null;
   totalQuestions: number;
   currentQuestionIndex: number;
+  overallScore: number | null;
+  technicalScore: number | null;
+  communicationScore: number | null;
+  confidenceScore: number | null;
   startedAt: Date | null;
   completedAt: Date | null;
 }
@@ -37,13 +42,14 @@ export class InterviewService {
   async createInterview(
     userId: string,
     mode: InterviewMode,
+    questionCount?: number,
   ): Promise<{ id: string; userId: string; mode: InterviewMode; status: InterviewStatus }> {
     const doc = await this._interviewRepo.create({
       userId: new Types.ObjectId(userId),
       mode,
       status: InterviewStatus.CREATED,
       currentQuestionIndex: 0,
-      totalQuestions: 0,
+      totalQuestions: questionCount ?? 5,
     });
 
     const created = doc as unknown as { _id: Types.ObjectId };
@@ -76,8 +82,13 @@ export class InterviewService {
       status: InterviewStatus;
       title: string;
       estimatedDuration: number;
+      actualDurationSeconds: number | null;
       totalQuestions: number;
       currentQuestionIndex: number;
+      overallScore: number | null;
+      technicalScore: number | null;
+      communicationScore: number | null;
+      confidenceScore: number | null;
       startedAt: Date | null;
       completedAt: Date | null;
     };
@@ -93,8 +104,13 @@ export class InterviewService {
       status: doc.status,
       title: doc.title ?? '',
       estimatedDuration: doc.estimatedDuration ?? 0,
+      actualDurationSeconds: doc.actualDurationSeconds ?? null,
       totalQuestions: doc.totalQuestions ?? 0,
       currentQuestionIndex: doc.currentQuestionIndex ?? 0,
+      overallScore: doc.overallScore ?? null,
+      technicalScore: doc.technicalScore ?? null,
+      communicationScore: doc.communicationScore ?? null,
+      confidenceScore: doc.confidenceScore ?? null,
       startedAt: doc.startedAt ?? null,
       completedAt: doc.completedAt ?? null,
     };

@@ -1,10 +1,12 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InterviewRepository } from '../repositories/interview.repository';
 import { QuestionRepository } from '@modules/question/repositories/question.repository';
+import { AiEvaluationRepository } from '@modules/ai/repositories/ai-evaluation.repository';
 import { INTERVIEW_ERRORS } from '../errors/interview.errors';
 import { AppException } from '@core/exceptions/app.exception';
 import { InterviewStatus } from '@shared/enums/domain.enums';
 import { Types } from 'mongoose';
+import { InterviewScoreAggregator } from './interview-score-aggregator';
 
 export interface QuestionResponse {
   id: string;
@@ -40,7 +42,11 @@ export interface FinishResponse {
   interviewId: string;
   status: InterviewStatus;
   completedAt: Date;
+  actualDurationSeconds: number;
   totalQuestionsAnswered: number;
+  overallScore: number | null;
+  technicalScore: number | null;
+  communicationScore: number | null;
 }
 
 @Injectable()
@@ -50,6 +56,8 @@ export class InterviewSessionService {
   constructor(
     private readonly _interviewRepo: InterviewRepository,
     private readonly _questionRepo: QuestionRepository,
+    private readonly _evaluationRepo: AiEvaluationRepository,
+    private readonly _scoreAggregator: InterviewScoreAggregator,
   ) {}
 
   async startInterview(interviewId: string, userId: string): Promise<StartResponse> {
@@ -240,6 +248,7 @@ export class InterviewSessionService {
       status: InterviewStatus;
       currentQuestionIndex: number;
       totalQuestions: number;
+      startedAt: Date | null;
     };
     if (doc.userId.toString() !== userId) {
       AppException.throw(INTERVIEW_ERRORS.INTERVIEW_NOT_FOUND);
@@ -250,18 +259,34 @@ export class InterviewSessionService {
     }
 
     const now = new Date();
+    const actualDurationSeconds =
+      doc.startedAt != null ? Math.round((now.getTime() - doc.startedAt.getTime()) / 1000) : 0;
+
+    const evaluations = await this._evaluationRepo.findByInterviewId(interviewId);
+    const scores = this._scoreAggregator.aggregate(evaluations);
+
     await this._interviewRepo.updateById(interviewId, {
       status: InterviewStatus.COMPLETED,
       completedAt: now,
+      actualDurationSeconds,
+      overallScore: scores.overallScore,
+      technicalScore: scores.technicalScore,
+      communicationScore: scores.communicationScore,
     });
 
-    this._logger.log(`[finishInterview] Interview completed: ${interviewId}`);
+    this._logger.log(
+      `[finishInterview] Interview completed: ${interviewId}, duration: ${actualDurationSeconds}s, overallScore: ${scores.overallScore}`,
+    );
 
     return {
       interviewId,
       status: InterviewStatus.COMPLETED,
       completedAt: now,
+      actualDurationSeconds,
       totalQuestionsAnswered: (doc.currentQuestionIndex ?? 0) + 1,
+      overallScore: scores.overallScore,
+      technicalScore: scores.technicalScore,
+      communicationScore: scores.communicationScore,
     };
   }
 }

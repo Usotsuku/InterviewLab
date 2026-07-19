@@ -17,7 +17,7 @@ export interface AiEvaluationInput {
 export interface AiEvaluationOutput {
   answerId: string;
   interviewId: string;
-  technicalScore: number;
+  technicalScore: number | null;
   communicationScore: number;
   correctnessScore: number;
   completenessScore: number;
@@ -97,7 +97,9 @@ export function parseAndValidate(input: AiEvaluationInput): AiEvaluationOutput {
 
   const raw = parsed as RawEvaluationResponse;
 
-  const technicalScore = validateAndClampScore(raw.technicalScore, 'technicalScore', 0);
+  const technicalScore = raw.technicalScore != null
+    ? validateAndClampScore(raw.technicalScore, 'technicalScore', 0)
+    : null;
   const communicationScore = validateAndClampScore(raw.communicationScore, 'communicationScore', 0);
   const correctnessScore = validateAndClampScore(raw.correctnessScore, 'correctnessScore', 0);
   const completenessScore = validateAndClampScore(raw.completenessScore, 'completenessScore', 0);

@@ -7,6 +7,7 @@ import { InterviewMode } from '../models/domain.enums';
 
 export interface CreateInterviewDto {
   mode: InterviewMode;
+  questionCount?: number;
 }
 
 export interface CurrentQuestionResponse {

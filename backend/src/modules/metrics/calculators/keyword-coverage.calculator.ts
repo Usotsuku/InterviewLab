@@ -7,16 +7,56 @@ export class KeywordCoverageCalculator {
       return 0;
     }
 
-    const lower = transcript.toLowerCase();
+    const normalizedTranscript = this._normalize(transcript);
+    const transcriptTokens = normalizedTranscript.split(/\s+/);
     let matched = 0;
 
     for (const keyword of expectedKeywords) {
-      const kw = keyword.toLowerCase().trim();
-      if (kw.length > 0 && lower.includes(kw)) {
+      const normalizedKw = this._normalize(keyword);
+      if (normalizedKw.length === 0) continue;
+
+      if (
+        this._matches(normalizedKw, normalizedTranscript, transcriptTokens)
+      ) {
         matched++;
       }
     }
 
     return Math.round((matched / expectedKeywords.length) * 100) / 100;
+  }
+
+  private _matches(
+    normalizedKeyword: string,
+    normalizedTranscript: string,
+    transcriptTokens: string[],
+  ): boolean {
+    if (normalizedTranscript.includes(normalizedKeyword)) {
+      return true;
+    }
+
+    const kwTokens = normalizedKeyword.split(/\s+/);
+    if (kwTokens.length > 1) {
+      const kwJoined = kwTokens.join('');
+      const transcriptJoined = transcriptTokens.join('');
+      if (transcriptJoined.includes(kwJoined)) {
+        return true;
+      }
+    }
+
+    for (const token of transcriptTokens) {
+      if (token.startsWith(normalizedKeyword) || normalizedKeyword.startsWith(token)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private _normalize(text: string): string {
+    return text
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
   }
 }

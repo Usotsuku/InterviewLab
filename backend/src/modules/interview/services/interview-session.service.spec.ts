@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { InterviewSessionService } from './interview-session.service';
 import { InterviewRepository } from '../repositories/interview.repository';
 import { QuestionRepository } from '@modules/question/repositories/question.repository';
+import { AiEvaluationRepository } from '@modules/ai/repositories/ai-evaluation.repository';
+import { InterviewScoreAggregator } from './interview-score-aggregator';
 import { InterviewStatus } from '@shared/enums/domain.enums';
 import { Types } from 'mongoose';
 
@@ -18,6 +20,14 @@ describe('InterviewSessionService', () => {
 
   const mockQuestionRepo = {
     findByInterviewId: jest.fn(),
+  };
+
+  const mockEvaluationRepo = {
+    findByInterviewId: jest.fn(),
+  };
+
+  const mockScoreAggregator = {
+    aggregate: jest.fn(),
   };
 
   const mockInterview = {
@@ -63,6 +73,8 @@ describe('InterviewSessionService', () => {
         InterviewSessionService,
         { provide: InterviewRepository, useValue: mockInterviewRepo },
         { provide: QuestionRepository, useValue: mockQuestionRepo },
+        { provide: AiEvaluationRepository, useValue: mockEvaluationRepo },
+        { provide: InterviewScoreAggregator, useValue: mockScoreAggregator },
       ],
     }).compile();
 
@@ -179,11 +191,22 @@ describe('InterviewSessionService', () => {
   });
 
   describe('finishInterview', () => {
-    it('should finish an IN_PROGRESS interview', async () => {
+    it('should finish an IN_PROGRESS interview, compute duration, and aggregate scores', async () => {
+      const startedAt = new Date(Date.now() - 120000);
       mockInterviewRepo.findById.mockResolvedValue({
         ...mockInterview,
         status: InterviewStatus.IN_PROGRESS,
         currentQuestionIndex: 2,
+        startedAt,
+      });
+      mockEvaluationRepo.findByInterviewId.mockResolvedValue([
+        { technicalScore: 80, communicationScore: 70, correctnessScore: 75, completenessScore: 65 },
+        { technicalScore: 90, communicationScore: 80, correctnessScore: 85, completenessScore: 75 },
+      ]);
+      mockScoreAggregator.aggregate.mockReturnValue({
+        overallScore: 77.5,
+        technicalScore: 85,
+        communicationScore: 75,
       });
 
       const result = await service.finishInterview(INTERVIEW_ID, USER_ID);
@@ -191,10 +214,42 @@ describe('InterviewSessionService', () => {
       expect(result.status).toBe(InterviewStatus.COMPLETED);
       expect(result.completedAt).toBeInstanceOf(Date);
       expect(result.totalQuestionsAnswered).toBe(3);
+      expect(result.actualDurationSeconds).toBeGreaterThanOrEqual(119);
+      expect(result.actualDurationSeconds).toBeLessThanOrEqual(121);
+      expect(result.technicalScore).toBe(85);
+      expect(result.communicationScore).toBe(75);
+      expect(result.overallScore).toBe(77.5);
+
       expect(mockInterviewRepo.updateById).toHaveBeenCalledWith(INTERVIEW_ID, {
         status: InterviewStatus.COMPLETED,
         completedAt: expect.any(Date),
+        actualDurationSeconds: expect.any(Number),
+        overallScore: 77.5,
+        technicalScore: 85,
+        communicationScore: 75,
       });
+    });
+
+    it('should set null scores when no evaluations exist', async () => {
+      mockInterviewRepo.findById.mockResolvedValue({
+        ...mockInterview,
+        status: InterviewStatus.IN_PROGRESS,
+        currentQuestionIndex: 0,
+        startedAt: new Date(),
+      });
+      mockEvaluationRepo.findByInterviewId.mockResolvedValue([]);
+      mockScoreAggregator.aggregate.mockReturnValue({
+        overallScore: null,
+        technicalScore: null,
+        communicationScore: null,
+      });
+
+      const result = await service.finishInterview(INTERVIEW_ID, USER_ID);
+
+      expect(result.status).toBe(InterviewStatus.COMPLETED);
+      expect(result.overallScore).toBeNull();
+      expect(result.technicalScore).toBeNull();
+      expect(result.communicationScore).toBeNull();
     });
 
     it('should throw when interview not in progress', async () => {

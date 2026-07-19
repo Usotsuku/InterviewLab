@@ -17,13 +17,23 @@ export class AiConfig {
     return this._config.get<string>('config.ai.gemini.model')!;
   }
 
+  get geminiTemperature(): number {
+    return this._config.get<number>('config.ai.gemini.temperature')!;
+  }
+
+  get geminiMaxOutputTokens(): number {
+    return this._config.get<number>('config.ai.gemini.maxOutputTokens')!;
+  }
+
   get model(): string {
     if (this.provider === 'kimi') return this.kimiModel;
+    if (this.provider === 'groq') return this.groqModel;
     return this.geminiModel;
   }
 
   get temperature(): number {
     if (this.provider === 'kimi') return this.kimiTemperature;
+    if (this.provider === 'groq') return this.groqTemperature;
     return this._config.get<number>('config.ai.gemini.temperature')!;
   }
 
@@ -37,6 +47,7 @@ export class AiConfig {
 
   get maxOutputTokens(): number {
     if (this.provider === 'kimi') return this.kimiMaxOutputTokens;
+    if (this.provider === 'groq') return this.groqMaxOutputTokens;
     return this._config.get<number>('config.ai.gemini.maxOutputTokens')!;
   }
 
@@ -74,5 +85,25 @@ export class AiConfig {
 
   get kimiMaxOutputTokens(): number {
     return this._config.get<number>('config.ai.kimi.maxOutputTokens')!;
+  }
+
+  get groqApiKey(): string {
+    return this._config.get<string>('config.ai.groq.apiKey')!;
+  }
+
+  get groqModel(): string {
+    return this._config.get<string>('config.ai.groq.model')!;
+  }
+
+  get groqBaseUrl(): string {
+    return this._config.get<string>('config.ai.groq.baseUrl')!;
+  }
+
+  get groqTemperature(): number {
+    return this._config.get<number>('config.ai.groq.temperature')!;
+  }
+
+  get groqMaxOutputTokens(): number {
+    return this._config.get<number>('config.ai.groq.maxOutputTokens')!;
   }
 }

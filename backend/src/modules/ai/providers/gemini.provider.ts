@@ -27,10 +27,10 @@ export class GeminiProvider extends AIProvider implements OnModuleInit {
     const startTime = Date.now();
 
     const config: GenerateContentConfig = {
-      temperature: request.temperature ?? this._aiConfig.temperature,
+      temperature: request.temperature ?? this._aiConfig.geminiTemperature,
       topP: request.topP ?? this._aiConfig.topP,
       topK: request.topK ?? this._aiConfig.topK,
-      maxOutputTokens: request.maxOutputTokens ?? this._aiConfig.maxOutputTokens,
+      maxOutputTokens: request.maxOutputTokens ?? this._aiConfig.geminiMaxOutputTokens,
     };
 
     if (request.systemInstruction) {
@@ -40,7 +40,7 @@ export class GeminiProvider extends AIProvider implements OnModuleInit {
     try {
       const response = await this._withTimeout(
         this._client.models.generateContent({
-          model: this._aiConfig.model,
+          model: this._aiConfig.geminiModel,
           contents: request.prompt,
           config,
         }),
@@ -62,7 +62,7 @@ export class GeminiProvider extends AIProvider implements OnModuleInit {
         text,
         tokenUsage,
         provider: this.name,
-        model: this._aiConfig.model,
+        model: this._aiConfig.geminiModel,
         durationMs,
       };
     } catch (error) {
@@ -94,7 +94,7 @@ export class GeminiProvider extends AIProvider implements OnModuleInit {
     const fingerprint =
       key.length >= 10 ? `${key.substring(0, 6)}...${key.substring(key.length - 4)}` : '***';
     this._logger.log(`[startup] Provider: ${this.name}`);
-    this._logger.log(`[startup] Configured model: ${this._aiConfig.model}`);
+    this._logger.log(`[startup] Configured model: ${this._aiConfig.geminiModel}`);
     this._logger.log(`[startup] API key fingerprint: ${fingerprint}`);
     this._logger.log(`[startup] Node version: ${process.version}`);
   }
@@ -112,16 +112,16 @@ export class GeminiProvider extends AIProvider implements OnModuleInit {
   private async _assertModelAvailable(): Promise<void> {
     try {
       await this._client.models.generateContent({
-        model: this._aiConfig.model,
+        model: this._aiConfig.geminiModel,
         contents: 'ping',
         config: { maxOutputTokens: 1 },
       });
       this._logger.log(
-        `[startup] Model "${this._aiConfig.model}" is available for generateContent`,
+        `[startup] Model "${this._aiConfig.geminiModel}" is available for generateContent`,
       );
     } catch (error) {
       this._logger.error(
-        `[startup] Model "${this._aiConfig.model}" is NOT available for generateContent`,
+        `[startup] Model "${this._aiConfig.geminiModel}" is NOT available for generateContent`,
       );
       await this._logAvailableModels();
       this._handleApiError(error, 'startup validation');

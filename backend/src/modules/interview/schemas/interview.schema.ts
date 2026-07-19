@@ -46,6 +46,9 @@ export class Interview {
   completedAt?: Date;
 
   @Prop({ default: null })
+  actualDurationSeconds?: number;
+
+  @Prop({ default: null })
   deletedAt?: Date;
 }
 

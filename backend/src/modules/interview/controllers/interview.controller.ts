@@ -29,8 +29,14 @@ export class InterviewController {
   @ApiResponse({ status: 400, description: 'PROFILE_INCOMPLETE or profile not found.' })
   @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
   async create(@CurrentUser() user: JwtPayload, @Body() body: CreateInterviewDto) {
-    const interview = await this._interviewService.createInterview(user.sub, body.mode);
-    const result = await this._generationService.generate(user.sub, interview.id, body.mode);
+    const questionCount = body.questionCount ?? 5;
+    const interview = await this._interviewService.createInterview(user.sub, body.mode, questionCount);
+    const result = await this._generationService.generate(
+      user.sub,
+      interview.id,
+      body.mode,
+      questionCount,
+    );
     return {
       id: result.interviewId,
       userId: user.sub,

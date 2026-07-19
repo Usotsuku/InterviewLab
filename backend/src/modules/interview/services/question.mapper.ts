@@ -10,6 +10,7 @@ export interface AiInterviewQuestion {
   type: string;
   difficulty: string;
   text: string;
+  expectedKeywords?: string[];
 }
 
 export interface AiInterviewResponse {
@@ -23,6 +24,7 @@ export interface MappedQuestion {
   type: QuestionType;
   difficulty: QuestionDifficulty;
   text: string;
+  expectedKeywords: string[];
 }
 
 const REQUIRED_FIELDS: (keyof AiInterviewResponse)[] = ['title', 'estimatedDuration', 'questions'];
@@ -31,16 +33,22 @@ const VALID_QUESTION_TYPES = new Set<string>(Object.values(QuestionType));
 const VALID_DIFFICULTIES = new Set<string>(Object.values(QuestionDifficulty));
 
 function parseJsonFromAiResponse(raw: string): AiInterviewResponse {
+  _logger.log(`[parseJsonFromAiResponse] Input length: ${raw.length}ch`);
+
   let cleaned = raw.trim();
 
   const codeBlockMatch = cleaned.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
   if (codeBlockMatch) {
+    _logger.log('[parseJsonFromAiResponse] Extracted from markdown code block');
     cleaned = codeBlockMatch[1].trim();
   }
 
   const jsonStart = cleaned.indexOf('{');
   const jsonEnd = cleaned.lastIndexOf('}');
   if (jsonStart === -1 || jsonEnd === -1 || jsonEnd <= jsonStart) {
+    _logger.error(
+      `[parseJsonFromAiResponse] No JSON object found. jsonStart=${jsonStart}, jsonEnd=${jsonEnd}. First 500ch: "${cleaned.substring(0, 500)}"`,
+    );
     AppException.throw(INTERVIEW_ERRORS.INVALID_AI_RESPONSE);
   }
 
@@ -48,13 +56,50 @@ function parseJsonFromAiResponse(raw: string): AiInterviewResponse {
 
   try {
     return JSON.parse(cleaned) as AiInterviewResponse;
-  } catch {
+  } catch (parseError) {
+    _logger.error(
+      `[parseJsonFromAiResponse] JSON.parse failed: ${(parseError as Error).message}. Attempting recovery. Extracted JSON (${cleaned.length}ch):\n${cleaned}`,
+    );
+
+    const recovered = _tryRecoverTruncatedJson(cleaned);
+    if (recovered) {
+      _logger.log('[parseJsonFromAiResponse] Recovered truncated JSON successfully');
+      return recovered;
+    }
+
     AppException.throw(INTERVIEW_ERRORS.INVALID_AI_RESPONSE);
     throw new UnreachableError('unreachable');
   }
 }
 
-function validateResponse(data: AiInterviewResponse): void {
+function _tryRecoverTruncatedJson(text: string): AiInterviewResponse | null {
+  let candidate = text;
+
+  const openBrackets = (candidate.match(/\[/g) || []).length;
+  const closeBrackets = (candidate.match(/\]/g) || []).length;
+  const openBraces = (candidate.match(/\{/g) || []).length;
+  const closeBraces = (candidate.match(/\}/g) || []).length;
+
+  let suffix = '';
+  for (let i = closeBrackets; i < openBrackets; i++) suffix += ']';
+  for (let i = closeBraces; i < openBraces; i++) suffix += '}';
+
+  if (suffix.length > 0) {
+    candidate = candidate.replace(/,\s*$/, '') + suffix;
+    try {
+      const parsed = JSON.parse(candidate) as AiInterviewResponse;
+      if (parsed.questions && Array.isArray(parsed.questions) && parsed.questions.length > 0) {
+        return parsed;
+      }
+    } catch {
+      // recovery failed
+    }
+  }
+
+  return null;
+}
+
+function validateResponse(data: AiInterviewResponse, expectedCount: number): void {
   for (const field of REQUIRED_FIELDS) {
     if (data[field] === undefined || data[field] === null) {
       _logger.warn(`[validateResponse] Missing required field: ${field}`);
@@ -75,6 +120,13 @@ function validateResponse(data: AiInterviewResponse): void {
   if (!Array.isArray(data.questions) || data.questions.length === 0) {
     _logger.warn('[validateResponse] questions is not a non-empty array');
     AppException.throw(INTERVIEW_ERRORS.INVALID_AI_RESPONSE);
+  }
+
+  if (data.questions.length !== expectedCount) {
+    _logger.warn(
+      `[validateResponse] Expected ${expectedCount} questions but received ${data.questions.length}`,
+    );
+    AppException.throw(INTERVIEW_ERRORS.WRONG_QUESTION_COUNT);
   }
 }
 
@@ -100,9 +152,12 @@ function validateQuestion(q: AiInterviewQuestion, index: number): void {
   }
 }
 
-export function mapAiResponseToQuestions(raw: string): AiInterviewResponse {
+export function mapAiResponseToQuestions(
+  raw: string,
+  expectedCount: number = 5,
+): AiInterviewResponse & { questions: MappedQuestion[] } {
   const data = parseJsonFromAiResponse(raw);
-  validateResponse(data);
+  validateResponse(data, expectedCount);
 
   const questions: MappedQuestion[] = data.questions.map((q, i) => {
     validateQuestion(q, i);
@@ -111,6 +166,7 @@ export function mapAiResponseToQuestions(raw: string): AiInterviewResponse {
       type: q.type as QuestionType,
       difficulty: q.difficulty as QuestionDifficulty,
       text: q.text.trim(),
+      expectedKeywords: Array.isArray(q.expectedKeywords) ? q.expectedKeywords : [],
     };
   });
 

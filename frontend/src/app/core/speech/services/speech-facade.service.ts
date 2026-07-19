@@ -38,7 +38,14 @@ export class SpeechFacadeService {
     private readonly _recognition: SpeechRecognitionService,
     private readonly _validator: TranscriptValidationService,
     private readonly _permissions: SpeechPermissionsService,
-  ) {}
+  ) {
+    this._recognition.onTerminalError = (code: string, message: string) => {
+      if (this._speechState() === 'RECORDING') {
+        this._speechState.set('ERROR');
+        this._error.set(new SpeechError('RECOGNITION_ERROR', `[${code}] ${message}`));
+      }
+    };
+  }
 
   async requestMicrophonePermission(): Promise<void> {
     this._speechState.set('REQUESTING_PERMISSION');
@@ -82,8 +89,9 @@ export class SpeechFacadeService {
     }
 
     this._speechState.set('PROCESSING');
-    const transcript = this._recognition.stop();
+
     const durationSeconds = this.recordingDurationSeconds();
+    const transcript = await this._recognition.stop();
 
     const validation = this._validator.validate(transcript, durationSeconds);
 
@@ -115,14 +123,14 @@ export class SpeechFacadeService {
     return this._recorder.getAnalyserNode(this._currentStream);
   }
 
-  resetForNextQuestion(): void {
-    this._recognition.reset();
+  async resetForNextQuestion(): Promise<void> {
+    await this._recognition.reset();
     this._error.set(null);
     this._speechState.set('READY');
   }
 
-  destroy(): void {
-    this._recognition.stop();
+  async destroy(): Promise<void> {
+    await this._recognition.stop();
     this._currentStream?.getTracks().forEach((t) => t.stop());
     this._currentStream = null;
     this._speechState.set('IDLE');

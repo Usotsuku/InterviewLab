@@ -11,8 +11,8 @@ export class AiEvaluation {
   @Prop({ type: Types.ObjectId, ref: 'Interview', required: true, index: true })
   interviewId!: Types.ObjectId;
 
-  @Prop({ default: null })
-  technicalScore?: number;
+  @Prop({ type: Number, default: null })
+  technicalScore?: number | null;
 
   @Prop({ default: null })
   communicationScore?: number;

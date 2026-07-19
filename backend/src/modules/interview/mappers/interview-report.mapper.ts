@@ -24,6 +24,7 @@ interface InterviewDocument {
   status: InterviewStatus;
   title?: string;
   estimatedDuration?: number;
+  actualDurationSeconds?: number | null;
   totalQuestions?: number;
   currentQuestionIndex?: number;
   overallScore?: number;
@@ -117,6 +118,7 @@ export function mapInterviewSummary(doc: InterviewDocument): InterviewSummaryDto
   dto.status = doc.status;
   dto.title = doc.title ?? '';
   dto.estimatedDuration = doc.estimatedDuration ?? 0;
+  dto.actualDurationSeconds = doc.actualDurationSeconds ?? null;
   dto.totalQuestions = doc.totalQuestions ?? 0;
   dto.overallScore = doc.overallScore ?? 0;
   dto.communicationScore = doc.communicationScore ?? 0;

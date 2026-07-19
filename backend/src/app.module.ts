@@ -40,7 +40,7 @@ import { SettingsModule } from '@modules/settings/settings.module';
     AnswerModule,
     MetricsModule,
     SpeechModule,
-    AIModule,
+    AIModule.forRoot(),
     StorageModule,
     NotificationModule,
     SettingsModule,

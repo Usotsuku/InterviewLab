@@ -121,6 +121,9 @@ export class InterviewSummaryDto {
   @ApiProperty({ example: 60 })
   estimatedDuration!: number;
 
+  @ApiPropertyOptional({ example: 1200 })
+  actualDurationSeconds?: number | null;
+
   @ApiProperty({ example: 10 })
   totalQuestions!: number;
 

@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { AIService } from '@modules/ai/services/ai.service';
 import { PromptService } from '@modules/ai/services/prompt.service';
+import { RetryService } from '@modules/ai/services/retry.service';
 import { CandidateProfileService } from '@modules/candidate-profile/services/candidate-profile.service';
 import { InterviewRepository } from '../repositories/interview.repository';
 import { QuestionRepository } from '@modules/question/repositories/question.repository';
@@ -25,13 +26,21 @@ export class InterviewGenerationService {
   constructor(
     private readonly _aiService: AIService,
     private readonly _promptService: PromptService,
+    private readonly _retryService: RetryService,
     private readonly _candidateProfileService: CandidateProfileService,
     private readonly _interviewRepo: InterviewRepository,
     private readonly _questionRepo: QuestionRepository,
   ) {}
 
-  async generate(userId: string, interviewId: string, mode: string): Promise<GenerationResult> {
-    this._logger.log(`[generate] Starting interview generation for user: ${userId}, mode: ${mode}`);
+  async generate(
+    userId: string,
+    interviewId: string,
+    mode: string,
+    questionCount: number = 5,
+  ): Promise<GenerationResult> {
+    this._logger.log(
+      `[generate] Starting interview generation for user: ${userId}, mode: ${mode}, questionCount: ${questionCount}`,
+    );
 
     const profile = await this._candidateProfileService.findByUserId(userId).catch(() => null);
     if (!profile) {
@@ -46,16 +55,48 @@ export class InterviewGenerationService {
 
     try {
       const profileSummary = this._buildProfileSummary(profile);
-      const payload = this._promptService.buildInterviewPrompt(profileSummary, mode, 10);
+      const payload = this._promptService.buildInterviewPrompt(
+        profileSummary,
+        mode,
+        questionCount,
+      );
+
+      const sysLen = payload.systemInstruction?.length ?? 0;
+      const promptLen = payload.prompt.length;
+      this._logger.log(
+        `[generate] Payload breakdown: systemInstruction=${sysLen}ch (~${Math.ceil(sysLen / 4)} tok), prompt=${promptLen}ch (~${Math.ceil(promptLen / 4)} tok), total=${sysLen + promptLen}ch (~${Math.ceil((sysLen + promptLen) / 4)} tok)`,
+      );
 
       this._logger.log(`[generate] Calling AI for interview generation`);
 
-      const response = await this._aiService.generate({
-        prompt: payload.prompt,
-        systemInstruction: payload.systemInstruction,
-      });
+      const response = await this._retryService.execute(
+        () =>
+          this._aiService.generate({
+            prompt: payload.prompt,
+            systemInstruction: payload.systemInstruction,
+            maxOutputTokens: 1200 + questionCount * 40,
+          }),
+        {
+          maxAttempts: 3,
+          baseDelayMs: 1000,
+          maxDelayMs: 5000,
+          operationName: 'interview-generation',
+        },
+      );
 
-      const mapped = mapAiResponseToQuestions(response.text);
+      this._logger.log(
+        `[generate] AI response: ${response.text.length}ch, tokens: ${response.tokenUsage.input}+${response.tokenUsage.output}, provider: ${response.provider}, model: ${response.model}`,
+      );
+
+      if (response.text.length < 10) {
+        this._logger.error(
+          `[generate] AI response too short (${response.text.length}ch): "${response.text}"`,
+        );
+      }
+
+      this._logger.debug(`[generate] Raw AI response:\n${response.text}`);
+
+      const mapped = mapAiResponseToQuestions(response.text, questionCount);
 
       await this._updateStatus(interviewId, InterviewStatus.READY);
 
@@ -71,6 +112,7 @@ export class InterviewGenerationService {
         type: q.type as QuestionType,
         difficulty: q.difficulty as QuestionDifficulty,
         order: q.order,
+        expectedKeywords: q.expectedKeywords ?? [],
       }));
 
       for (const doc of questionDocs) {
@@ -119,37 +161,65 @@ export class InterviewGenerationService {
     strengths: string[];
     weaknesses: string[];
   }): string {
+    const fieldSizes: Record<string, number> = {};
     const parts: string[] = [];
 
     if (profile.summary) {
+      fieldSizes['summary'] = profile.summary.length;
       parts.push(`Summary: ${profile.summary}`);
     }
     if (profile.skills.length > 0) {
-      parts.push(`Skills: ${profile.skills.join(', ')}`);
+      const skillsStr = profile.skills.join(', ');
+      fieldSizes['skills'] = skillsStr.length;
+      parts.push(`Skills: ${skillsStr}`);
     }
     if (profile.technologies.length > 0) {
-      parts.push(`Technologies: ${profile.technologies.join(', ')}`);
+      const techsStr = profile.technologies.join(', ');
+      fieldSizes['technologies'] = techsStr.length;
+      parts.push(`Technologies: ${techsStr}`);
     }
     if (profile.experience.length > 0) {
-      const expStr = profile.experience
-        .map((e) => `${e.position}${e.description ? ` - ${e.description}` : ''}`)
-        .join('; ');
+      const expEntries = profile.experience.map((e, i) => {
+        const desc = e.description || '';
+        fieldSizes[`experience[${i}].description`] = desc.length;
+        return `${e.position}${desc ? ` - ${desc}` : ''}`;
+      });
+      const expStr = expEntries.join('; ');
+      fieldSizes['experience_total'] = expStr.length;
       parts.push(`Experience: ${expStr}`);
     }
     if (profile.projects.length > 0) {
-      const projStr = profile.projects
-        .map((p) => `${p.name}${p.description ? ` - ${p.description}` : ''}`)
-        .join('; ');
+      const projEntries = profile.projects.map((p, i) => {
+        const desc = p.description || '';
+        fieldSizes[`project[${i}].description`] = desc.length;
+        return `${p.name}${desc ? ` - ${desc}` : ''}`;
+      });
+      const projStr = projEntries.join('; ');
+      fieldSizes['projects_total'] = projStr.length;
       parts.push(`Projects: ${projStr}`);
     }
     if (profile.strengths.length > 0) {
-      parts.push(`Strengths: ${profile.strengths.join(', ')}`);
+      const strengthsStr = profile.strengths.join(', ');
+      fieldSizes['strengths'] = strengthsStr.length;
+      parts.push(`Strengths: ${strengthsStr}`);
     }
     if (profile.weaknesses.length > 0) {
-      parts.push(`Weaknesses: ${profile.weaknesses.join(', ')}`);
+      const weaknessesStr = profile.weaknesses.join(', ');
+      fieldSizes['weaknesses'] = weaknessesStr.length;
+      parts.push(`Weaknesses: ${weaknessesStr}`);
     }
 
-    return parts.join('\n');
+    const summary = parts.join('\n');
+    fieldSizes['TOTAL'] = summary.length;
+
+    this._logger.log(
+      `[buildProfileSummary] Field sizes (chars): ${JSON.stringify(fieldSizes)}`,
+    );
+    this._logger.log(
+      `[buildProfileSummary] profileSummary total: ${summary.length}ch, ~${Math.ceil(summary.length / 4)} tokens`,
+    );
+
+    return summary;
   }
 
   private async _updateStatus(interviewId: string, status: InterviewStatus): Promise<void> {

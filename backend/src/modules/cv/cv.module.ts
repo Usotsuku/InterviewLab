@@ -9,7 +9,7 @@ import { AIModule } from '@modules/ai/ai.module';
 import { NotificationModule } from '@modules/notification/notification.module';
 
 @Module({
-  imports: [StorageModule, CandidateProfileModule, AIModule, NotificationModule],
+    imports: [StorageModule, CandidateProfileModule, AIModule.forRoot(), NotificationModule],
   controllers: [CvController],
   providers: [CvService, PdfExtractionService, CvAnalysisService],
   exports: [CvService],

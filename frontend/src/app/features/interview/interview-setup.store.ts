@@ -106,7 +106,10 @@ export class InterviewSetupStore extends AsyncStore<InterviewSetupState> {
     this._startOperation('create');
     try {
       const res = await firstValueFrom(
-        this._interviewApi.createInterview({ mode: this._state().mode })
+        this._interviewApi.createInterview({
+          mode: this._state().mode,
+          questionCount: this._state().questionCount,
+        })
       );
       this._setState({ createdInterview: res.data });
       this._completeOperation('create');

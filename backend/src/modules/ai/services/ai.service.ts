@@ -24,6 +24,15 @@ export class AIService {
   ) {}
 
   async generate(request: GenerateRequest): Promise<GenerateResponse> {
+    const sysLen = request.systemInstruction?.length ?? 0;
+    const promptLen = request.prompt.length;
+    const totalChars = sysLen + promptLen;
+    const estTokens = Math.ceil(totalChars / 4);
+
+    this._logger.log(
+      `[generate] Request sizes: systemInstruction=${sysLen}ch, prompt=${promptLen}ch, total=${totalChars}ch, ~${estTokens} tokens`,
+    );
+
     return this._retryService.execute(() => this._provider.generate(request), {
       maxAttempts: this._aiConfig.retryMaxAttempts,
       baseDelayMs: this._aiConfig.retryBaseDelayMs,

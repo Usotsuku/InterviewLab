@@ -14,23 +14,22 @@ jest.mock('openai', () => {
   };
 });
 
-import OpenAI from 'openai';
 import { Test } from '@nestjs/testing';
-import { KimiProvider } from './kimi.provider';
+import { GroqProvider } from './groq.provider';
 import { AiConfig } from '../config/ai.config';
 import { AI_ERRORS } from '../errors/ai.errors';
 
-describe('KimiProvider', () => {
-  let provider: KimiProvider;
+describe('GroqProvider', () => {
+  let provider: GroqProvider;
   let mockCreate: jest.Mock;
   let mockList: jest.Mock;
 
   const mockAiConfig = {
-    kimiApiKey: 'test-kimi-key',
-    kimiModel: 'kimi-k2.6',
-    kimiBaseUrl: 'https://api.moonshot.ai/v1',
-    kimiTemperature: 0.4,
-    kimiMaxOutputTokens: 2048,
+    groqApiKey: 'gsk_test_key_1234567890abcdef',
+    groqModel: 'openai/gpt-oss-120b',
+    groqBaseUrl: 'https://api.groq.com/openai/v1',
+    groqTemperature: 0.4,
+    groqMaxOutputTokens: 2048,
     timeoutMs: 30000,
   };
 
@@ -39,13 +38,13 @@ describe('KimiProvider', () => {
     mockCreate = (mod as unknown as { __mockCreate: jest.Mock }).__mockCreate;
     mockList = (mod as unknown as { __mockList: jest.Mock }).__mockList;
 
-    mockList.mockResolvedValue({ data: [{ id: 'kimi-k2.6' }] });
+    mockList.mockResolvedValue({ data: [{ id: 'openai/gpt-oss-120b' }] });
 
     const module = await Test.createTestingModule({
-      providers: [KimiProvider, { provide: AiConfig, useValue: mockAiConfig }],
+      providers: [GroqProvider, { provide: AiConfig, useValue: mockAiConfig }],
     }).compile();
 
-    provider = module.get<KimiProvider>(KimiProvider);
+    provider = module.get<GroqProvider>(GroqProvider);
     await provider.onModuleInit();
   });
 
@@ -62,17 +61,17 @@ describe('KimiProvider', () => {
   describe('generate', () => {
     it('should return normalized response on success', async () => {
       mockCreate.mockResolvedValue({
-        choices: [{ message: { content: 'Hello from kimi' }, finish_reason: 'stop' }],
+        choices: [{ message: { content: 'Hello from Groq' }, finish_reason: 'stop' }],
         usage: { prompt_tokens: 12, completion_tokens: 8 },
       });
 
       const result = await provider.generate({ prompt: 'Test prompt' });
 
-      expect(result.text).toBe('Hello from kimi');
+      expect(result.text).toBe('Hello from Groq');
       expect(result.tokenUsage.input).toBe(12);
       expect(result.tokenUsage.output).toBe(8);
-      expect(result.provider).toBe('kimi');
-      expect(result.model).toBe('kimi-k2.6');
+      expect(result.provider).toBe('groq');
+      expect(result.model).toBe('openai/gpt-oss-120b');
       expect(result.durationMs).toBeGreaterThanOrEqual(0);
     });
 
@@ -91,7 +90,7 @@ describe('KimiProvider', () => {
       });
 
       const call = mockCreate.mock.calls[0][0];
-      expect(call.model).toBe('kimi-k2.6');
+      expect(call.model).toBe('openai/gpt-oss-120b');
       expect(call.messages).toEqual([
         { role: 'system', content: 'Be concise' },
         { role: 'user', content: 'p' },
@@ -99,6 +98,7 @@ describe('KimiProvider', () => {
       expect(call.temperature).toBe(0.1);
       expect(call.top_p).toBe(0.5);
       expect(call.max_tokens).toBe(200);
+      expect(call.reasoning_effort).toBe('none');
     });
 
     it('should fall back to config defaults when request omits parameters', async () => {
@@ -203,14 +203,15 @@ describe('KimiProvider', () => {
 
   describe('onModuleInit (startup validation)', () => {
     it('should pass when the API key is set and the model is reachable', async () => {
-      mockList.mockResolvedValue({ data: [{ id: 'kimi-k2.6' }] });
-      await expect(provider.onModuleInit()).resolves.toBeUndefined();
+      mockList.mockResolvedValue({ data: [{ id: 'openai/gpt-oss-120b' }] });
+      const freshProvider = new GroqProvider({ ...mockAiConfig } as AiConfig);
+      await expect(freshProvider.onModuleInit()).resolves.toBeUndefined();
     });
 
-    it('should fail fast when KIMI_API_KEY is missing', async () => {
-      const noKeyProvider = new KimiProvider({
+    it('should fail fast when GROQ_API_KEY is missing', async () => {
+      const noKeyProvider = new GroqProvider({
         ...mockAiConfig,
-        kimiApiKey: '',
+        groqApiKey: '',
       } as AiConfig);
       await expect(noKeyProvider.onModuleInit()).rejects.toThrow(
         AI_ERRORS.CONFIGURATION_ERROR.message,
@@ -218,13 +219,15 @@ describe('KimiProvider', () => {
     });
 
     it('should fail fast when the configured model is unavailable', async () => {
-      mockList.mockResolvedValue({ data: [{ id: 'kimi-k2.5' }] });
-      await expect(provider.onModuleInit()).rejects.toThrow(AI_ERRORS.INVALID_MODEL.message);
+      mockList.mockResolvedValue({ data: [{ id: 'llama-3.1-8b-instant' }] });
+      const provider2 = new GroqProvider({ ...mockAiConfig } as AiConfig);
+      await expect(provider2.onModuleInit()).rejects.toThrow(AI_ERRORS.INVALID_MODEL.message);
     });
 
     it('should proceed with warning when model list fails', async () => {
+      const provider2 = new GroqProvider({ ...mockAiConfig } as AiConfig);
       mockList.mockRejectedValue({ status: 500, message: 'internal error' });
-      await expect(provider.onModuleInit()).resolves.toBeUndefined();
+      await expect(provider2.onModuleInit()).resolves.toBeUndefined();
     });
   });
 
@@ -257,8 +260,8 @@ describe('KimiProvider', () => {
   });
 
   describe('name', () => {
-    it('should be kimi', () => {
-      expect(provider.name).toBe('kimi');
+    it('should be groq', () => {
+      expect(provider.name).toBe('groq');
     });
   });
 });

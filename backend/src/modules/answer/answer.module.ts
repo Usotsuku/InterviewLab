@@ -13,7 +13,7 @@ import { QuestionModule } from '@modules/question/question.module';
 @Module({
   imports: [
     MongooseModule.forFeature([{ name: Answer.name, schema: AnswerSchema }]),
-    forwardRef(() => AIModule),
+    forwardRef(() => AIModule.forRoot()),
     forwardRef(() => MetricsModule),
     forwardRef(() => SpeechModule),
     forwardRef(() => InterviewModule),
