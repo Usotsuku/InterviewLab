@@ -1,5 +1,5 @@
 import { Controller, Get, Patch, Body } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CheckAuth } from '@core/decorators/check-auth.decorator';
 import { CurrentUser, JwtPayload } from '@core/decorators/current-user.decorator';
 import { SettingsService } from '../services/settings.service';
@@ -12,6 +12,7 @@ export class SettingsController {
 
   @Get()
   @CheckAuth()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Retrieve active user settings.' })
   async getSettings(@CurrentUser() user: JwtPayload) {
     return this._settingsService.getSettings(user.sub);
@@ -19,6 +20,7 @@ export class SettingsController {
 
   @Patch()
   @CheckAuth()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Update user settings.' })
   async updateSettings(@CurrentUser() user: JwtPayload, @Body() body: UpdateSettingsDto) {
     return this._settingsService.updateSettings(user.sub, body);

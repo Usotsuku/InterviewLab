@@ -1,5 +1,5 @@
 import { Controller, Post, Param, Body, HttpStatus, HttpCode } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CheckAuth } from '@core/decorators/check-auth.decorator';
 import { CurrentUser, JwtPayload } from '@core/decorators/current-user.decorator';
 import { AnswerService } from '../services/answer.service';
@@ -12,6 +12,7 @@ export class AnswerController {
 
   @Post()
   @CheckAuth()
+  @ApiBearerAuth()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Submit an answer, transcribing and triggering analysis.' })
   async submitAnswer(

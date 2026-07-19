@@ -230,16 +230,21 @@ describe('KimiProvider', () => {
 
   describe('healthCheck', () => {
     it('should return true on success', async () => {
-      mockCreate.mockResolvedValue({
-        choices: [{ message: { content: 'OK' }, finish_reason: 'stop' }],
-        usage: {},
+      const freshProvider = new KimiProvider(mockAiConfig as AiConfig);
+      jest.spyOn(freshProvider, 'generate').mockResolvedValue({
+        text: 'OK',
+        tokenUsage: { input: 0, output: 1 },
+        provider: 'kimi',
+        model: 'test',
+        durationMs: 1,
       });
-      expect(await provider.healthCheck()).toBe(true);
+      expect(await freshProvider.healthCheck()).toBe(true);
     });
 
     it('should return false on failure', async () => {
-      mockCreate.mockRejectedValue({ status: 500, message: 'fail' });
-      expect(await provider.healthCheck()).toBe(false);
+      const freshProvider = new KimiProvider(mockAiConfig as AiConfig);
+      jest.spyOn(freshProvider, 'generate').mockRejectedValue(new Error('fail'));
+      expect(await freshProvider.healthCheck()).toBe(false);
     });
   });
 

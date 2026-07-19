@@ -244,7 +244,7 @@ describe('AnswerEvaluationService', () => {
       mockAnswerRepo.findById.mockResolvedValueOnce(null);
 
       await expect(service.evaluate({ answerId: '000000000000000000000099' })).rejects.toThrow(
-        'Answer not found: 000000000000000000000099',
+        'AI_INVALID_RESPONSE',
       );
     });
 

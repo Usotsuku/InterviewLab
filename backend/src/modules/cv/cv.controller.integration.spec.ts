@@ -9,6 +9,7 @@ import { CandidateProfileService } from '@modules/candidate-profile/services/can
 import { PdfExtractionService } from './services/pdf-extraction.service';
 import { CvAnalysisService } from './services/cv-analysis.service';
 import { CvAnalysisStatus } from '@shared/enums/domain.enums';
+import { UserSessionRepository } from '@modules/auth/repositories/user-session.repository';
 import multipart from '@fastify/multipart';
 
 const JWT_SECRET = 'test-secret';
@@ -43,6 +44,13 @@ describe('CV upload — Fastify multipart integration', () => {
       },
     }),
   };
+  const mockUserSessionRepository = {
+    findById: jest.fn().mockResolvedValue({
+      _id: 'session-id-1',
+      isValid: true,
+      expiresAt: new Date(Date.now() + 3600000),
+    }),
+  };
 
   beforeAll(async () => {
     const moduleRef: TestingModule = await Test.createTestingModule({
@@ -57,6 +65,7 @@ describe('CV upload — Fastify multipart integration', () => {
         { provide: CandidateProfileService, useValue: mockProfile },
         { provide: PdfExtractionService, useValue: mockPdf },
         { provide: CvAnalysisService, useValue: mockAnalysis },
+        { provide: UserSessionRepository, useValue: mockUserSessionRepository },
       ],
     }).compile();
 
@@ -65,7 +74,7 @@ describe('CV upload — Fastify multipart integration', () => {
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
 
-    const token = new JwtService({ secret: JWT_SECRET }).sign({ sub: 'test-user', email: 'test@example.com' });
+    const token = new JwtService({ secret: JWT_SECRET }).sign({ sub: 'test-user', email: 'test@example.com', sessionId: 'session-id-1' });
     authHeaders = { authorization: `Bearer ${token}` };
   });
 

@@ -227,13 +227,15 @@ describe('GeminiProvider', () => {
 
   describe('healthCheck', () => {
     it('should return true on success', async () => {
+      const freshProvider = new GeminiProvider(mockAiConfig as AiConfig);
       mockGenerateContent.mockResolvedValue({ text: 'OK', usageMetadata: {} });
-      expect(await provider.healthCheck()).toBe(true);
+      expect(await freshProvider.healthCheck()).toBe(true);
     });
 
     it('should return false on failure', async () => {
+      const freshProvider = new GeminiProvider(mockAiConfig as AiConfig);
       mockGenerateContent.mockRejectedValue({ status: 500, message: 'fail' });
-      expect(await provider.healthCheck()).toBe(false);
+      expect(await freshProvider.healthCheck()).toBe(false);
     });
   });
 

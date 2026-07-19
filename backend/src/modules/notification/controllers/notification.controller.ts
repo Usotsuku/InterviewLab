@@ -1,5 +1,5 @@
 import { Controller, Get, Patch, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CheckAuth } from '@core/decorators/check-auth.decorator';
 import { CurrentUser, JwtPayload } from '@core/decorators/current-user.decorator';
 import { NotificationService } from '../services/notification.service';
@@ -11,6 +11,7 @@ export class NotificationController {
 
   @Get()
   @CheckAuth()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Retrieve notifications for active user.' })
   async getNotifications(@CurrentUser() user: JwtPayload) {
     return this._notificationService.getUserNotifications(user.sub);
@@ -18,6 +19,7 @@ export class NotificationController {
 
   @Patch(':id/read')
   @CheckAuth()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Mark a notification as read.' })
   async markAsRead(@CurrentUser() user: JwtPayload, @Param('id') id: string) {
     return this._notificationService.markAsRead(user.sub, id);

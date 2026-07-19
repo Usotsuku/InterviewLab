@@ -61,7 +61,7 @@ export default registerAs('config', (): Config => ({
     uri: process.env.DATABASE_URI || 'mongodb://localhost:27017/interview_lab',
   },
   auth: {
-    jwtSecret: process.env.JWT_SECRET ?? '',
+    jwtSecret: process.env.JWT_SECRET!,
     accessTokenExpiresIn: '15m',
     refreshTokenExpiresIn: '7d',
   },

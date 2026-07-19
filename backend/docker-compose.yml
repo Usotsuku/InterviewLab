@@ -10,7 +10,7 @@ services:
       - '3000:3000'
     environment:
       - NODE_ENV=development
-      - DATABASE_URI=mongodb://mongodb:27017/interview_lab
+      - DATABASE_URI=mongodb://admin:dev_password_27017@mongodb:27017/interview_lab?authSource=admin
       - JWT_SECRET=local_dev_jwt_secret_replace_in_production
       - GEMINI_API_KEY=${GEMINI_API_KEY}
     volumes:
@@ -28,6 +28,8 @@ services:
     volumes:
       - mongodb_data:/data/db
     environment:
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=dev_password_27017
       - MONGO_INITDB_DATABASE=interview_lab
 
 volumes:

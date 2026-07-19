@@ -67,5 +67,33 @@ describe('RetryService', () => {
       const elapsed = Date.now() - start;
       expect(elapsed).toBeGreaterThanOrEqual(40);
     });
+
+    it('should not retry non-retryable errors (401)', async () => {
+      const error = Object.assign(new Error('Unauthorized'), { status: 401 });
+      const fn = jest.fn().mockRejectedValue(error);
+      await expect(
+        service.execute(fn, {
+          maxAttempts: 3,
+          baseDelayMs: 10,
+          maxDelayMs: 100,
+          operationName: 'non-retryable',
+        }),
+      ).rejects.toThrow('Unauthorized');
+      expect(fn).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not retry non-retryable errors (404)', async () => {
+      const error = Object.assign(new Error('Not found'), { status: 404 });
+      const fn = jest.fn().mockRejectedValue(error);
+      await expect(
+        service.execute(fn, {
+          maxAttempts: 3,
+          baseDelayMs: 10,
+          maxDelayMs: 100,
+          operationName: 'non-retryable-404',
+        }),
+      ).rejects.toThrow('Not found');
+      expect(fn).toHaveBeenCalledTimes(1);
+    });
   });
 });

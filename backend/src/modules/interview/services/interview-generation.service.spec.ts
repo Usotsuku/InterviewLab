@@ -2,11 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { InterviewGenerationService } from './interview-generation.service';
 import { AIService } from '@modules/ai/services/ai.service';
 import { PromptService } from '@modules/ai/services/prompt.service';
-import { RetryService } from '@modules/ai/services/retry.service';
 import { CandidateProfileService } from '@modules/candidate-profile/services/candidate-profile.service';
 import { InterviewRepository } from '../repositories/interview.repository';
 import { QuestionRepository } from '@modules/question/repositories/question.repository';
 import { InterviewStatus } from '@shared/enums/domain.enums';
+import { AiRateLimiterService } from '@modules/ai/services/ai-rate-limiter.service';
 
 describe('InterviewGenerationService', () => {
   let service: InterviewGenerationService;
@@ -25,10 +25,6 @@ describe('InterviewGenerationService', () => {
     }),
   };
 
-  const mockRetryService = {
-    execute: jest.fn().mockImplementation((fn: () => Promise<unknown>) => fn()),
-  };
-
   const mockProfileService = {
     findByUserId: jest.fn(),
   };
@@ -43,6 +39,10 @@ describe('InterviewGenerationService', () => {
     create: jest.fn(),
     createMany: jest.fn().mockResolvedValue([]),
     findByInterviewId: jest.fn().mockResolvedValue([]),
+  };
+
+  const mockAiRateLimiter = {
+    checkInterviewGeneration: jest.fn(),
   };
 
   const validAiResponse = JSON.stringify({
@@ -66,17 +66,20 @@ describe('InterviewGenerationService', () => {
         InterviewGenerationService,
         { provide: AIService, useValue: mockAiService },
         { provide: PromptService, useValue: mockPromptService },
-        { provide: RetryService, useValue: mockRetryService },
         { provide: CandidateProfileService, useValue: mockProfileService },
         { provide: InterviewRepository, useValue: mockInterviewRepo },
         { provide: QuestionRepository, useValue: mockQuestionRepo },
+        { provide: AiRateLimiterService, useValue: mockAiRateLimiter },
       ],
     }).compile();
 
     service = module.get<InterviewGenerationService>(InterviewGenerationService);
   });
 
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    mockAiRateLimiter.checkInterviewGeneration.mockImplementation(() => {});
+  });
 
   describe('generate', () => {
     it('should generate an interview successfully', async () => {
@@ -221,7 +224,7 @@ describe('InterviewGenerationService', () => {
         completionPercent: 40,
       });
 
-      mockRetryService.execute.mockRejectedValue(new Error('AI error'));
+      mockAiService.generate.mockRejectedValue(new Error('AI error'));
       mockInterviewRepo.updateById.mockResolvedValue(undefined);
 
       await expect(

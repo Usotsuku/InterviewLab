@@ -7,6 +7,7 @@ import { QuestionRepository } from '@modules/question/repositories/question.repo
 import { StorageService } from '@modules/storage/services/storage.service';
 import { ConfigService } from '@nestjs/config';
 import { AppException } from '@core/exceptions/app.exception';
+import { InterviewService } from '@modules/interview/services/interview.service';
 
 describe('SpeechService', () => {
   let service: SpeechService;
@@ -30,9 +31,14 @@ describe('SpeechService', () => {
   const mockQuestionRepository = {} as jest.Mocked<QuestionRepository>;
   const mockConfigService = { get: jest.fn() } as unknown as jest.Mocked<ConfigService>;
 
+  const mockInterviewService = {
+    assertOwnedBy: jest.fn(),
+  } as unknown as jest.Mocked<InterviewService>;
+
   beforeEach(() => {
     jest.clearAllMocks();
     mockSpeechProvider.isAvailable.mockReturnValue(true);
+    mockInterviewService.assertOwnedBy.mockResolvedValue(undefined);
 
     service = new SpeechService(
       mockSpeechProvider,
@@ -40,6 +46,7 @@ describe('SpeechService', () => {
       mockAnswerRepository,
       mockQuestionRepository,
       mockConfigService,
+      mockInterviewService,
     );
   });
 

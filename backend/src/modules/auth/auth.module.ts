@@ -24,6 +24,6 @@ import { UsersModule } from '@modules/users/users.module';
     UserSessionRepository,
     AuthConfig,
   ],
-  exports: [AuthService, JwtStrategy, AuthConfig],
+  exports: [AuthService, JwtStrategy, AuthConfig, UserSessionRepository],
 })
 export class AuthModule {}

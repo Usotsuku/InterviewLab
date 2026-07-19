@@ -9,6 +9,8 @@ import { CandidateProfileRepository } from '@modules/candidate-profile/repositor
 import { InterviewMetricsRepository } from '@modules/metrics/repositories/interview-metrics.repository';
 import { InterviewRepository } from '@modules/interview/repositories/interview.repository';
 import { parseAndValidate, AiEvaluationOutput } from '../mappers/evaluation.mapper';
+import { AppException } from '@core/exceptions/app.exception';
+import { AI_ERRORS } from '../errors/ai.errors';
 
 export interface EvaluateAnswerInput {
   answerId: string;
@@ -76,7 +78,7 @@ export class AnswerEvaluationService {
     )) as unknown as AnswerDocument | null;
     if (!answerDoc) {
       this._logger.error(`[evaluate] Answer not found: ${input.answerId}`);
-      throw new Error(`Answer not found: ${input.answerId}`);
+      AppException.throw(AI_ERRORS.INVALID_RESPONSE, `Answer not found: ${input.answerId}`);
     }
 
     const interviewIdStr = answerDoc.interviewId.toString();

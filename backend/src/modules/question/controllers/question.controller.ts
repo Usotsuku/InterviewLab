@@ -1,5 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CheckAuth } from '@core/decorators/check-auth.decorator';
 import { CurrentUser, JwtPayload } from '@core/decorators/current-user.decorator';
 import { QuestionService } from '../services/question.service';
@@ -11,6 +11,7 @@ export class QuestionController {
 
   @Get('interview/:interviewId')
   @CheckAuth()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Retrieve generated questions for a session.' })
   async getByInterview(
     @CurrentUser() user: JwtPayload,

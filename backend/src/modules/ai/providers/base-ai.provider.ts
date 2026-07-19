@@ -8,6 +8,9 @@ export abstract class BaseAiProvider extends AIProvider {
   protected readonly _logger: Logger;
   protected readonly _aiConfig: AiConfig;
 
+  private _healthCheckCache: { result: boolean; checkedAt: number } | null = null;
+  private static readonly HEALTH_CHECK_TTL_MS = 5 * 60 * 1000;
+
   abstract readonly name: string;
 
   protected constructor(aiConfig: AiConfig, className: string) {
@@ -25,10 +28,19 @@ export abstract class BaseAiProvider extends AIProvider {
   }
 
   async healthCheck(): Promise<boolean> {
+    if (
+      this._healthCheckCache &&
+      Date.now() - this._healthCheckCache.checkedAt < BaseAiProvider.HEALTH_CHECK_TTL_MS
+    ) {
+      return this._healthCheckCache.result;
+    }
+
     try {
       await this.generate({ prompt: 'Say OK', maxOutputTokens: 10 });
+      this._healthCheckCache = { result: true, checkedAt: Date.now() };
       return true;
     } catch {
+      this._healthCheckCache = { result: false, checkedAt: Date.now() };
       return false;
     }
   }

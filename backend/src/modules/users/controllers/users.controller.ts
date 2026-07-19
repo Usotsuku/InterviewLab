@@ -1,5 +1,5 @@
 import { Controller, Get, Patch, Body, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { CheckAuth } from '@core/decorators/check-auth.decorator';
 import { CurrentUser, JwtPayload } from '@core/decorators/current-user.decorator';
 import { UsersService } from '../services/users.service';
@@ -14,6 +14,7 @@ export class UsersController {
 
   @Get('me')
   @CheckAuth()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Retrieve active user profile data.' })
   async getMe(@CurrentUser() user: JwtPayload) {
     return this._usersService.getUserProfile(user.sub);
@@ -21,6 +22,7 @@ export class UsersController {
 
   @Patch(':id')
   @CheckAuth()
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Update user settings/metadata profile.' })
   async updateProfile(
     @CurrentUser() user: JwtPayload,

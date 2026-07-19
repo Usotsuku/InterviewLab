@@ -7,6 +7,7 @@ import { RetryService } from './services/retry.service';
 import { ContextService } from './services/context.service';
 import { PromptService } from './services/prompt.service';
 import { AnswerEvaluationService } from './services/answer-evaluation.service';
+import { AiRateLimiterService } from './services/ai-rate-limiter.service';
 import { GeminiProvider } from './providers/gemini.provider';
 import { KimiProvider } from './providers/kimi.provider';
 import { GroqProvider } from './providers/groq.provider';
@@ -54,6 +55,7 @@ export class AIModule {
       AIService,
       AiEvaluationRepository,
       AnswerEvaluationService,
+      AiRateLimiterService,
       ...providerClasses.map((p) => p.cls),
     ];
 
@@ -90,6 +92,7 @@ export class AIModule {
         AnswerEvaluationService,
         PromptService,
         RetryService,
+        AiRateLimiterService,
         AI_PROVIDER,
       ],
     };

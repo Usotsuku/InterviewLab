@@ -7,10 +7,14 @@ import { AppException } from '@core/exceptions/app.exception';
 import { AnswerRepository } from '@modules/answer/repositories/answer.repository';
 import { QuestionRepository } from '@modules/question/repositories/question.repository';
 import { StorageService } from '@modules/storage/services/storage.service';
+import { InterviewService } from '@modules/interview/services/interview.service';
 import { Types } from 'mongoose';
 
 const MAX_SESSION_DURATION_MS = 10 * 60 * 1000;
 const MAX_CHUNKS_PER_SESSION = 500;
+const MAX_ACTIVE_SESSIONS = 50;
+const SESSION_TTL_MS = 15 * 60 * 1000;
+const MAX_CHUNK_BYTES = 1 * 1024 * 1024;
 
 export interface SpeechSession {
   id: string;
@@ -34,6 +38,7 @@ interface StartSessionInput {
 export class SpeechService {
   private readonly _logger = new Logger(SpeechService.name);
   private readonly _sessions = new Map<string, SpeechSession>();
+  private _cleanupInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor(
     @Inject(SPEECH_PROVIDER) private readonly _speechProvider: SpeechProvider,
@@ -41,11 +46,22 @@ export class SpeechService {
     private readonly _answerRepository: AnswerRepository,
     private readonly _questionRepository: QuestionRepository,
     private readonly _config: ConfigService,
-  ) {}
+    private readonly _interviewService: InterviewService,
+  ) {
+    this._cleanupInterval = setInterval(() => this._cleanupExpiredSessions(), SESSION_TTL_MS);
+  }
 
   async startSession(input: StartSessionInput): Promise<SpeechSession> {
     if (!this._speechProvider.isAvailable()) {
       AppException.throw(SpeechErrors.PROVIDER_UNAVAILABLE);
+    }
+
+    await this._interviewService.assertOwnedBy(input.interviewId, input.userId);
+
+    this._cleanupExpiredSessions();
+
+    if (this._countActiveSessions() >= MAX_ACTIVE_SESSIONS) {
+      AppException.throw(SpeechErrors.SESSION_EXPIRED, { reason: 'Server at capacity' });
     }
 
     const existing = this._findActiveByQuestion(input.questionId);
@@ -90,6 +106,11 @@ export class SpeechService {
       AppException.throw(SpeechErrors.SESSION_EXPIRED, { sessionId });
     }
 
+    const estimatedBytes = Math.ceil(chunkBase64.length * 3 / 4);
+    if (estimatedBytes > MAX_CHUNK_BYTES) {
+      AppException.throw(SpeechErrors.SESSION_EXPIRED, { sessionId, reason: 'Chunk too large' });
+    }
+
     const buffer = Buffer.from(chunkBase64, 'base64');
     session.chunks.push(buffer);
   }
@@ -111,8 +132,9 @@ export class SpeechService {
       AppException.throw(SpeechErrors.AUDIO_EMPTY, { sessionId });
     }
 
+    const audioBuffer = Buffer.concat(session.chunks);
+
     try {
-      const audioBuffer = Buffer.concat(session.chunks);
       const audioPath = `audio/${session.interviewId}/${session.questionId}-${Date.now()}.webm`;
       session.audioUrl = await this._storageService.store(audioBuffer, audioPath);
     } catch (error) {
@@ -122,7 +144,6 @@ export class SpeechService {
     }
 
     try {
-      const audioBuffer = Buffer.concat(session.chunks);
       const result = await this._speechProvider.transcribe({
         audioBuffer,
         mimeType: 'audio/webm',
@@ -135,6 +156,7 @@ export class SpeechService {
     }
 
     session.status = SpeechSessionStatus.COMPLETED;
+    this._sessions.delete(sessionId);
     this._logger.log(
       `[finishSession] Session completed: ${sessionId}, transcript length: ${session.transcript.length}`,
     );
@@ -143,6 +165,15 @@ export class SpeechService {
 
   getSession(sessionId: string): SpeechSession | null {
     return this._sessions.get(sessionId) || null;
+  }
+
+  removeSession(sessionId: string): void {
+    const session = this._sessions.get(sessionId);
+    if (session) {
+      this._logger.log(`[removeSession] Cleaning up session ${sessionId}`);
+      session.chunks = [];
+      this._sessions.delete(sessionId);
+    }
   }
 
   async storeAudio(audioBase64: string, interviewId: string, questionId: string): Promise<string> {
@@ -170,5 +201,30 @@ export class SpeechService {
       }
     }
     return undefined;
+  }
+
+  private _countActiveSessions(): number {
+    let count = 0;
+    for (const session of this._sessions.values()) {
+      if (
+        session.status === SpeechSessionStatus.ACTIVE ||
+        session.status === SpeechSessionStatus.FINALIZING
+      ) {
+        count++;
+      }
+    }
+    return count;
+  }
+
+  private _cleanupExpiredSessions(): void {
+    const now = Date.now();
+    for (const [id, session] of this._sessions) {
+      const elapsed = now - session.startedAt.getTime();
+      if (elapsed > SESSION_TTL_MS) {
+        this._logger.log(`[cleanup] Removing expired session ${id}`);
+        session.chunks = [];
+        this._sessions.delete(id);
+      }
+    }
   }
 }

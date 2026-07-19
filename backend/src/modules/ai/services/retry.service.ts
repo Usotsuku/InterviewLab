@@ -2,6 +2,17 @@ import { Injectable, Logger } from '@nestjs/common';
 import { AppException } from '@core/exceptions/app.exception';
 import { AI_ERRORS } from '../errors/ai.errors';
 
+const NON_RETRYABLE_STATUSES = new Set([400, 401, 403, 404]);
+
+function isRetryable(error: unknown): boolean {
+  const err = error as { status?: number; statusCode?: number };
+  const status = err.status ?? err.statusCode;
+  if (status !== undefined && NON_RETRYABLE_STATUSES.has(status)) {
+    return false;
+  }
+  return true;
+}
+
 @Injectable()
 export class RetryService {
   private readonly _logger = new Logger(RetryService.name);
@@ -32,10 +43,13 @@ export class RetryService {
           `[retry] ${operationName} failed on attempt ${attempt}: ${(error as Error).message}`,
         );
 
-        if (attempt < maxAttempts) {
+        if (attempt < maxAttempts && isRetryable(error)) {
           const delayMs = this._calculateDelay(attempt, baseDelayMs, maxDelayMs);
           this._logger.log(`[retry] ${operationName} retrying in ${delayMs}ms`);
           await this._sleep(delayMs);
+        } else if (!isRetryable(error)) {
+          this._logger.warn(`[retry] ${operationName} non-retryable error, throwing immediately`);
+          throw error;
         }
       }
     }

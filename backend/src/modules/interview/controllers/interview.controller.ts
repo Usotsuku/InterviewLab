@@ -1,4 +1,5 @@
 import { Controller, Post, Get, Delete, Param, Body, HttpStatus, HttpCode } from '@nestjs/common';
+import { ParseMongoIdPipe } from '@nestjs/mongoose';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { CheckAuth } from '@core/decorators/check-auth.decorator';
 import { CurrentUser, JwtPayload } from '@core/decorators/current-user.decorator';
@@ -65,7 +66,7 @@ export class InterviewController {
   @ApiResponse({ status: 200, description: 'Returns interview details.' })
   @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
   @ApiResponse({ status: 404, description: 'INTERVIEW_NOT_FOUND' })
-  async getDetails(@CurrentUser() user: JwtPayload, @Param('id') id: string) {
+  async getDetails(@CurrentUser() user: JwtPayload, @Param('id', ParseMongoIdPipe) id: string) {
     return this._interviewService.getInterviewDetails(id, user.sub);
   }
 
@@ -76,7 +77,7 @@ export class InterviewController {
   @ApiResponse({ status: 200, description: 'Interview started.' })
   @ApiResponse({ status: 400, description: 'INTERVIEW_NOT_READY or INVALID_STATUS_TRANSITION' })
   @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
-  async start(@CurrentUser() user: JwtPayload, @Param('id') id: string) {
+  async start(@CurrentUser() user: JwtPayload, @Param('id', ParseMongoIdPipe) id: string) {
     return this._sessionService.startInterview(id, user.sub);
   }
 
@@ -87,7 +88,7 @@ export class InterviewController {
   @ApiResponse({ status: 200, description: 'Returns current question.' })
   @ApiResponse({ status: 400, description: 'INTERVIEW_NOT_IN_PROGRESS' })
   @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
-  async getCurrentQuestion(@CurrentUser() user: JwtPayload, @Param('id') id: string) {
+  async getCurrentQuestion(@CurrentUser() user: JwtPayload, @Param('id', ParseMongoIdPipe) id: string) {
     return this._sessionService.getCurrentQuestion(id, user.sub);
   }
 
@@ -98,7 +99,7 @@ export class InterviewController {
   @ApiResponse({ status: 200, description: 'Returns next question or completion status.' })
   @ApiResponse({ status: 400, description: 'INTERVIEW_NOT_IN_PROGRESS or ALL_QUESTIONS_ANSWERED' })
   @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
-  async nextQuestion(@CurrentUser() user: JwtPayload, @Param('id') id: string) {
+  async nextQuestion(@CurrentUser() user: JwtPayload, @Param('id', ParseMongoIdPipe) id: string) {
     return this._sessionService.nextQuestion(id, user.sub);
   }
 
@@ -109,7 +110,7 @@ export class InterviewController {
   @ApiResponse({ status: 200, description: 'Interview completed.' })
   @ApiResponse({ status: 400, description: 'INTERVIEW_NOT_IN_PROGRESS' })
   @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
-  async finish(@CurrentUser() user: JwtPayload, @Param('id') id: string) {
+  async finish(@CurrentUser() user: JwtPayload, @Param('id', ParseMongoIdPipe) id: string) {
     return this._sessionService.finishInterview(id, user.sub);
   }
 
@@ -119,7 +120,7 @@ export class InterviewController {
   @ApiOperation({ summary: 'Retrieve all questions for an interview.' })
   @ApiResponse({ status: 200, description: 'Returns list of questions.' })
   @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
-  async getQuestions(@CurrentUser() user: JwtPayload, @Param('id') id: string) {
+  async getQuestions(@CurrentUser() user: JwtPayload, @Param('id', ParseMongoIdPipe) id: string) {
     await this._interviewService.assertOwnedBy(id, user.sub);
     return this._questionService.getQuestionsForSession(id, user.sub);
   }
@@ -133,7 +134,7 @@ export class InterviewController {
   @ApiResponse({ status: 200, description: 'Returns the interview report.' })
   @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
   @ApiResponse({ status: 404, description: 'INTERVIEW_NOT_FOUND' })
-  async getReport(@CurrentUser() user: JwtPayload, @Param('id') id: string) {
+  async getReport(@CurrentUser() user: JwtPayload, @Param('id', ParseMongoIdPipe) id: string) {
     return this._reportService.getReport(id, user.sub);
   }
 
@@ -144,7 +145,7 @@ export class InterviewController {
   @ApiOperation({ summary: 'Delete an interview.' })
   @ApiResponse({ status: 200, description: 'Interview deleted.' })
   @ApiResponse({ status: 401, description: 'UNAUTHORIZED_ACCESS' })
-  async delete(@CurrentUser() user: JwtPayload, @Param('id') id: string) {
+  async delete(@CurrentUser() user: JwtPayload, @Param('id', ParseMongoIdPipe) id: string) {
     return this._interviewService.deleteInterview(id, user.sub);
   }
 }

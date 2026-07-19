@@ -31,13 +31,29 @@ export class WhisperProvider extends SpeechProvider {
     formData.append('language', 'en');
     formData.append('response_format', 'verbose_json');
 
-    const response = await fetch(this._apiUrl, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${this._apiKey}`,
-      },
-      body: formData,
-    });
+    const controller = new AbortController();
+    const timeoutMs = 60_000;
+    const timer = setTimeout(() => controller.abort(), timeoutMs);
+
+    let response: Response;
+    try {
+      response = await fetch(this._apiUrl, {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${this._apiKey}`,
+        },
+        body: formData,
+        signal: controller.signal,
+      });
+    } catch (error) {
+      if ((error as Error).name === 'AbortError') {
+        this._logger.error(`[transcribe] Whisper API request timed out after ${timeoutMs}ms`);
+        throw new Error(`Whisper API request timed out after ${timeoutMs}ms`);
+      }
+      throw error;
+    } finally {
+      clearTimeout(timer);
+    }
 
     if (!response.ok) {
       const errorBody = await response.text();

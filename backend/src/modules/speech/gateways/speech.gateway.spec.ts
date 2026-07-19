@@ -12,6 +12,7 @@ describe('SpeechGateway', () => {
     finishSession: jest.fn(),
     getSession: jest.fn(),
     storeAudio: jest.fn(),
+    removeSession: jest.fn(),
   } as unknown as jest.Mocked<SpeechService>;
 
   const mockClient = {
@@ -40,9 +41,10 @@ describe('SpeechGateway', () => {
       };
 
       mockSpeechService.startSession.mockResolvedValue(session);
+      (mockClient as any).data = { userId: 'user-1' };
 
       await gateway.handleStart(
-        { interviewId: 'int-1', questionId: 'q-1', userId: 'user-1' },
+        { interviewId: 'int-1', questionId: 'q-1' },
         mockClient,
       );
 
@@ -53,9 +55,10 @@ describe('SpeechGateway', () => {
 
     it('should emit speech:error on failure', async () => {
       mockSpeechService.startSession.mockRejectedValue(new Error('Session already active'));
+      (mockClient as any).data = { userId: 'user-1' };
 
       await gateway.handleStart(
-        { interviewId: 'int-1', questionId: 'q-1', userId: 'user-1' },
+        { interviewId: 'int-1', questionId: 'q-1' },
         mockClient,
       );
 
@@ -67,12 +70,16 @@ describe('SpeechGateway', () => {
 
   describe('handleChunk', () => {
     it('should delegate to SpeechService.receiveChunk', () => {
+      mockSpeechService.getSession.mockReturnValue({ id: 's1', userId: 'user-1' } as any);
+      (mockClient as any).data = { userId: 'user-1' };
       gateway.handleChunk({ sessionId: 's1', chunk: 'abc' }, mockClient);
 
       expect(mockSpeechService.receiveChunk).toHaveBeenCalledWith('s1', 'abc');
     });
 
     it('should emit speech:error on chunk failure', () => {
+      mockSpeechService.getSession.mockReturnValue({ id: 's1', userId: 'user-1' } as any);
+      (mockClient as any).data = { userId: 'user-1' };
       mockSpeechService.receiveChunk.mockImplementation(() => {
         throw new Error('Invalid session');
       });
@@ -100,7 +107,9 @@ describe('SpeechGateway', () => {
         audioUrl: 'audio/int-1/q-1.webm',
       };
 
+      mockSpeechService.getSession.mockReturnValue({ id: 's1', userId: 'user-1' } as any);
       mockSpeechService.finishSession.mockResolvedValue(completedSession);
+      (mockClient as any).data = { userId: 'user-1' };
 
       await gateway.handleFinish({ sessionId: 's1' }, mockClient);
 
@@ -112,7 +121,9 @@ describe('SpeechGateway', () => {
     });
 
     it('should emit speech:error on finish failure', async () => {
+      mockSpeechService.getSession.mockReturnValue({ id: 's1', userId: 'user-1' } as any);
       mockSpeechService.finishSession.mockRejectedValue(new Error('No audio data'));
+      (mockClient as any).data = { userId: 'user-1' };
 
       await gateway.handleFinish({ sessionId: 's1' }, mockClient);
 

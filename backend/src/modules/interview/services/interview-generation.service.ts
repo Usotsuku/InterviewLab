@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { Types } from 'mongoose';
 import { AIService } from '@modules/ai/services/ai.service';
 import { PromptService } from '@modules/ai/services/prompt.service';
-import { RetryService } from '@modules/ai/services/retry.service';
+import { AiRateLimiterService } from '@modules/ai/services/ai-rate-limiter.service';
 import { CandidateProfileService } from '@modules/candidate-profile/services/candidate-profile.service';
 import { InterviewRepository } from '../repositories/interview.repository';
 import { QuestionRepository } from '@modules/question/repositories/question.repository';
@@ -26,7 +26,7 @@ export class InterviewGenerationService {
   constructor(
     private readonly _aiService: AIService,
     private readonly _promptService: PromptService,
-    private readonly _retryService: RetryService,
+    private readonly _aiRateLimiter: AiRateLimiterService,
     private readonly _candidateProfileService: CandidateProfileService,
     private readonly _interviewRepo: InterviewRepository,
     private readonly _questionRepo: QuestionRepository,
@@ -41,6 +41,8 @@ export class InterviewGenerationService {
     this._logger.log(
       `[generate] Starting interview generation for user: ${userId}, mode: ${mode}, questionCount: ${questionCount}`,
     );
+
+    this._aiRateLimiter.checkInterviewGeneration(userId);
 
     const profile = await this._candidateProfileService.findByUserId(userId).catch(() => null);
     if (!profile) {
@@ -69,20 +71,11 @@ export class InterviewGenerationService {
 
       this._logger.log(`[generate] Calling AI for interview generation`);
 
-      const response = await this._retryService.execute(
-        () =>
-          this._aiService.generate({
-            prompt: payload.prompt,
-            systemInstruction: payload.systemInstruction,
-            maxOutputTokens: 1200 + questionCount * 40,
-          }),
-        {
-          maxAttempts: 3,
-          baseDelayMs: 1000,
-          maxDelayMs: 5000,
-          operationName: 'interview-generation',
-        },
-      );
+      const response = await this._aiService.generate({
+        prompt: payload.prompt,
+        systemInstruction: payload.systemInstruction,
+        maxOutputTokens: 1200 + questionCount * 40,
+      });
 
       this._logger.log(
         `[generate] AI response: ${response.text.length}ch, tokens: ${response.tokenUsage.input}+${response.tokenUsage.output}, provider: ${response.provider}, model: ${response.model}`,

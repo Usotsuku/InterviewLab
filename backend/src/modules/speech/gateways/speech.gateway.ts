@@ -15,7 +15,6 @@ import { JwtPayload } from '@core/decorators/current-user.decorator';
 interface SpeechStartPayload {
   interviewId: string;
   questionId: string;
-  userId: string;
 }
 
 interface SpeechChunkPayload {
@@ -69,7 +68,12 @@ export class SpeechGateway implements OnGatewayDisconnect {
     this._logger.log(`[speech:start] Client ${client.id}`);
 
     try {
-      const userId = (client.data as { userId?: string })?.userId ?? payload.userId;
+      const userId = (client.data as { userId?: string })?.userId;
+      if (!userId) {
+        client.emit('speech:error', { error: 'UNAUTHORIZED_ACCESS' });
+        return;
+      }
+
       const session = await this._speechService.startSession({
         interviewId: payload.interviewId,
         questionId: payload.questionId,
@@ -89,6 +93,21 @@ export class SpeechGateway implements OnGatewayDisconnect {
   @SubscribeMessage('speech:chunk')
   handleChunk(@MessageBody() payload: SpeechChunkPayload, @ConnectedSocket() client: Socket): void {
     try {
+      const userId = (client.data as { userId?: string })?.userId;
+      if (!userId) {
+        client.emit('speech:error', { sessionId: payload.sessionId, error: 'UNAUTHORIZED_ACCESS' });
+        return;
+      }
+
+      const session = this._speechService.getSession(payload.sessionId);
+      if (!session || session.userId !== userId) {
+        client.emit('speech:error', {
+          sessionId: payload.sessionId,
+          error: 'UNAUTHORIZED_ACCESS',
+        });
+        return;
+      }
+
       this._speechService.receiveChunk(payload.sessionId, payload.chunk);
     } catch (error) {
       this._logger.error(`[speech:chunk] Error for session ${payload.sessionId}`, error);
@@ -107,11 +126,26 @@ export class SpeechGateway implements OnGatewayDisconnect {
     this._logger.log(`[speech:finish] Session ${payload.sessionId}`);
 
     try {
-      const session = await this._speechService.finishSession(payload.sessionId);
+      const userId = (client.data as { userId?: string })?.userId;
+      if (!userId) {
+        client.emit('speech:error', { sessionId: payload.sessionId, error: 'UNAUTHORIZED_ACCESS' });
+        return;
+      }
+
+      const session = this._speechService.getSession(payload.sessionId);
+      if (!session || session.userId !== userId) {
+        client.emit('speech:error', {
+          sessionId: payload.sessionId,
+          error: 'UNAUTHORIZED_ACCESS',
+        });
+        return;
+      }
+
+      const completedSession = await this._speechService.finishSession(payload.sessionId);
       client.emit('speech:completed', {
-        sessionId: session.id,
-        transcript: session.transcript,
-        audioUrl: session.audioUrl,
+        sessionId: completedSession.id,
+        transcript: completedSession.transcript,
+        audioUrl: completedSession.audioUrl,
       });
     } catch (error) {
       this._logger.error(`[speech:finish] Error for session ${payload.sessionId}`, error);
@@ -126,6 +160,7 @@ export class SpeechGateway implements OnGatewayDisconnect {
     const sessionId = this._clientSessions.get(client.id);
     if (sessionId) {
       this._logger.log(`[disconnect] Cleaning up session ${sessionId} for client ${client.id}`);
+      this._speechService.removeSession(sessionId);
       this._clientSessions.delete(client.id);
     }
   }

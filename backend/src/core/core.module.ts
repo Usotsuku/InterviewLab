@@ -7,6 +7,7 @@ import { GlobalExceptionFilter } from './exceptions/global-exception.filter';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { ResponseWrapperInterceptor } from './interceptors/response-wrapper.interceptor';
 import { QueryService } from './repository/query.service';
+import { AuthModule } from '@modules/auth/auth.module';
 import configuration from '../config/configuration';
 
 @Global()
@@ -16,6 +17,7 @@ import configuration from '../config/configuration';
       load: [configuration],
       isGlobal: true,
     }),
+    AuthModule,
     ThrottlerModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],

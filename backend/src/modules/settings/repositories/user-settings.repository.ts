@@ -17,4 +17,21 @@ export class UserSettingsRepository extends BaseRepository<UserSettingsDocument>
   async findByUserId(userId: string | Types.ObjectId): Promise<UserSettingsDocument | null> {
     return this._settingsModel.findOne({ userId, deletedAt: null }).exec();
   }
+
+  async upsertByUserId(userId: string | Types.ObjectId): Promise<UserSettingsDocument> {
+    return this._settingsModel
+      .findOneAndUpdate(
+        { userId, deletedAt: null },
+        {
+          $setOnInsert: {
+            userId,
+            language: 'en',
+            notificationsEnabled: true,
+            interviewReminders: true,
+          },
+        },
+        { upsert: true, new: true, setDefaultsOnInsert: true },
+      )
+      .exec();
+  }
 }
