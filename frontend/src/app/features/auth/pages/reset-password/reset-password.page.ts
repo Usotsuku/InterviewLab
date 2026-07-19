@@ -1,8 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { ResetPasswordStore } from '../../reset-password.store';
 import { IlButtonComponent } from '../../../../shared/components/button/button.component';
@@ -16,8 +14,6 @@ import { passwordStrengthValidator, matchFieldValidator } from '../../../../shar
   imports: [
     ReactiveFormsModule,
     RouterLink,
-    MatFormFieldModule,
-    MatInputModule,
     MatIconModule,
     IlButtonComponent,
     IlFormErrorComponent,

@@ -1,8 +1,6 @@
 import { Component, ChangeDetectionStrategy, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { AuthStore } from '../../../../core/auth/auth.store';
 import { IlButtonComponent } from '../../../../shared/components/button/button.component';
@@ -15,8 +13,6 @@ import { IlFormErrorComponent } from '../../../../shared/components/form-error/f
   imports: [
     ReactiveFormsModule,
     RouterLink,
-    MatFormFieldModule,
-    MatInputModule,
     MatIconModule,
     IlButtonComponent,
     IlFormErrorComponent,

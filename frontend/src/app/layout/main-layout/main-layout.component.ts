@@ -16,6 +16,7 @@ export class MainLayoutComponent {
   sidebarCollapsed = signal(false);
 
   prepareRoute(outlet: RouterOutlet) {
-    return outlet?.activatedRouteData?.['animation'] ?? outlet?.activatedRoute?.routeConfig?.path ?? '';
+    if (!outlet || !outlet.isActivated) return '';
+    return outlet.activatedRouteData?.['animation'] ?? outlet.activatedRoute?.routeConfig?.path ?? '';
   }
 }

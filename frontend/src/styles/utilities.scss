@@ -1,282 +1,205 @@
 // ============================================================
-// InterviewLab — Utility Classes & Animations
-// Premium micro-interactions and glass effects
-// ============================================================
-
-// --- Keyframes ---
-@keyframes il-fade-in {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes il-fade-in-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes il-fade-in-down {
-  from { opacity: 0; transform: translateY(-12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes il-scale-in {
-  from { opacity: 0; transform: scale(0.95); }
-  to   { opacity: 1; transform: scale(1); }
-}
-
-@keyframes il-slide-in-right {
-  from { opacity: 0; transform: translateX(20px); }
-  to   { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes il-recording-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50%      { opacity: 0.5; transform: scale(1.15); }
-}
-
-@keyframes il-shimmer {
-  0%   { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
-@keyframes il-pulse-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
-  50%      { box-shadow: 0 0 20px 4px rgba(99, 102, 241, 0.1); }
-}
-
-@keyframes il-float {
-  0%, 100% { transform: translateY(0); }
-  50%      { transform: translateY(-6px); }
-}
-
-@keyframes il-gradient-shift {
-  0%   { background-position: 0% 50%; }
-  50%  { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-@keyframes il-spin-slow {
-  0%   { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-// --- Animation Utility Classes ---
-.il-fade-in {
-  animation: il-fade-in 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.il-fade-in-up {
-  animation: il-fade-in-up 400ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.il-fade-in-down {
-  animation: il-fade-in-down 400ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.il-scale-in {
-  animation: il-scale-in 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.il-slide-in-right {
-  animation: il-slide-in-right 400ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-// Staggered children animation
-.il-stagger > * {
-  opacity: 0;
-  animation: il-fade-in-up 400ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@for $i from 1 through 20 {
-  .il-stagger > *:nth-child(#{$i}) {
-    animation-delay: #{$i * 60}ms;
-  }
-}
-
-// --- Recording Dot ---
-.il-recording-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--il-danger-500);
-  animation: il-recording-dot 1.2s ease-in-out infinite;
-}
-
-// ============================================================
-// Card surface
-// ============================================================
-.il-card {
-  background: var(--il-surface-card);
-  border: 1px solid var(--il-border);
-  border-radius: var(--il-radius-xl);
-  box-shadow: var(--il-shadow-sm);
-  transition: box-shadow var(--il-transition-base),
-    border-color var(--il-transition-base),
-    transform var(--il-transition-base);
-}
-
-.il-card--elevated { box-shadow: var(--il-shadow-md); }
-.il-card--flat { box-shadow: none; }
-
-// ============================================================
-// Page container
-// ============================================================
-.il-page {
-  width: 100%;
-  max-width: 64rem;
-  margin-inline: auto;
-}
-
-.il-page--narrow {
-  max-width: 28rem;
-}
-
-.il-stack > * + * {
-  margin-top: var(--il-space-5);
-}
-
-// ============================================================
-// Interactive card — premium hover lift
-// ============================================================
-.il-card--interactive {
-  cursor: pointer;
-}
-
-.il-card--interactive:hover {
-  box-shadow: var(--il-shadow-lg);
-  border-color: var(--il-border-strong);
-  transform: translateY(-2px);
-}
-
-// ============================================================
-// Glass effect
-// ============================================================
-.il-glass {
-  background: rgba(17, 17, 19, 0.6);
-  backdrop-filter: blur(16px) saturate(180%);
-  -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.il-theme-light .il-glass {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-// ============================================================
-// Gradient text
-// ============================================================
-.il-gradient-text {
-  background: linear-gradient(135deg, var(--il-primary-400), var(--il-primary-600));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-// ============================================================
-// Premium gradient button background
-// ============================================================
-.il-gradient-bg {
-  background: linear-gradient(135deg, var(--il-primary-500), var(--il-primary-700));
-  background-size: 200% 200%;
-}
-
-.il-gradient-bg:hover {
-  animation: il-gradient-shift 3s ease infinite;
-}
-
-// ============================================================
-// Glow ring on focus
-// ============================================================
-.il-glow-focus:focus-visible {
-  box-shadow: var(--il-shadow-glow), 0 0 0 2px var(--il-primary-500);
-}
-
-// ============================================================
-// Animated border
-// ============================================================
-.il-border-animated {
-  position: relative;
-}
-
-.il-border-animated::after {
-  content: '';
-  position: absolute;
-  inset: -1px;
-  border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(135deg, var(--il-primary-500), transparent 50%);
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor;
-  mask-composite: exclude;
-  opacity: 0;
-  transition: opacity var(--il-transition-base);
-  pointer-events: none;
-}
-
-.il-border-animated:focus-within::after {
-  opacity: 1;
-}
-
-// ============================================================
-// Skeleton loader
-// ============================================================
-.il-skeleton {
-  background: linear-gradient(
-    90deg,
-    var(--il-surface-2) 25%,
-    var(--il-surface-3) 50%,
-    var(--il-surface-2) 75%
-  );
-  background-size: 200% 100%;
-  animation: il-shimmer 1.5s ease-in-out infinite;
-  border-radius: var(--il-radius-md);
-}
-
-// ============================================================
-// Button press animation
-// ============================================================
-.il-press {
-  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.il-press:active:not(:disabled) {
-  transform: scale(0.97);
-}
-
-// ============================================================
-// Auth card — glassmorphism
+// Auth Card — Premium Glassmorphism
 // ============================================================
 .il-auth-card {
   background: var(--il-surface-card);
   border: 1px solid var(--il-border);
-  border-radius: var(--il-radius-2xl);
-  padding: 2rem;
-  box-shadow: var(--il-shadow-xl);
+  border-radius: 20px;
+  padding: 32px 28px;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.03),
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    0 8px 24px rgba(0, 0, 0, 0.12),
+    0 24px 48px rgba(0, 0, 0, 0.16);
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .il-theme-dark .il-auth-card {
-  background: rgba(17, 17, 19, 0.8);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(14, 14, 16, 0.72);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
   border-color: rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 2px 4px rgba(0, 0, 0, 0.16),
+    0 8px 24px rgba(0, 0, 0, 0.24),
+    0 24px 48px rgba(0, 0, 0, 0.32);
 }
 
 .il-theme-light .il-auth-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(20px) saturate(180%);
-  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  background: rgba(255, 255, 255, 0.82);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.04),
+    0 2px 4px rgba(0, 0, 0, 0.04),
+    0 8px 24px rgba(0, 0, 0, 0.06),
+    0 24px 48px rgba(0, 0, 0, 0.08);
 }
 
 // ============================================================
-// Alert
+// Auth Input — Premium single-component feel
+// ============================================================
+.il-auth-input {
+  position: relative;
+  width: 100%;
+}
+
+.il-auth-input__field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 48px;
+  border-radius: 12px;
+  border: 1.5px solid var(--il-border-strong);
+  background: rgba(255, 255, 255, 0.03);
+  transition: all 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  overflow: hidden;
+}
+
+.il-theme-dark .il-auth-input__field {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.il-theme-light .il-auth-input__field {
+  background: rgba(0, 0, 0, 0.02);
+  border-color: rgba(0, 0, 0, 0.1);
+}
+
+.il-auth-input__field:hover {
+  border-color: var(--il-text-muted);
+}
+
+.il-theme-dark .il-auth-input__field:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.il-theme-light .il-auth-input__field:hover {
+  background: rgba(0, 0, 0, 0.03);
+  border-color: rgba(0, 0, 0, 0.16);
+}
+
+.il-auth-input__field:focus-within {
+  border-color: var(--il-primary-500);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12), var(--il-shadow-glow-sm);
+}
+
+.il-theme-dark .il-auth-input__field:focus-within {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.il-theme-light .il-auth-input__field:focus-within {
+  background: rgba(99, 102, 241, 0.03);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+// Error state
+.il-auth-input--error .il-auth-input__field {
+  border-color: var(--il-danger-500);
+  box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.08);
+}
+
+.il-auth-input--error .il-auth-input__field:focus-within {
+  box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.15), 0 0 16px rgba(244, 63, 94, 0.08);
+}
+
+.il-theme-dark .il-auth-input--error .il-auth-input__field {
+  background: rgba(244, 63, 94, 0.04);
+}
+
+.il-theme-light .il-auth-input--error .il-auth-input__field {
+  background: rgba(244, 63, 94, 0.03);
+}
+
+// Success state
+.il-auth-input--success .il-auth-input__field {
+  border-color: var(--il-success-500);
+}
+
+.il-auth-input__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 100%;
+  flex-shrink: 0;
+  color: var(--il-text-muted);
+  transition: color 200ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.il-auth-input__field:focus-within .il-auth-input__icon {
+  color: var(--il-primary-400);
+}
+
+.il-auth-input--error .il-auth-input__icon {
+  color: var(--il-danger-400);
+}
+
+.il-auth-input__input {
+  flex: 1;
+  height: 100%;
+  padding: 0 16px 0 0;
+  border: none;
+  background: transparent;
+  color: var(--il-text);
+  font-family: var(--il-font);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  outline: none;
+  caret-color: var(--il-primary-500);
+}
+
+.il-auth-input__input::placeholder {
+  color: var(--il-text-muted);
+  font-weight: 400;
+}
+
+.il-auth-input__suffix {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 100%;
+  flex-shrink: 0;
+  padding-right: 4px;
+}
+
+.il-auth-input__eye-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: var(--il-text-muted);
+  cursor: pointer;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.il-auth-input__eye-btn:hover {
+  background: var(--il-surface-2);
+  color: var(--il-text);
+}
+
+.il-auth-input__eye-btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--il-bg-subtle), 0 0 0 4px var(--il-primary-500);
+}
+
+// ============================================================
+// Alert — Refined
 // ============================================================
 .il-alert {
   display: flex;
   align-items: center;
   gap: 10px;
   padding: 12px 16px;
-  border-radius: var(--il-radius-lg);
+  border-radius: 12px;
   font-size: var(--il-font-sm);
   font-weight: 500;
 }
@@ -293,63 +216,18 @@
   border: 1px solid var(--il-success-border);
 }
 
-.il-alert--warning {
-  background: var(--il-warning-bg);
-  color: var(--il-warning-400);
-  border: 1px solid var(--il-warning-border);
+// ============================================================
+// Auth Button — 48px full-width premium
+// ============================================================
+.il-btn--auth {
+  height: 48px !important;
+  padding: 0 24px !important;
+  border-radius: 12px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
 }
 
-.il-alert--info {
-  background: var(--il-info-bg);
-  color: var(--il-info-400);
-  border: 1px solid var(--il-info-border);
-}
-
-// ============================================================
-// Reduced motion
-// ============================================================
-@media (prefers-reduced-motion: reduce) {
-  .il-card--interactive,
-  .il-fade-in,
-  .il-fade-in-up,
-  .il-fade-in-down,
-  .il-scale-in,
-  .il-slide-in-right,
-  .il-stagger > * {
-    transition: none;
-    animation: none;
-    opacity: 1;
-  }
-
-  .il-skeleton {
-    animation: none;
-  }
-
-  .il-recording-dot {
-    animation: none;
-  }
-}
-
-// ============================================================
-// Skip navigation (accessibility)
-// ============================================================
-.il-skip-nav {
-  position: absolute;
-  left: -9999px;
-  z-index: 999;
-  padding: 12px 24px;
-  background: var(--il-primary-500);
-  color: var(--il-text-inverse);
-  font-weight: 600;
-  font-size: var(--il-font-sm);
-  border-radius: 0 0 var(--il-radius-lg) var(--il-radius-lg);
-  text-decoration: none;
-  transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.il-skip-nav:focus {
-  left: 50%;
-  transform: translateX(-50%);
-  outline: none;
-  box-shadow: var(--il-shadow-glow);
+.il-btn--auth:active:not(:disabled) {
+  transform: scale(0.985) !important;
 }
