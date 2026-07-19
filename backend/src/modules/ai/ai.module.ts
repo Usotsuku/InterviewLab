@@ -1,4 +1,4 @@
-import { Module, DynamicModule, forwardRef, Provider } from '@nestjs/common';
+import { Module, DynamicModule, forwardRef, Provider, Logger } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { AiEvaluation, AiEvaluationSchema } from './schemas/ai-evaluation.schema';
 import { AiEvaluationRepository } from './repositories/ai-evaluation.repository';
@@ -30,6 +30,8 @@ function parseActiveProviders(): string[] {
   return [...new Set(raw.split(',').map((p) => p.trim().toLowerCase()))];
 }
 
+const _moduleLogger = new Logger('AIModule');
+
 @Module({})
 export class AIModule {
   static forRoot(): DynamicModule {
@@ -38,7 +40,7 @@ export class AIModule {
       .map((name) => ({ name, cls: PROVIDER_MAP[name] }))
       .filter((p) => {
         if (!p.cls) {
-          console.warn(`[AIModule] Unknown provider "${p.name}" in AI_PROVIDER — skipping`);
+          _moduleLogger.warn(`Unknown provider "${p.name}" in AI_PROVIDER — skipping`);
           return false;
         }
         return true;

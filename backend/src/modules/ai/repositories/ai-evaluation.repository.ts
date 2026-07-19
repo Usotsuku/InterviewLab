@@ -2,14 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { BaseRepository } from '@core/repository/base.repository';
+import { QueryService } from '@core/repository/query.service';
 import { AiEvaluation, AiEvaluationDocument } from '../schemas/ai-evaluation.schema';
 
 @Injectable()
 export class AiEvaluationRepository extends BaseRepository<AiEvaluationDocument> {
   constructor(
     @InjectModel(AiEvaluation.name) private readonly _evalModel: Model<AiEvaluationDocument>,
+    queryService: QueryService,
   ) {
-    super(_evalModel);
+    super(_evalModel, queryService);
   }
 
   async findByAnswerId(answerId: string | Types.ObjectId): Promise<AiEvaluationDocument | null> {

@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { BaseRepository } from '@core/repository/base.repository';
+import { QueryService } from '@core/repository/query.service';
 import { InterviewMetrics, InterviewMetricsDocument } from '../schemas/interview-metrics.schema';
 
 @Injectable()
@@ -9,8 +10,9 @@ export class InterviewMetricsRepository extends BaseRepository<InterviewMetricsD
   constructor(
     @InjectModel(InterviewMetrics.name)
     private readonly _metricsModel: Model<InterviewMetricsDocument>,
+    queryService: QueryService,
   ) {
-    super(_metricsModel);
+    super(_metricsModel, queryService);
   }
 
   async findByAnswerId(

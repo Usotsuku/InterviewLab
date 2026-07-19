@@ -64,7 +64,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         `[5XX] ${request.method} ${request.url} - Status: ${status} - Error: ${message} - RequestID: ${requestId}`,
       );
       // Alerting facade trigger (Console Alerting placeholder)
-      console.error(`ALERTING TRIGGERED FOR REQUEST ${requestId} - ERROR: ${message}`);
+      this._logger.error(`ALERTING TRIGGERED FOR REQUEST ${requestId} - ERROR: ${message}`);
     } else {
       this._logger.warn(
         `[4XX] ${request.method} ${request.url} - Status: ${status} - Warning: ${message}`,

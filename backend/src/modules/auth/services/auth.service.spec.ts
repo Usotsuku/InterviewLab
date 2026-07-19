@@ -16,8 +16,9 @@ describe('AuthService', () => {
   };
 
   const mockSessionRepo = {
-    create: jest.fn(),
+    create: jest.fn().mockResolvedValue({ _id: { toString: () => '507f1f77bcf86cd799439011' } }),
     findActiveByUserId: jest.fn().mockResolvedValue([]),
+    findByRefreshTokenHash: jest.fn(),
     invalidateSession: jest.fn().mockResolvedValue(true),
   };
 
@@ -55,7 +56,7 @@ describe('AuthService', () => {
     it('should register a new user and return tokens', async () => {
       mockUsersRepo.findByEmail.mockResolvedValue(null);
       mockUsersRepo.create.mockResolvedValue({
-        _id: { toString: () => 'user1' },
+        _id: { toString: () => '507f1f77bcf86cd799439011' },
         email: 'new@test.com',
         name: 'New',
         role: 'user',
@@ -84,7 +85,7 @@ describe('AuthService', () => {
   describe('login', () => {
     it('should login with valid credentials', async () => {
       mockUsersRepo.findByEmail.mockResolvedValue({
-        _id: { toString: () => 'user1' },
+        _id: { toString: () => '507f1f77bcf86cd799439011' },
         email: 'user@test.com',
         password: 'hashed-password',
         name: 'User',
@@ -93,7 +94,7 @@ describe('AuthService', () => {
       mockPasswordService.compare.mockResolvedValue(true);
 
       const result = await service.login({ email: 'user@test.com', password: 'pass1234' });
-      expect(result.user.id).toBe('user1');
+      expect(result.user.id).toBe('507f1f77bcf86cd799439011');
       expect(result.accessToken).toBe('access-token');
     });
 
@@ -104,7 +105,7 @@ describe('AuthService', () => {
 
     it('should throw INVALID_CREDENTIALS if password wrong', async () => {
       mockUsersRepo.findByEmail.mockResolvedValue({
-        _id: { toString: () => 'user1' },
+        _id: { toString: () => '507f1f77bcf86cd799439011' },
         email: 'user@test.com',
         password: 'hashed-password',
         name: 'User',
@@ -119,17 +120,15 @@ describe('AuthService', () => {
   describe('refresh', () => {
     it('should rotate session and return new tokens', async () => {
       const futureDate = new Date(Date.now() + 100000);
-      mockSessionRepo.findActiveByUserId.mockResolvedValue([
-        {
-          _id: { toString: () => 'sess1' },
-          refreshToken: 'hashed-refresh-token',
-          expiresAt: futureDate,
-          isValid: true,
-          userId: { toString: () => 'user1' },
-        },
-      ]);
+      mockSessionRepo.findByRefreshTokenHash.mockResolvedValue({
+        _id: { toString: () => '507f1f77bcf86cd799439011' },
+        refreshToken: 'hashed-refresh-token',
+        expiresAt: futureDate,
+        isValid: true,
+        userId: { toString: () => '507f1f77bcf86cd799439012' },
+      });
       mockUsersRepo.findById.mockResolvedValue({
-        _id: { toString: () => 'user1' },
+        _id: { toString: () => '507f1f77bcf86cd799439012' },
         email: 'user@test.com',
         name: 'User',
         role: 'user',
@@ -138,25 +137,23 @@ describe('AuthService', () => {
       const result = await service.refresh({ refreshToken: 'plain-refresh-token' });
       expect(result.accessToken).toBe('access-token');
       expect(result.refreshToken).toBe('plain-refresh-token');
-      expect(mockSessionRepo.invalidateSession).toHaveBeenCalledWith('sess1');
+      expect(mockSessionRepo.invalidateSession).toHaveBeenCalledWith('507f1f77bcf86cd799439011');
     });
 
     it('should throw INVALID_REFRESH_TOKEN if no matching session', async () => {
-      mockSessionRepo.findActiveByUserId.mockResolvedValue([]);
+      mockSessionRepo.findByRefreshTokenHash.mockResolvedValue(null);
       await expect(service.refresh({ refreshToken: 'nonexistent-token' })).rejects.toThrow();
     });
 
     it('should throw EXPIRED_REFRESH_TOKEN if session expired', async () => {
       const pastDate = new Date(Date.now() - 100000);
-      mockSessionRepo.findActiveByUserId.mockResolvedValue([
-        {
-          _id: { toString: () => 'sess1' },
-          refreshToken: 'hashed-refresh-token',
-          expiresAt: pastDate,
-          isValid: true,
-          userId: { toString: () => 'user1' },
-        },
-      ]);
+      mockSessionRepo.findByRefreshTokenHash.mockResolvedValue({
+        _id: { toString: () => '507f1f77bcf86cd799439011' },
+        refreshToken: 'hashed-refresh-token',
+        expiresAt: pastDate,
+        isValid: true,
+        userId: { toString: () => '507f1f77bcf86cd799439012' },
+      });
 
       await expect(service.refresh({ refreshToken: 'plain-refresh-token' })).rejects.toThrow();
     });
@@ -164,20 +161,18 @@ describe('AuthService', () => {
 
   describe('logout', () => {
     it('should invalidate session and return success', async () => {
-      mockSessionRepo.findActiveByUserId.mockResolvedValue([
-        {
-          _id: { toString: () => 'sess1' },
-          refreshToken: 'hashed-refresh-token',
-        },
-      ]);
+      mockSessionRepo.findByRefreshTokenHash.mockResolvedValue({
+        _id: { toString: () => '507f1f77bcf86cd799439011' },
+        refreshToken: 'hashed-refresh-token',
+      });
 
       const result = await service.logout({ refreshToken: 'plain-refresh-token' });
       expect(result.message).toBe('Logged out successfully');
-      expect(mockSessionRepo.invalidateSession).toHaveBeenCalledWith('sess1');
+      expect(mockSessionRepo.invalidateSession).toHaveBeenCalledWith('507f1f77bcf86cd799439011');
     });
 
     it('should return success even if no session found (idempotent)', async () => {
-      mockSessionRepo.findActiveByUserId.mockResolvedValue([]);
+      mockSessionRepo.findByRefreshTokenHash.mockResolvedValue(null);
       const result = await service.logout({ refreshToken: 'nonexistent' });
       expect(result.message).toBe('Logged out successfully');
     });
@@ -186,15 +181,15 @@ describe('AuthService', () => {
   describe('getMe', () => {
     it('should return user profile', async () => {
       mockUsersRepo.findById.mockResolvedValue({
-        _id: { toString: () => 'user1' },
+        _id: { toString: () => '507f1f77bcf86cd799439011' },
         email: 'user@test.com',
         name: 'User',
         role: 'user',
         createdAt: new Date('2024-01-01'),
       });
 
-      const result = await service.getMe('user1');
-      expect(result.id).toBe('user1');
+      const result = await service.getMe('507f1f77bcf86cd799439011');
+      expect(result.id).toBe('507f1f77bcf86cd799439011');
       expect(result.email).toBe('user@test.com');
     });
 

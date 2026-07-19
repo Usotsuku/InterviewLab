@@ -2,14 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { BaseRepository } from '@core/repository/base.repository';
+import { QueryService } from '@core/repository/query.service';
 import { Notification, NotificationDocument } from '../schemas/notification.schema';
 
 @Injectable()
 export class NotificationRepository extends BaseRepository<NotificationDocument> {
   constructor(
     @InjectModel(Notification.name) private readonly _notifModel: Model<NotificationDocument>,
+    queryService: QueryService,
   ) {
-    super(_notifModel);
+    super(_notifModel, queryService);
   }
 
   async findByUserId(userId: string | Types.ObjectId): Promise<NotificationDocument[]> {

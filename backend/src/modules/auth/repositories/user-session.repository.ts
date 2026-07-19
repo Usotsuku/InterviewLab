@@ -2,14 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { BaseRepository } from '@core/repository/base.repository';
+import { QueryService } from '@core/repository/query.service';
 import { UserSession, UserSessionDocument } from '../schemas/user-session.schema';
 
 @Injectable()
 export class UserSessionRepository extends BaseRepository<UserSessionDocument> {
   constructor(
     @InjectModel(UserSession.name) private readonly _sessionModel: Model<UserSessionDocument>,
+    queryService: QueryService,
   ) {
-    super(_sessionModel);
+    super(_sessionModel, queryService);
   }
 
   async findActiveByUserId(userId: string | Types.ObjectId): Promise<UserSessionDocument[]> {

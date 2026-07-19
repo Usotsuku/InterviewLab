@@ -41,6 +41,7 @@ describe('InterviewGenerationService', () => {
 
   const mockQuestionRepo = {
     create: jest.fn(),
+    createMany: jest.fn().mockResolvedValue([]),
     findByInterviewId: jest.fn().mockResolvedValue([]),
   };
 
@@ -99,7 +100,7 @@ describe('InterviewGenerationService', () => {
       });
 
       mockInterviewRepo.updateById.mockResolvedValue(undefined);
-      mockQuestionRepo.create.mockResolvedValue({});
+      mockQuestionRepo.createMany.mockResolvedValue([]);
 
       const result = await service.generate(USER_ID, INTERVIEW_ID, 'TECHNICAL', 3);
 
@@ -119,7 +120,12 @@ describe('InterviewGenerationService', () => {
         estimatedDuration: 30,
         totalQuestions: 3,
       });
-      expect(mockQuestionRepo.create).toHaveBeenCalledTimes(3);
+      expect(mockQuestionRepo.createMany).toHaveBeenCalledTimes(1);
+      expect(mockQuestionRepo.createMany).toHaveBeenCalledWith(
+        expect.arrayContaining([
+          expect.objectContaining({ text: expect.any(String) }),
+        ]),
+      );
     });
 
     it('should use default questionCount of 5 when not specified', async () => {
@@ -153,7 +159,7 @@ describe('InterviewGenerationService', () => {
         durationMs: 5000,
       });
       mockInterviewRepo.updateById.mockResolvedValue(undefined);
-      mockQuestionRepo.create.mockResolvedValue({});
+      mockQuestionRepo.createMany.mockResolvedValue([]);
 
       const result = await service.generate(USER_ID, INTERVIEW_ID, 'TECHNICAL');
       expect(result.totalQuestions).toBe(5);
@@ -184,7 +190,7 @@ describe('InterviewGenerationService', () => {
         durationMs: 5000,
       });
       mockInterviewRepo.updateById.mockResolvedValue(undefined);
-      mockQuestionRepo.create.mockResolvedValue({});
+      mockQuestionRepo.createMany.mockResolvedValue([]);
 
       await service.generate(USER_ID, INTERVIEW_ID, 'TECHNICAL', 3);
 

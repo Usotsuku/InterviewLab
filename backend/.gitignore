@@ -1,7 +1,8 @@
 node_modules/
 dist/
 .env
-.env.prod
+.env.*
+!.env.example
 *.log
 coverage/
 uploads/

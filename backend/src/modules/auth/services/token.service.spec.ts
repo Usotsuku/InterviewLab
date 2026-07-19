@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { JwtService } from '@nestjs/jwt';
 import { TokenService } from './token.service';
 import { AuthConfig } from '@core/config/auth.config';
+import { JwtStrategy } from '../strategies/jwt.strategy';
 
 describe('TokenService', () => {
   let service: TokenService;
@@ -13,8 +13,9 @@ describe('TokenService', () => {
     refreshTokenByteLength: 48,
   };
 
-  const mockJwtService = {
-    signAsync: jest.fn().mockResolvedValue('mock-access-token'),
+  const mockJwtStrategy = {
+    sign: jest.fn().mockResolvedValue('mock-access-token'),
+    verify: jest.fn(),
   };
 
   beforeAll(async () => {
@@ -22,7 +23,7 @@ describe('TokenService', () => {
       providers: [
         TokenService,
         { provide: AuthConfig, useValue: mockAuthConfig },
-        { provide: JwtService, useValue: mockJwtService },
+        { provide: JwtStrategy, useValue: mockJwtStrategy },
       ],
     }).compile();
 
@@ -38,10 +39,7 @@ describe('TokenService', () => {
       const payload = { sub: 'user123', sessionId: 'sess123', email: 'test@test.com' };
       const token = await service.generateAccessToken(payload);
       expect(token).toBe('mock-access-token');
-      expect(mockJwtService.signAsync).toHaveBeenCalledWith(payload, {
-        secret: 'test-secret-key',
-        expiresIn: '15m',
-      });
+      expect(mockJwtStrategy.sign).toHaveBeenCalledWith(payload);
     });
   });
 

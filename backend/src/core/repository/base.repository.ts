@@ -3,9 +3,10 @@ import { QueryConfig, PaginatedResult } from './query-config.types';
 import { QueryService } from './query.service';
 
 export abstract class BaseRepository<T> {
-  protected readonly _queryService = new QueryService();
-
-  constructor(protected readonly _model: Model<T>) {}
+  constructor(
+    protected readonly _model: Model<T>,
+    protected readonly _queryService: QueryService,
+  ) {}
 
   async findAll(config: QueryConfig<T> = {}): Promise<PaginatedResult<T>> {
     const baseFilter = this._buildBaseFilter(config.includeDeleted);
@@ -51,6 +52,12 @@ export abstract class BaseRepository<T> {
     const created = new this._model(data);
     const doc = await created.save();
     return doc.toObject() as any;
+  }
+
+  async createMany(data: Partial<T>[]): Promise<T[]> {
+    if (data.length === 0) return [];
+    const docs = await this._model.insertMany(data as any[]);
+    return docs.map((doc) => doc.toObject() as any);
   }
 
   async updateById(id: string, data: UpdateQuery<T>): Promise<T | null> {

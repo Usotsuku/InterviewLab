@@ -115,9 +115,7 @@ export class InterviewGenerationService {
         expectedKeywords: q.expectedKeywords ?? [],
       }));
 
-      for (const doc of questionDocs) {
-        await this._questionRepo.create(doc);
-      }
+      await this._questionRepo.createMany(questionDocs);
 
       const verifyDocs = await this._questionRepo.findByInterviewId(interviewId);
       this._logger.log(

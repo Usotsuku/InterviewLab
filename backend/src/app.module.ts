@@ -26,7 +26,9 @@ import { SettingsModule } from '@modules/settings/settings.module';
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => {
-        mongoose.set('debug', true);
+        if (configService.get<string>('config.environment') !== 'production') {
+          mongoose.set('debug', true);
+        }
         return { uri: configService.get<string>('config.database.uri') };
       },
       inject: [ConfigService],

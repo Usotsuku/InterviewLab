@@ -11,8 +11,26 @@ async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const isProduction = process.env.NODE_ENV === 'production';
 
-  const REQUIRED_SECRETS = ['DATABASE_URI', 'JWT_SECRET', 'GEMINI_API_KEY'];
+  const REQUIRED_SECRETS = ['DATABASE_URI', 'JWT_SECRET'];
   const missingSecrets = REQUIRED_SECRETS.filter((secret) => !process.env[secret]);
+
+  const activeProviders = (process.env.AI_PROVIDER || 'gemini')
+    .split(',')
+    .map((p) => p.trim().toLowerCase());
+
+  const PROVIDER_KEY_MAP: Record<string, string> = {
+    gemini: 'GEMINI_API_KEY',
+    kimi: 'KIMI_API_KEY',
+    groq: 'GROQ_API_KEY',
+  };
+
+  for (const provider of activeProviders) {
+    const keyEnv = PROVIDER_KEY_MAP[provider];
+    if (keyEnv && !process.env[keyEnv]) {
+      missingSecrets.push(keyEnv);
+    }
+  }
+
   if (missingSecrets.length > 0) {
     logger.error(
       `CRITICAL CONFIGURATION ERROR: Missing required configuration: ${missingSecrets.join(', ')}`,

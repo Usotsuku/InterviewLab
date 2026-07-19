@@ -178,16 +178,18 @@ export class AuthService {
     const expiresMs = this._tokenService.parseRefreshTokenExpiry();
     const expiresAt = new Date(Date.now() + expiresMs);
 
-    await this._sessionRepo.create({
+    const session = await this._sessionRepo.create({
       userId: new Types.ObjectId(userId),
       refreshToken: hashedRefreshToken,
       expiresAt,
       isValid: true,
     });
 
+    const sessionId = (session as unknown as { _id: Types.ObjectId })._id.toString();
+
     const payload: JwtPayload = {
       sub: userId,
-      sessionId: '', // will be set after session creation
+      sessionId,
       email,
       role,
     };
