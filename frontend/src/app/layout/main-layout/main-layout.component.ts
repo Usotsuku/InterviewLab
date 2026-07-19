@@ -1,5 +1,5 @@
-import { Component, ChangeDetectionStrategy, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, ChangeDetectionStrategy, signal, inject, HostBinding } from '@angular/core';
+import { Router, RouterOutlet } from '@angular/router';
 import { SidebarComponent } from '../sidebar/sidebar.component';
 import { HeaderComponent } from '../header/header.component';
 import { routeFadeAnimation } from './route-animations';
@@ -14,9 +14,9 @@ import { routeFadeAnimation } from './route-animations';
 })
 export class MainLayoutComponent {
   sidebarCollapsed = signal(false);
+  private readonly _router = inject(Router);
 
-  prepareRoute(outlet: RouterOutlet) {
-    if (!outlet || !outlet.isActivated) return '';
-    return outlet.activatedRouteData?.['animation'] ?? outlet.activatedRoute?.routeConfig?.path ?? '';
+  @HostBinding('@routeAnimation') get routeAnimation(): string {
+    return this._router.url;
   }
 }

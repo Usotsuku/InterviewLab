@@ -3,6 +3,7 @@ import { firstValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from '../../core/http/api-response.interface';
 import { BaseStore } from '../../core/store/base.store';
+import { extractErrorMessage } from '../../core/http/error-message';
 
 export interface ForgotPasswordState {
   emailSent: boolean;
@@ -37,7 +38,7 @@ export class ForgotPasswordStore extends BaseStore<ForgotPasswordState> {
       this._setState({ emailSent: true, sentToEmail: email, loading: false });
       return true;
     } catch (err: unknown) {
-      this._setState({ loading: false, error: this._extractError(err) });
+      this._setState({ loading: false, error: extractErrorMessage(err, 'Failed to send reset email. Please try again.') });
       return false;
     }
   }
@@ -46,11 +47,4 @@ export class ForgotPasswordStore extends BaseStore<ForgotPasswordState> {
     this._setState({ emailSent: false, sentToEmail: '', error: null });
   }
 
-  private _extractError(err: unknown): string {
-    if (err instanceof Object && 'error' in err) {
-      const httpErr = err as { error: { message?: string } };
-      return httpErr.error?.message ?? 'Failed to send reset email. Please try again.';
-    }
-    return 'Failed to send reset email. Please try again.';
-  }
 }

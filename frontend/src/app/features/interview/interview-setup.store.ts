@@ -6,7 +6,7 @@ import { Interview } from '../../core/models/domain.models';
 import { InterviewApiService } from '../../core/interview/interview-api.service';
 import { ProfileApiService } from '../../core/profile/profile-api.service';
 import { CandidateProfile } from '../../core/models/domain.models';
-import { toFriendlyError } from '../../core/http/error-message';
+import { extractErrorMessage } from '../../core/http/error-message';
 
 export interface InterviewSetupState extends Record<string, unknown> {
   mode: InterviewMode;
@@ -96,9 +96,8 @@ export class InterviewSetupStore extends AsyncStore<InterviewSetupState> {
       this._setState({ profile: res.data });
       this._completeOperation('loadProfile');
     } catch (err: unknown) {
-      const message = this._extractError(err);
       this._setState({ profile: null });
-      this._failOperation('loadProfile', message);
+      this._failOperation('loadProfile', extractErrorMessage(err));
     }
   }
 
@@ -115,13 +114,8 @@ export class InterviewSetupStore extends AsyncStore<InterviewSetupState> {
       this._completeOperation('create');
       return res.data;
     } catch (err: unknown) {
-      const message = this._extractError(err);
-      this._failOperation('create', message);
+      this._failOperation('create', extractErrorMessage(err));
       return null;
     }
-  }
-
-  private _extractError(err: unknown): string {
-    return toFriendlyError(err);
   }
 }

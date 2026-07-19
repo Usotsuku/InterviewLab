@@ -3,6 +3,7 @@ import { firstValueFrom } from 'rxjs';
 import { BaseStore } from '../../core/store/base.store';
 import { CandidateProfile, ExperienceEntry, ProjectEntry } from '../../core/models/domain.models';
 import { ProfileApiService, UpdateProfileDto } from '../../core/profile/profile-api.service';
+import { extractErrorMessage } from '../../core/http/error-message';
 
 export interface ProfileEditState {
   profile: CandidateProfile | null;
@@ -45,7 +46,7 @@ export class ProfileEditStore extends BaseStore<ProfileEditState> {
       const res = await firstValueFrom(this._api.getMyProfile());
       this._setState({ profile: res.data, loading: false });
     } catch (err: unknown) {
-      this._setState({ loading: false, error: this._extractError(err) });
+      this._setState({ loading: false, error: extractErrorMessage(err, 'Failed to save profile') });
     }
   }
 
@@ -56,7 +57,7 @@ export class ProfileEditStore extends BaseStore<ProfileEditState> {
       this._setState({ profile: res.data, saving: false, saved: true });
       return true;
     } catch (err: unknown) {
-      this._setState({ saving: false, error: this._extractError(err) });
+      this._setState({ saving: false, error: extractErrorMessage(err, 'Failed to save profile') });
       return false;
     }
   }
@@ -96,11 +97,4 @@ export class ProfileEditStore extends BaseStore<ProfileEditState> {
     }
   }
 
-  private _extractError(err: unknown): string {
-    if (err instanceof Object && 'error' in err) {
-      const httpErr = err as { error: { message?: string } };
-      return httpErr.error?.message ?? 'Failed to save profile';
-    }
-    return 'Failed to save profile';
-  }
 }

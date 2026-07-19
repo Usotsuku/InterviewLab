@@ -13,6 +13,7 @@ import { IlSpinnerComponent } from '@shared/components/spinner/spinner.component
 import { IlCardComponent } from '@shared/components/card/card.component';
 import { IlEmptyStateComponent } from '@shared/components/empty-state/empty-state.component';
 import { MatIconModule } from '@angular/material/icon';
+import { formatScore } from '@shared/utils/score.utils';
 
 @Component({
   selector: 'il-dashboard-home',
@@ -70,7 +71,7 @@ export class DashboardHomePage implements OnInit {
     },
     {
       label: 'Avg Score',
-      value: this.averageScore() != null ? this.averageScore()!.toFixed(1) : '—',
+      value: formatScore(this.averageScore()),
       icon: 'star',
       color: 'bg-warning-500',
     },

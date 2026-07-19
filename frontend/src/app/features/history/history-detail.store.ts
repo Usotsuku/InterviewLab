@@ -3,6 +3,7 @@ import { firstValueFrom } from 'rxjs';
 import { DetailsStore } from '../../core/store/details.store';
 import { InterviewApiService } from '../../core/interview/interview-api.service';
 import { InterviewReport } from '../../core/models/domain.models';
+import { extractErrorMessage } from '../../core/http/error-message';
 
 @Injectable({ providedIn: 'root' })
 export class HistoryDetailStore extends DetailsStore<InterviewReport> {
@@ -23,7 +24,7 @@ export class HistoryDetailStore extends DetailsStore<InterviewReport> {
       const res = await firstValueFrom(this._api.getReport(id));
       this._setDetails(res.data, id);
     } catch (err: unknown) {
-      this._setError(this._extractError(err));
+      this._setError(extractErrorMessage(err, 'Failed to load interview report'));
       this._setLoading(false);
     }
   }
@@ -33,11 +34,4 @@ export class HistoryDetailStore extends DetailsStore<InterviewReport> {
     await this.loadReport(id);
   }
 
-  private _extractError(err: unknown): string {
-    if (typeof err === 'object' && err !== null && 'error' in err) {
-      const httpErr = err as { error: { message?: string } };
-      return httpErr.error?.message ?? 'Failed to load interview report';
-    }
-    return 'Failed to load interview report';
-  }
 }

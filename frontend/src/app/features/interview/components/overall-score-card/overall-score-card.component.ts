@@ -1,4 +1,5 @@
 import { Component, input, computed, ChangeDetectionStrategy } from '@angular/core';
+import { scoreVariant } from '@shared/utils/score.utils';
 
 @Component({
   selector: 'il-overall-score-card',
@@ -31,8 +32,12 @@ export class IlOverallScoreCardComponent {
   scoreColor = computed(() => {
     const s = this.score();
     if (s === null) return 'var(--il-neutral-300)';
-    if (s >= 80) return 'var(--il-success-500, #22c55e)';
-    if (s >= 60) return 'var(--il-warning-500, #f59e0b)';
-    return 'var(--il-danger-500, #ef4444)';
+    const v = scoreVariant(s);
+    const map: Record<string, string> = {
+      success: 'var(--il-success-500, #22c55e)',
+      warning: 'var(--il-warning-500, #f59e0b)',
+      danger: 'var(--il-danger-500, #ef4444)',
+    };
+    return map[v] ?? 'var(--il-primary-500)';
   });
 }

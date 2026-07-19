@@ -3,6 +3,7 @@ import { firstValueFrom } from 'rxjs';
 import { AuthService, AuthUser } from './auth.service';
 import { TokenService } from './token.service';
 import { BaseStore } from '../store/base.store';
+import { extractErrorMessage } from '../http/error-message';
 
 export interface AuthState {
   user: AuthUser | null;
@@ -21,6 +22,9 @@ export class AuthStore extends BaseStore<AuthState> {
   private readonly _authService = inject(AuthService);
   private readonly _tokenService = inject(TokenService);
 
+  private _resolveInit!: () => void;
+  private readonly _initPromise: Promise<void>;
+
   constructor() {
     super({
       user: null,
@@ -29,7 +33,14 @@ export class AuthStore extends BaseStore<AuthState> {
       error: null,
       initialized: false,
     });
+    this._initPromise = new Promise((resolve) => {
+      this._resolveInit = resolve;
+    });
     this._restoreSession();
+  }
+
+  waitForInitialization(): Promise<void> {
+    return this.initialized() ? Promise.resolve() : this._initPromise;
   }
 
   async login(email: string, password: string): Promise<boolean> {
@@ -46,9 +57,10 @@ export class AuthStore extends BaseStore<AuthState> {
         loading: false,
         initialized: true,
       });
+      this._resolveInit();
       return true;
     } catch (err: unknown) {
-      this._setState({ loading: false, error: this._extractError(err, 'Login failed') });
+      this._setState({ loading: false, error: extractErrorMessage(err, 'Login failed') });
       return false;
     }
   }
@@ -67,9 +79,10 @@ export class AuthStore extends BaseStore<AuthState> {
         loading: false,
         initialized: true,
       });
+      this._resolveInit();
       return true;
     } catch (err: unknown) {
-      this._setState({ loading: false, error: this._extractError(err, 'Registration failed') });
+      this._setState({ loading: false, error: extractErrorMessage(err, 'Registration failed') });
       return false;
     }
   }
@@ -84,12 +97,14 @@ export class AuthStore extends BaseStore<AuthState> {
       // Logout server call failed — proceed with local cleanup regardless
     }
     this._tokenService.clearTokens();
-    this._setState({ user: null, isAuthenticated: false, error: null });
+    this._setState({ user: null, isAuthenticated: false, error: null, initialized: true });
+    this._resolveInit();
   }
 
   async loadCurrentUser(): Promise<void> {
     if (!this._tokenService.hasValidToken()) {
       this._setState({ initialized: true });
+      this._resolveInit();
       return;
     }
     try {
@@ -99,6 +114,7 @@ export class AuthStore extends BaseStore<AuthState> {
       this._tokenService.clearTokens();
       this._setState({ user: null, isAuthenticated: false, initialized: true });
     }
+    this._resolveInit();
   }
 
   private async _restoreSession(): Promise<void> {
@@ -107,14 +123,8 @@ export class AuthStore extends BaseStore<AuthState> {
       await this.loadCurrentUser();
     } else {
       this._setState({ initialized: true });
+      this._resolveInit();
     }
   }
 
-  private _extractError(err: unknown, fallback: string): string {
-    if (err instanceof Object && 'error' in err) {
-      const httpErr = err as { error: { message?: string } };
-      return httpErr.error?.message ?? fallback;
-    }
-    return fallback;
-  }
 }

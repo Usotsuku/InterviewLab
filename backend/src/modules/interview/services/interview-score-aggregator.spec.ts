@@ -9,7 +9,7 @@ describe('InterviewScoreAggregator', () => {
 
   it('should return all nulls when no evaluations', () => {
     const result = aggregator.aggregate([]);
-    expect(result).toEqual({ overallScore: null, technicalScore: null, communicationScore: null });
+    expect(result).toEqual({ overallScore: null, technicalScore: null, communicationScore: null, confidenceScore: null });
   });
 
   it('should return single evaluation scores unchanged', () => {
@@ -18,6 +18,7 @@ describe('InterviewScoreAggregator', () => {
     ]);
     expect(result.technicalScore).toBe(80);
     expect(result.communicationScore).toBe(70);
+    expect(result.confidenceScore).toBeNull();
     // overallScore = (80 + 70 + 90 + 60) / 4 = 75
     expect(result.overallScore).toBe(75);
   });
@@ -72,6 +73,7 @@ describe('InterviewScoreAggregator', () => {
     expect(result.technicalScore).toBe(70);
     // communicationScore averaged over all 4 (all non-null): (80+70+90+60)/4 = 75
     expect(result.communicationScore).toBe(75);
+    expect(result.confidenceScore).toBeNull();
     // overall per eval (non-null dims only):
     // eval1: (80+70+60)/3 = 70
     // eval2: (80+70+90+60)/4 = 75
@@ -108,5 +110,39 @@ describe('InterviewScoreAggregator', () => {
     ]);
     // technical = mean(33,34,33) = 33.333.. → 33.3
     expect(result.technicalScore).toBe(33.3);
+  });
+
+  it('should aggregate confidenceScore from metrics (0-1 scale) to 0-100', () => {
+    const result = aggregator.aggregate(
+      [{ technicalScore: 80, communicationScore: 70, correctnessScore: 80, completenessScore: 70 }],
+      [{ confidenceScore: 0.75 }, { confidenceScore: 0.85 }],
+    );
+    // confidence = mean(0.75, 0.85) * 100 = 0.8 * 100 = 80
+    expect(result.confidenceScore).toBe(80);
+  });
+
+  it('should return null confidenceScore when no metrics provided', () => {
+    const result = aggregator.aggregate(
+      [{ technicalScore: 80, communicationScore: 70, correctnessScore: 80, completenessScore: 70 }],
+      [],
+    );
+    expect(result.confidenceScore).toBeNull();
+  });
+
+  it('should return null confidenceScore when all metrics have null confidenceScore', () => {
+    const result = aggregator.aggregate(
+      [{ technicalScore: 80, communicationScore: 70, correctnessScore: 80, completenessScore: 70 }],
+      [{ confidenceScore: null }, { confidenceScore: undefined }],
+    );
+    expect(result.confidenceScore).toBeNull();
+  });
+
+  it('should handle metrics with mixed null and defined confidenceScore', () => {
+    const result = aggregator.aggregate(
+      [{ technicalScore: 80, communicationScore: 70, correctnessScore: 80, completenessScore: 70 }],
+      [{ confidenceScore: 0.6 }, { confidenceScore: null }, { confidenceScore: 0.9 }],
+    );
+    // confidence = mean(0.6, 0.9) * 100 = 0.75 * 100 = 75
+    expect(result.confidenceScore).toBe(75);
   });
 });

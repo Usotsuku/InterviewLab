@@ -4,7 +4,7 @@ import { EntityStore } from '../../core/store/entity.store';
 import { CandidateProfile } from '../../core/models/domain.models';
 import { CvAnalysisStatus } from '../../core/models/domain.enums';
 import { ProfileApiService } from '../../core/profile/profile-api.service';
-import { toFriendlyError } from '../../core/http/error-message';
+import { extractErrorMessage } from '../../core/http/error-message';
 
 @Injectable({ providedIn: 'root' })
 export class ProfileViewStore extends EntityStore<CandidateProfile> {
@@ -37,7 +37,7 @@ export class ProfileViewStore extends EntityStore<CandidateProfile> {
       const res = await firstValueFrom(this._api.getMyProfile());
       this._setEntity(res.data);
     } catch (err: unknown) {
-      this._setState({ loading: false, error: toFriendlyError(err) });
+      this._setState({ loading: false, error: extractErrorMessage(err) });
     }
   }
 
@@ -49,7 +49,7 @@ export class ProfileViewStore extends EntityStore<CandidateProfile> {
       this._clearEntity();
       return true;
     } catch (err: unknown) {
-      this._setState({ loading: false, error: toFriendlyError(err) });
+      this._setState({ loading: false, error: extractErrorMessage(err) });
       return false;
     }
   }

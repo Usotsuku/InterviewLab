@@ -3,6 +3,7 @@ import { InterviewSessionService } from './interview-session.service';
 import { InterviewRepository } from '../repositories/interview.repository';
 import { QuestionRepository } from '@modules/question/repositories/question.repository';
 import { AiEvaluationRepository } from '@modules/ai/repositories/ai-evaluation.repository';
+import { InterviewMetricsRepository } from '@modules/metrics/repositories/interview-metrics.repository';
 import { InterviewScoreAggregator } from './interview-score-aggregator';
 import { InterviewStatus } from '@shared/enums/domain.enums';
 import { Types } from 'mongoose';
@@ -23,6 +24,10 @@ describe('InterviewSessionService', () => {
   };
 
   const mockEvaluationRepo = {
+    findByInterviewId: jest.fn(),
+  };
+
+  const mockMetricsRepo = {
     findByInterviewId: jest.fn(),
   };
 
@@ -74,6 +79,7 @@ describe('InterviewSessionService', () => {
         { provide: InterviewRepository, useValue: mockInterviewRepo },
         { provide: QuestionRepository, useValue: mockQuestionRepo },
         { provide: AiEvaluationRepository, useValue: mockEvaluationRepo },
+        { provide: InterviewMetricsRepository, useValue: mockMetricsRepo },
         { provide: InterviewScoreAggregator, useValue: mockScoreAggregator },
       ],
     }).compile();
@@ -203,10 +209,15 @@ describe('InterviewSessionService', () => {
         { technicalScore: 80, communicationScore: 70, correctnessScore: 75, completenessScore: 65 },
         { technicalScore: 90, communicationScore: 80, correctnessScore: 85, completenessScore: 75 },
       ]);
+      mockMetricsRepo.findByInterviewId.mockResolvedValue([
+        { confidenceScore: 0.8 },
+        { confidenceScore: 0.9 },
+      ]);
       mockScoreAggregator.aggregate.mockReturnValue({
         overallScore: 77.5,
         technicalScore: 85,
         communicationScore: 75,
+        confidenceScore: 85,
       });
 
       const result = await service.finishInterview(INTERVIEW_ID, USER_ID);
@@ -218,6 +229,7 @@ describe('InterviewSessionService', () => {
       expect(result.actualDurationSeconds).toBeLessThanOrEqual(121);
       expect(result.technicalScore).toBe(85);
       expect(result.communicationScore).toBe(75);
+      expect(result.confidenceScore).toBe(85);
       expect(result.overallScore).toBe(77.5);
 
       expect(mockInterviewRepo.updateById).toHaveBeenCalledWith(INTERVIEW_ID, {
@@ -227,6 +239,7 @@ describe('InterviewSessionService', () => {
         overallScore: 77.5,
         technicalScore: 85,
         communicationScore: 75,
+        confidenceScore: 85,
       });
     });
 
@@ -238,10 +251,12 @@ describe('InterviewSessionService', () => {
         startedAt: new Date(),
       });
       mockEvaluationRepo.findByInterviewId.mockResolvedValue([]);
+      mockMetricsRepo.findByInterviewId.mockResolvedValue([]);
       mockScoreAggregator.aggregate.mockReturnValue({
         overallScore: null,
         technicalScore: null,
         communicationScore: null,
+        confidenceScore: null,
       });
 
       const result = await service.finishInterview(INTERVIEW_ID, USER_ID);
@@ -250,6 +265,7 @@ describe('InterviewSessionService', () => {
       expect(result.overallScore).toBeNull();
       expect(result.technicalScore).toBeNull();
       expect(result.communicationScore).toBeNull();
+      expect(result.confidenceScore).toBeNull();
     });
 
     it('should throw when interview not in progress', async () => {

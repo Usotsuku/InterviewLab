@@ -3,6 +3,7 @@ import { firstValueFrom } from 'rxjs';
 import { BaseStore } from '../../core/store/base.store';
 import { CvAnalysisStatus } from '../../core/models/domain.enums';
 import { CvApiService, CvMetadata } from '../../core/cv/cv-api.service';
+import { extractErrorMessage } from '../../core/http/error-message';
 
 export interface CvUploadState {
   metadata: CvMetadata | null;
@@ -66,7 +67,7 @@ export class CvUploadStore extends BaseStore<CvUploadState> {
       if (this._isNotFound(err)) {
         this._setState({ metadata: null, loading: false });
       } else {
-        this._setState({ loading: false, error: this._extractError(err) });
+        this._setState({ loading: false, error: extractErrorMessage(err, 'An error occurred') });
       }
     }
   }
@@ -87,7 +88,7 @@ export class CvUploadStore extends BaseStore<CvUploadState> {
       });
       return true;
     } catch (err: unknown) {
-      this._setState({ uploading: false, error: this._extractError(err) });
+      this._setState({ uploading: false, error: extractErrorMessage(err, 'An error occurred') });
       return false;
     }
   }
@@ -108,7 +109,7 @@ export class CvUploadStore extends BaseStore<CvUploadState> {
       });
       return true;
     } catch (err: unknown) {
-      this._setState({ uploading: false, error: this._extractError(err) });
+      this._setState({ uploading: false, error: extractErrorMessage(err, 'An error occurred') });
       return false;
     }
   }
@@ -121,7 +122,7 @@ export class CvUploadStore extends BaseStore<CvUploadState> {
       this._setState({ metadata: null, loading: false });
       return true;
     } catch (err: unknown) {
-      this._setState({ loading: false, error: this._extractError(err) });
+      this._setState({ loading: false, error: extractErrorMessage(err, 'An error occurred') });
       return false;
     }
   }
@@ -133,11 +134,4 @@ export class CvUploadStore extends BaseStore<CvUploadState> {
     return false;
   }
 
-  private _extractError(err: unknown): string {
-    if (typeof err === 'object' && err !== null && 'error' in err) {
-      const httpErr = err as { error: { message?: string } };
-      return httpErr.error?.message ?? 'An error occurred';
-    }
-    return 'An error occurred';
-  }
 }

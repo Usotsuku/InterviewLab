@@ -1,10 +1,9 @@
 import { Injectable, computed, inject } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
-import { mergeMap, toArray } from 'rxjs/operators';
-import { from } from 'rxjs';
 import { AsyncStore } from '../../core/store/async.store';
 import { InterviewApiService } from '../../core/interview/interview-api.service';
 import { Interview, InterviewReport } from '../../core/models/domain.models';
+import { extractErrorMessage } from '../../core/http/error-message';
 
 export interface TrendPoint {
   value: number;
@@ -320,6 +319,15 @@ export class AnalyticsOverviewStore extends AsyncStore<AnalyticsState> {
     super({ reports: new Map<string, InterviewReport>(), interviews: [] });
   }
 
+  /**
+   * Maximum number of concurrent report requests.
+   * 4 balances backend load with perceived responsiveness:
+   * - A single report takes ~50-150ms (network + generation).
+   * - 4 in parallel fills the pipeline without overwhelming the backend (8 cores typical).
+   * - 4 still provides a fast first paint because completed (batch) count ≤ 5-10 for most users.
+   */
+  private static readonly CONCURRENCY_LIMIT = 4;
+
   async loadAnalytics(): Promise<void> {
     this._startOperation('load');
     try {
@@ -331,27 +339,67 @@ export class AnalyticsOverviewStore extends AsyncStore<AnalyticsState> {
       const reportsMap = new Map<string, InterviewReport>();
 
       if (completed.length > 0) {
-        const results = await firstValueFrom(
-          from(completed).pipe(
-            mergeMap((interview) =>
-              firstValueFrom(this._api.getReport(interview.id)).then((res) => ({
-                id: interview.id,
-                report: res.data,
-              })),
-            ),
-            toArray(),
-          ),
+        const failures: string[] = [];
+        const results = await this._runWithConcurrency(
+          completed,
+          AnalyticsOverviewStore.CONCURRENCY_LIMIT,
+          async (interview) => {
+            try {
+              const res = await firstValueFrom(this._api.getReport(interview.id));
+              return { id: interview.id, report: res.data };
+            } catch {
+              failures.push(interview.id);
+              return null;
+            }
+          },
         );
         for (const result of results) {
-          reportsMap.set(result.id, result.report);
+          if (result) {
+            reportsMap.set(result.id, result.report);
+          }
+        }
+        if (failures.length > 0) {
+          console.warn(`[Analytics] ${failures.length} report(s) failed to load:`, failures);
         }
       }
 
       this._setState({ reports: reportsMap });
       this._completeOperation('load');
     } catch (err: unknown) {
-      this._failOperation('load', this._extractError(err));
+      this._failOperation('load', extractErrorMessage(err, 'Failed to load analytics'));
     }
+  }
+
+  /**
+   * Process items with a sliding window of concurrency, preserving input order.
+   * More efficient than partition-then-flatten: avoids copying the array, avoids nested promise arrays.
+   * Also simpler to reason about than a true channel-based worker pool.
+   */
+  private async _runWithConcurrency<T, R>(
+    items: T[],
+    limit: number,
+    fn: (item: T) => Promise<R>,
+  ): Promise<R[]> {
+    const results: R[] = new Array(items.length);
+    let index = 0;
+
+    async function worker(
+      that: AnalyticsOverviewStore,
+      res: R[],
+    ): Promise<void> {
+      while (index < items.length) {
+        const i = index;
+        index++;
+        res[i] = await fn(items[i]);
+      }
+    }
+
+    const workers: Promise<void>[] = [];
+    for (let i = 0; i < Math.min(limit, items.length); i++) {
+      workers.push(worker(this, results));
+    }
+    await Promise.all(workers);
+    return results;
   }
 
   private _avgFromSummaries(key: 'overallScore' | 'confidenceScore' | 'communicationScore' | 'technicalScore'): number {
@@ -400,11 +448,4 @@ export class AnalyticsOverviewStore extends AsyncStore<AnalyticsState> {
     return trend;
   }
 
-  private _extractError(err: unknown): string {
-    if (typeof err === 'object' && err !== null && 'error' in err) {
-      const httpErr = err as { error: { message?: string } };
-      return httpErr.error?.message ?? 'Failed to load analytics';
-    }
-    return 'Failed to load analytics';
-  }
 }

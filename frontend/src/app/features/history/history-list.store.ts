@@ -3,6 +3,7 @@ import { firstValueFrom } from 'rxjs';
 import { ListStore } from '../../core/store/list.store';
 import { InterviewApiService } from '../../core/interview/interview-api.service';
 import { Interview } from '../../core/models/domain.models';
+import { extractErrorMessage } from '../../core/http/error-message';
 
 export type HistoryFilter = 'ALL' | 'COMPLETED' | 'IN_PROGRESS';
 export type HistorySortBy = 'createdAt' | 'overallScore' | 'title';
@@ -76,7 +77,7 @@ export class HistoryListStore extends ListStore<Interview> {
       this._allItems.set(res.data);
       this._setItems(res.data, res.data.length);
     } catch (err: unknown) {
-      this._setError(this._extractError(err));
+      this._setError(extractErrorMessage(err, 'Failed to load interviews'));
       this._setLoading(false);
     }
   }
@@ -93,11 +94,4 @@ export class HistoryListStore extends ListStore<Interview> {
     }
   }
 
-  private _extractError(err: unknown): string {
-    if (typeof err === 'object' && err !== null && 'error' in err) {
-      const httpErr = err as { error: { message?: string } };
-      return httpErr.error?.message ?? 'Failed to load interviews';
-    }
-    return 'Failed to load interviews';
-  }
 }

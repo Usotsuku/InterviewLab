@@ -2,6 +2,7 @@ import { Component, input, ChangeDetectionStrategy } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { IlCardComponent } from '@shared/components/card/card.component';
 import { IlSparklineComponent, SparklineDataPoint } from '@shared/components/sparkline/sparkline.component';
+import { formatScore, scoreVariant } from '@shared/utils/score.utils';
 
 @Component({
   selector: 'il-score-trends-card',
@@ -21,15 +22,13 @@ export class IlScoreTrendsCardComponent {
   averageCommunication = input(0);
   averageTechnical = input(0);
 
-  formatScore(value: number): string {
-    if (value === 0) return '—';
-    return value.toFixed(1);
-  }
+  formatScore = formatScore;
 
   variantClass(value: number): string {
     if (value === 0) return 'text-neutral-400';
-    if (value >= 80) return 'text-success-500';
-    if (value >= 60) return 'text-warning-500';
+    const v = scoreVariant(value);
+    if (v === 'success') return 'text-success-500';
+    if (v === 'warning') return 'text-warning-500';
     return 'text-danger-500';
   }
 
@@ -39,8 +38,9 @@ export class IlScoreTrendsCardComponent {
 
   barVariant(value: number): string {
     if (value === 0) return 'bg-neutral-200';
-    if (value >= 80) return 'bg-success-500';
-    if (value >= 60) return 'bg-warning-500';
+    const v = scoreVariant(value);
+    if (v === 'success') return 'bg-success-500';
+    if (v === 'warning') return 'bg-warning-500';
     return 'bg-danger-500';
   }
 }

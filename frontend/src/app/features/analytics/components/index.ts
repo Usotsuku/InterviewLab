@@ -1,4 +1,4 @@
-export { IlAnalyticsHeroComponent } from './analytics-hero/analytics-hero.component';
+﻿export { IlAnalyticsHeroComponent } from './analytics-hero/analytics-hero.component';
 export { IlMetricTrendCardComponent } from './metric-trend-card/metric-trend-card.component';
 export { IlScoreTrendsCardComponent } from './score-trends-card/score-trends-card.component';
 export { IlSpeakingMetricsCardComponent } from './speaking-metrics-card/speaking-metrics-card.component';

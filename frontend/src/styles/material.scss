@@ -21,9 +21,11 @@ $il-typography: (
     typography: $il-typography,
     density: (scale: -1),
   ));
+  // Emits base + typography + density + dark color once.
   @include mat.all-component-themes($il-dark-theme);
 }
 
+// Only color styles differ per theme — avoids re-emitting base/density/typography.
 .il-theme-light {
   $il-light-theme: mat.define-theme((
     color: (
@@ -34,7 +36,7 @@ $il-typography: (
     typography: $il-typography,
     density: (scale: -1),
   ));
-  @include mat.all-component-themes($il-light-theme);
+  @include mat.all-component-colors($il-light-theme);
 }
 
 // ============================================================

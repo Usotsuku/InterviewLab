@@ -9,6 +9,7 @@ import { IlProgressComponent } from '@shared/components/progress/progress.compon
 import { IlSpinnerComponent } from '@shared/components/spinner/spinner.component';
 import { IlInterviewStatusBadgeComponent } from '../../components/interview-status-badge/interview-status-badge.component';
 import { QuestionReport } from '@core/models/domain.models';
+import { formatScore, scoreVariant } from '@shared/utils/score.utils';
 
 @Component({
   selector: 'il-history-detail',
@@ -37,16 +38,8 @@ export class HistoryDetailPage implements OnInit {
     }
   }
 
-  formatScore(value: number | null | undefined): string {
-    return value != null ? value.toFixed(1) : '—';
-  }
-
-  scoreVariant(value: number | null | undefined): 'primary' | 'success' | 'warning' | 'danger' {
-    if (value == null) return 'primary';
-    if (value >= 80) return 'success';
-    if (value >= 60) return 'warning';
-    return 'danger';
-  }
+  formatScore = formatScore;
+  scoreVariant = scoreVariant;
 
   difficultyVariant(difficulty: string): 'neutral' | 'success' | 'warning' | 'danger' {
     const map: Record<string, 'neutral' | 'success' | 'warning' | 'danger'> = {

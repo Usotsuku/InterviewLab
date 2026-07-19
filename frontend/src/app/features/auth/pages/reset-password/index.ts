@@ -1,1 +1,1 @@
-export { ResetPasswordPage } from './reset-password.page';
+﻿export { ResetPasswordPage } from './reset-password.page';

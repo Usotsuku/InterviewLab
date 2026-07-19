@@ -3,14 +3,14 @@
 } @else if (store.error() && !store.profile()) {
   <div class="il-card il-radius-xl p-8 text-center il-fade-in-up">
     <p class="il-alert--error mb-4">{{ store.error() }}</p>
-    <button il-button variant="secondary" (click)="store.load()">Retry</button>
+    <il-button variant="secondary" (clicked)="store.load()">Retry</il-button>
   </div>
 } @else {
   <div class="flex items-center justify-between gap-4 mb-8 il-fade-in-up">
     <h1 class="text-2xl font-bold text-text tracking-tight min-w-0 truncate">Edit Profile</h1>
-    <button routerLink="/profile" type="button" il-button variant="ghost" size="sm">
+    <il-button routerLink="/profile" variant="ghost" size="sm">
       Cancel
-    </button>
+    </il-button>
   </div>
 
   @if (store.error()) {
@@ -108,9 +108,9 @@
         [loading]="store.saving()"
         [disabled]="store.saving()"
       >Save Profile</il-button>
-      <button routerLink="/profile" type="button" il-button variant="secondary" size="lg">
+      <il-button routerLink="/profile" variant="secondary" size="lg">
         Cancel
-      </button>
+      </il-button>
     </div>
   </form>
 }

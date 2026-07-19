@@ -1,6 +1,7 @@
 import { Component, input, computed, ChangeDetectionStrategy } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { IlProgressComponent } from '../../../../shared/components/progress/progress.component';
+import { scoreVariant } from '@shared/utils/score.utils';
 
 interface MetricItem {
   label: string;
@@ -51,12 +52,7 @@ export class IlMetricsGridComponent {
 
   hasAnyScore = computed(() => this.metrics().some((m) => m.value !== null));
 
-  private _scoreVariant(score: number | null): 'primary' | 'success' | 'warning' | 'danger' {
-    if (score === null) return 'primary';
-    if (score >= 80) return 'success';
-    if (score >= 60) return 'warning';
-    return 'danger';
-  }
+  private _scoreVariant = scoreVariant;
 
   formatValue(value: number | null): string {
     return value !== null ? `${Math.round(value)}` : '--';

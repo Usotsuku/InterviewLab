@@ -3,6 +3,7 @@ import { firstValueFrom } from 'rxjs';
 import { AsyncStore } from '../../core/store/async.store';
 import { InterviewApiService } from '../../core/interview/interview-api.service';
 import { Interview } from '../../core/models/domain.models';
+import { extractErrorMessage } from '../../core/http/error-message';
 
 export interface DashboardState {
   [key: string]: unknown;
@@ -117,7 +118,7 @@ export class DashboardStore extends AsyncStore<DashboardState> {
       this._setState({ interviews: res.data });
       this._completeOperation('load');
     } catch (err: unknown) {
-      this._failOperation('load', this._extractError(err));
+      this._failOperation('load', extractErrorMessage(err, 'Failed to load dashboard'));
     }
   }
 
@@ -139,11 +140,4 @@ export class DashboardStore extends AsyncStore<DashboardState> {
     return scored.reduce((acc, i) => acc + (i[key] ?? 0), 0) / scored.length;
   }
 
-  private _extractError(err: unknown): string {
-    if (typeof err === 'object' && err !== null && 'error' in err) {
-      const httpErr = err as { error: { message?: string } };
-      return httpErr.error?.message ?? 'Failed to load dashboard';
-    }
-    return 'Failed to load dashboard';
-  }
 }

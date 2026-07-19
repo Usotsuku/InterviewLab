@@ -3,6 +3,7 @@ import { firstValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { ApiResponse } from '../../core/http/api-response.interface';
 import { BaseStore } from '../../core/store/base.store';
+import { extractErrorMessage } from '../../core/http/error-message';
 
 export interface ResetPasswordState {
   resetComplete: boolean;
@@ -37,16 +38,9 @@ export class ResetPasswordStore extends BaseStore<ResetPasswordState> {
       this._setState({ resetComplete: true, loading: false });
       return true;
     } catch (err: unknown) {
-      this._setState({ loading: false, error: this._extractError(err) });
+      this._setState({ loading: false, error: extractErrorMessage(err, 'Failed to reset password. The link may have expired.') });
       return false;
     }
   }
 
-  private _extractError(err: unknown): string {
-    if (err instanceof Object && 'error' in err) {
-      const httpErr = err as { error: { message?: string } };
-      return httpErr.error?.message ?? 'Failed to reset password. The link may have expired.';
-    }
-    return 'Failed to reset password. The link may have expired.';
-  }
 }

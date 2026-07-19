@@ -6,10 +6,11 @@ import { AuthStore } from '../auth/auth.store';
  * authGuard — blocks unauthenticated users from protected routes.
  * Redirects to /auth/login if no valid session exists.
  */
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = async () => {
   const authStore = inject(AuthStore);
   const router = inject(Router);
 
+  await authStore.waitForInitialization();
   if (authStore.isAuthenticated()) return true;
   return router.parseUrl('/auth/login');
 };

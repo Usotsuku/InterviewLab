@@ -22,3 +22,11 @@ export function toFriendlyError(err: unknown): string {
   if (/^[A-Z][A-Z0-9_]*$/.test(raw)) return 'Something went wrong. Please try again.';
   return raw;
 }
+
+export function extractErrorMessage(err: unknown, fallback = 'Something went wrong. Please try again.'): string {
+  const raw = extractRawMessage(err);
+  if (!raw) return fallback;
+  if (FRIENDLY_MESSAGES[raw]) return FRIENDLY_MESSAGES[raw];
+  if (/^[A-Z][A-Z0-9_]*$/.test(raw)) return fallback;
+  return raw;
+}

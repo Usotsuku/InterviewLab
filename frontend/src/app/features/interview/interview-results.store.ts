@@ -3,6 +3,8 @@ import { firstValueFrom } from 'rxjs';
 import { DetailsStore } from '../../core/store/details.store';
 import { InterviewApiService } from '../../core/interview/interview-api.service';
 import { Interview, Question } from '../../core/models/domain.models';
+import { extractErrorMessage } from '../../core/http/error-message';
+import { scoreGrade, scoreSummary } from '../../shared/utils/score.utils';
 
 export interface InterviewResultsData {
   interview: Interview;
@@ -43,25 +45,9 @@ export class InterviewResultsStore extends DetailsStore<InterviewResultsData> {
     return Math.round((this.answeredQuestions() / total) * 100);
   });
 
-  readonly overallGrade = computed(() => {
-    const score = this.overallScore();
-    if (score === null) return null;
-    if (score >= 90) return 'A';
-    if (score >= 80) return 'B';
-    if (score >= 70) return 'C';
-    if (score >= 60) return 'D';
-    return 'F';
-  });
+  readonly overallGrade = computed(() => scoreGrade(this.overallScore()));
 
-  readonly overallSummary = computed(() => {
-    const score = this.overallScore();
-    if (score === null) return null;
-    if (score >= 90) return 'Excellent performance. You demonstrated strong mastery across all areas.';
-    if (score >= 80) return 'Good performance. Solid answers with room for minor improvements.';
-    if (score >= 70) return 'Decent performance. Some areas need improvement.';
-    if (score >= 60) return 'Below average. Focus on strengthening core concepts.';
-    return 'Needs improvement. Consider revisiting fundamentals.';
-  });
+  readonly overallSummary = computed(() => scoreSummary(this.overallScore()));
 
   readonly strongestCategory = computed(() => {
     const scores = [
@@ -123,8 +109,7 @@ export class InterviewResultsStore extends DetailsStore<InterviewResultsData> {
         id,
       );
     } catch (err: unknown) {
-      const message = this._extractError(err);
-      this._setError(message);
+      this._setError(extractErrorMessage(err, 'Failed to load results'));
       this._setLoading(false);
     }
   }
@@ -132,13 +117,5 @@ export class InterviewResultsStore extends DetailsStore<InterviewResultsData> {
   async reload(id: string): Promise<void> {
     this._clearDetails();
     await this.loadResults(id);
-  }
-
-  private _extractError(err: unknown): string {
-    if (typeof err === 'object' && err !== null && 'error' in err) {
-      const httpErr = err as { error: { message?: string } };
-      return httpErr.error?.message ?? 'Failed to load results';
-    }
-    return 'Failed to load results';
   }
 }

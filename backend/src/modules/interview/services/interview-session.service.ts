@@ -2,6 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InterviewRepository } from '../repositories/interview.repository';
 import { QuestionRepository } from '@modules/question/repositories/question.repository';
 import { AiEvaluationRepository } from '@modules/ai/repositories/ai-evaluation.repository';
+import { InterviewMetricsRepository } from '@modules/metrics/repositories/interview-metrics.repository';
 import { INTERVIEW_ERRORS } from '../errors/interview.errors';
 import { AppException } from '@core/exceptions/app.exception';
 import { InterviewStatus } from '@shared/enums/domain.enums';
@@ -47,6 +48,7 @@ export interface FinishResponse {
   overallScore: number | null;
   technicalScore: number | null;
   communicationScore: number | null;
+  confidenceScore: number | null;
 }
 
 @Injectable()
@@ -57,6 +59,7 @@ export class InterviewSessionService {
     private readonly _interviewRepo: InterviewRepository,
     private readonly _questionRepo: QuestionRepository,
     private readonly _evaluationRepo: AiEvaluationRepository,
+    private readonly _metricsRepo: InterviewMetricsRepository,
     private readonly _scoreAggregator: InterviewScoreAggregator,
   ) {}
 
@@ -263,7 +266,8 @@ export class InterviewSessionService {
       doc.startedAt != null ? Math.round((now.getTime() - doc.startedAt.getTime()) / 1000) : 0;
 
     const evaluations = await this._evaluationRepo.findByInterviewId(interviewId);
-    const scores = this._scoreAggregator.aggregate(evaluations);
+    const metrics = await this._metricsRepo.findByInterviewId(interviewId);
+    const scores = this._scoreAggregator.aggregate(evaluations, metrics);
 
     await this._interviewRepo.updateById(interviewId, {
       status: InterviewStatus.COMPLETED,
@@ -272,6 +276,7 @@ export class InterviewSessionService {
       overallScore: scores.overallScore,
       technicalScore: scores.technicalScore,
       communicationScore: scores.communicationScore,
+      confidenceScore: scores.confidenceScore,
     });
 
     this._logger.log(
@@ -287,6 +292,7 @@ export class InterviewSessionService {
       overallScore: scores.overallScore,
       technicalScore: scores.technicalScore,
       communicationScore: scores.communicationScore,
+      confidenceScore: scores.confidenceScore,
     };
   }
 }

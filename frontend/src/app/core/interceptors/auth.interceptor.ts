@@ -3,6 +3,7 @@ import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, switchMap, throwError, Subject, filter, take } from 'rxjs';
 import { TokenService } from '../auth/token.service';
+import { AuthStore } from '../auth/auth.store';
 import { ApiResponse } from '../http/api-response.interface';
 import { environment } from '../../../environments/environment';
 
@@ -21,6 +22,7 @@ export const authInterceptor: HttpInterceptorFn = (
   const tokenService = inject(TokenService);
   const router = inject(Router);
   const backend = inject(HttpBackend);
+  const authStore = inject(AuthStore);
 
   const token = tokenService.getAccessToken();
   if (token) {
@@ -58,7 +60,7 @@ export const authInterceptor: HttpInterceptorFn = (
       const refreshToken = tokenService.getRefreshToken();
 
       if (!refreshToken) {
-        _failAuth(tokenService, router, false);
+        _failAuth(tokenService, authStore, router, false);
         return throwError(() => error);
       }
 
@@ -69,7 +71,7 @@ export const authInterceptor: HttpInterceptorFn = (
         switchMap((event) => {
           const body = (event as { body?: ApiResponse<{ accessToken: string; refreshToken: string }> }).body;
           if (!body?.data) {
-            _failAuth(tokenService, router, false);
+            _failAuth(tokenService, authStore, router, false);
             return throwError(() => error);
           }
           tokenService.setTokens(body.data.accessToken, body.data.refreshToken);
@@ -78,7 +80,7 @@ export const authInterceptor: HttpInterceptorFn = (
           return next(retryReq);
         }),
         catchError((refreshError) => {
-          _failAuth(tokenService, router, true);
+          _failAuth(tokenService, authStore, router, true);
           return throwError(() => refreshError);
         }),
       );
@@ -86,8 +88,9 @@ export const authInterceptor: HttpInterceptorFn = (
   );
 };
 
-function _failAuth(tokenService: TokenService, router: Router, refreshFailed: boolean): void {
+function _failAuth(tokenService: TokenService, authStore: AuthStore, router: Router, refreshFailed: boolean): void {
   tokenService.clearTokens();
+  authStore['_setState']({ user: null, isAuthenticated: false, error: null });
   if (refreshFailed) {
     refreshCompleted$.next(false);
   }

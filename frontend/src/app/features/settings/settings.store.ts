@@ -7,6 +7,7 @@ import { AuthStore } from '../../core/auth/auth.store';
 import { AuthService } from '../../core/auth/auth.service';
 import { ProfileApiService } from '../../core/profile/profile-api.service';
 import { NotificationService } from '../../core/notification/notification.service';
+import { extractErrorMessage } from '../../core/http/error-message';
 
 export interface SettingsState {
   [key: string]: unknown;
@@ -94,7 +95,7 @@ export class SettingsStore extends AsyncStore<SettingsState> {
       this._notifications.showSuccess('Password changed successfully');
       return true;
     } catch (err: unknown) {
-      const msg = this._extractError(err, 'Failed to change password');
+      const msg = extractErrorMessage(err, 'Failed to change password');
       this._failOperation('password', msg);
       this._notifications.showError(msg);
       return false;
@@ -109,7 +110,7 @@ export class SettingsStore extends AsyncStore<SettingsState> {
       this._completeOperation('delete');
       return true;
     } catch (err: unknown) {
-      const msg = this._extractError(err, 'Failed to delete account');
+      const msg = extractErrorMessage(err, 'Failed to delete account');
       this._failOperation('delete', msg);
       this._notifications.showError(msg);
       return false;
@@ -149,11 +150,4 @@ export class SettingsStore extends AsyncStore<SettingsState> {
     }
   }
 
-  private _extractError(err: unknown, fallback: string): string {
-    if (typeof err === 'object' && err !== null && 'error' in err) {
-      const httpErr = err as { error: { message?: string } };
-      return httpErr.error?.message ?? fallback;
-    }
-    return fallback;
-  }
 }

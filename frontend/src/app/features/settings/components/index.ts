@@ -1,4 +1,4 @@
-export { IlAccountSectionComponent } from './account-section/account-section.component';
+﻿export { IlAccountSectionComponent } from './account-section/account-section.component';
 export { IlAppearanceSectionComponent } from './appearance-section/appearance-section.component';
 export { IlPasswordSectionComponent } from './password-section/password-section.component';
 export { IlNotificationSectionComponent } from './notification-section/notification-section.component';

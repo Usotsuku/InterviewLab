@@ -7,16 +7,21 @@ export interface AiEvaluationScore {
   completenessScore?: number | null;
 }
 
+export interface MetricsScore {
+  confidenceScore?: number | null;
+}
+
 export interface AggregatedScores {
   overallScore: number | null;
   technicalScore: number | null;
   communicationScore: number | null;
+  confidenceScore: number | null;
 }
 
 @Injectable()
 export class InterviewScoreAggregator {
   /**
-   * Aggregates per-answer AI evaluation scores into interview-level scores.
+   * Aggregates per-answer AI evaluation scores and metrics into interview-level scores.
    *
    * Each AiEvaluation record contains four score dimensions (0-100 scale):
    *   - technicalScore:       domain-specific knowledge demonstrated
@@ -24,9 +29,12 @@ export class InterviewScoreAggregator {
    *   - correctnessScore:     factual accuracy of the answer
    *   - completenessScore:    coverage of the expected answer
    *
+   * Each Metrics record contains a confidenceScore (0-1 scale) derived from
+   * speech metrics (WPM, pauses, fillers, vocabulary, etc.).
+   *
    * Per-dimension interview scores are computed as the arithmetic mean of
    * non-null values only. Returns null for any dimension where all
-   * evaluations have null/undefined for that score.
+   * records have null/undefined for that score.
    *
    * overallScore is computed as the mean of per-evaluation averages,
    * where each per-evaluation average includes only non-null dimensions.
@@ -34,16 +42,16 @@ export class InterviewScoreAggregator {
    * Formulas:
    *   technicalScore     = mean(technicalScore_i)         for i where technicalScore_i is not null
    *   communicationScore = mean(communicationScore_i)     for i where communicationScore_i is not null
+   *   confidenceScore    = mean(confidenceScore_i) * 100  for i where confidenceScore_i is not null (0-1 → 0-100)
    *   overallScore       = mean(overallScore_i)            for i where overallScore_i is defined
    *     where overallScore_i = mean of non-null values among {technical_i, communication_i, correctness_i, completeness_i}
    */
-  aggregate(evaluations: AiEvaluationScore[]): {
-    overallScore: number | null;
-    technicalScore: number | null;
-    communicationScore: number | null;
-  } {
-    if (evaluations.length === 0) {
-      return { overallScore: null, technicalScore: null, communicationScore: null };
+  aggregate(
+    evaluations: AiEvaluationScore[],
+    metrics: MetricsScore[] = [],
+  ): AggregatedScores {
+    if (evaluations.length === 0 && metrics.length === 0) {
+      return { overallScore: null, technicalScore: null, communicationScore: null, confidenceScore: null };
     }
 
     const technicalValues = evaluations
@@ -52,6 +60,10 @@ export class InterviewScoreAggregator {
 
     const communicationValues = evaluations
       .map((e) => e.communicationScore)
+      .filter((v): v is number => v != null);
+
+    const confidenceValues = metrics
+      .map((m) => m.confidenceScore)
       .filter((v): v is number => v != null);
 
     const perEvaluationOverall: number[] = [];
@@ -66,6 +78,7 @@ export class InterviewScoreAggregator {
     return {
       technicalScore: technicalValues.length > 0 ? this._mean(technicalValues) : null,
       communicationScore: communicationValues.length > 0 ? this._mean(communicationValues) : null,
+      confidenceScore: confidenceValues.length > 0 ? this._mean(confidenceValues.map((v) => v * 100)) : null,
       overallScore: perEvaluationOverall.length > 0 ? this._mean(perEvaluationOverall) : null,
     };
   }

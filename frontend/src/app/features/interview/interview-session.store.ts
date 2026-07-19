@@ -4,6 +4,7 @@ import { AsyncStore } from '../../core/store/async.store';
 import { InterviewApiService, SubmitAnswerResponse } from '../../core/interview/interview-api.service';
 import { Interview, Question } from '../../core/models/domain.models';
 import { InterviewStatus } from '../../core/models/domain.enums';
+import { extractErrorMessage } from '../../core/http/error-message';
 
 export interface InterviewSessionState extends Record<string, unknown> {
   interview: Interview | null;
@@ -74,7 +75,7 @@ export class InterviewSessionStore extends AsyncStore<InterviewSessionState> {
       });
       this._completeOperation('loadInterview');
     } catch (err: unknown) {
-      this._failOperation('loadInterview', this._extractError(err));
+      this._failOperation('loadInterview', extractErrorMessage(err, 'An unexpected error occurred'));
     }
   }
 
@@ -93,7 +94,7 @@ export class InterviewSessionStore extends AsyncStore<InterviewSessionState> {
       this._completeOperation('start');
       return true;
     } catch (err: unknown) {
-      this._failOperation('start', this._extractError(err));
+      this._failOperation('start', extractErrorMessage(err, 'An unexpected error occurred'));
       return false;
     }
   }
@@ -146,7 +147,7 @@ export class InterviewSessionStore extends AsyncStore<InterviewSessionState> {
 
       return true;
     } catch (err: unknown) {
-      this._failOperation('submit', this._extractError(err));
+      this._failOperation('submit', extractErrorMessage(err, 'An unexpected error occurred'));
       return false;
     }
   }
@@ -167,7 +168,7 @@ export class InterviewSessionStore extends AsyncStore<InterviewSessionState> {
       this._completeOperation('finish');
       return true;
     } catch (err: unknown) {
-      this._failOperation('finish', this._extractError(err));
+      this._failOperation('finish', extractErrorMessage(err, 'An unexpected error occurred'));
       return false;
     }
   }
@@ -185,11 +186,4 @@ export class InterviewSessionStore extends AsyncStore<InterviewSessionState> {
     this.clearAllOperations();
   }
 
-  private _extractError(err: unknown): string {
-    if (typeof err === 'object' && err !== null && 'error' in err) {
-      const httpErr = err as { error: { message?: string } };
-      return httpErr.error?.message ?? 'An unexpected error occurred';
-    }
-    return 'An unexpected error occurred';
-  }
 }

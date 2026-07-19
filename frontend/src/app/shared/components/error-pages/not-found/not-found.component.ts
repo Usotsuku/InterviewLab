@@ -1,12 +1,12 @@
 import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { MatButtonModule } from '@angular/material/button';
+import { IlButtonComponent } from '../../button/button.component';
 
 @Component({
   selector: 'il-not-found',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, MatButtonModule],
+  imports: [RouterLink, IlButtonComponent],
   templateUrl: './not-found.component.html',
 })
 export class NotFoundComponent {}
