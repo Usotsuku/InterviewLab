@@ -1,9 +1,16 @@
-<div class="min-h-screen flex items-center justify-center bg-neutral-50">
-  <div class="w-full max-w-md px-4 il-fade-in">
+<div class="il-auth-bg">
+  <!-- Animated background shapes -->
+  <div class="il-auth-shape il-auth-shape--1"></div>
+  <div class="il-auth-shape il-auth-shape--2"></div>
+  <div class="il-auth-shape il-auth-shape--3"></div>
+
+  <div class="w-full max-w-md px-4 il-fade-in relative z-10">
     <div class="text-center mb-8">
-      <div class="w-11 h-11 bg-primary-500 rounded-lg flex items-center justify-center font-extrabold text-base text-white mx-auto mb-4">IL</div>
-      <h1 class="text-2xl font-bold text-neutral-800 mb-2">InterviewLab</h1>
-      <p class="text-sm text-neutral-400">Master your interview with AI-powered feedback</p>
+      <div class="il-logo-icon w-14 h-14 rounded-2xl flex items-center justify-center font-extrabold text-lg text-white mx-auto mb-5">
+        IL
+      </div>
+      <h1 class="text-2xl font-bold text-text mb-2 tracking-tight">InterviewLab</h1>
+      <p class="text-sm text-text-secondary">Master your interview with AI-powered feedback</p>
     </div>
     <router-outlet />
   </div>

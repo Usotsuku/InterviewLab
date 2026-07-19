@@ -1,19 +1,23 @@
 @if (showLoading()) {
-  <div class="flex items-center justify-center min-h-[60vh]">
+  <div class="flex flex-col items-center justify-center min-h-[60vh] gap-4">
     <il-spinner size="lg" label="Loading interview..." />
   </div>
 } @else if (showError()) {
-  <div class="max-w-lg mx-auto text-center py-16">
-    <mat-icon class="text-5xl w-12 h-12 text-danger-400 mb-4" aria-hidden="true">error_outline</mat-icon>
-    <h2 class="text-xl font-semibold text-neutral-800 mb-2">Something went wrong</h2>
-    <p class="text-neutral-400 mb-6">{{ showError() }}</p>
+  <div class="max-w-lg mx-auto text-center py-16 px-4">
+    <div class="w-16 h-16 rounded-2xl bg-danger-bg flex items-center justify-center mx-auto mb-5">
+      <mat-icon class="text-danger-400 text-2xl" aria-hidden="true">error_outline</mat-icon>
+    </div>
+    <h2 class="text-xl font-bold text-text mb-2 tracking-tight">Something went wrong</h2>
+    <p class="text-text-secondary mb-6">{{ showError() }}</p>
     <il-button variant="secondary" (clicked)="onRetry()">Try Again</il-button>
   </div>
 } @else if (store.completed()) {
-  <div class="max-w-lg mx-auto text-center py-16">
-    <mat-icon class="text-5xl w-12 h-12 text-success-500 mb-4" aria-hidden="true">check_circle</mat-icon>
-    <h2 class="text-xl font-semibold text-neutral-800 mb-2">All questions answered</h2>
-    <p class="text-neutral-400 mb-6">Great job! Finish your session to see your results.</p>
+  <div class="max-w-lg mx-auto text-center py-16 px-4">
+    <div class="w-16 h-16 rounded-2xl bg-success-bg flex items-center justify-center mx-auto mb-5">
+      <mat-icon class="text-success-400 text-2xl" aria-hidden="true">check_circle</mat-icon>
+    </div>
+    <h2 class="text-xl font-bold text-text mb-2 tracking-tight">All questions answered</h2>
+    <p class="text-text-secondary mb-6">Great job! Finish your session to see your results.</p>
     <il-button
       variant="primary"
       [loading]="store.isFinishing()"
@@ -21,8 +25,8 @@
     >View Results</il-button>
   </div>
 } @else if (store.currentQuestion()) {
-  <section class="flex flex-col gap-5 max-w-2xl mx-auto">
-    <div class="flex items-center justify-between">
+  <section class="il-fade-in flex flex-col gap-6 max-w-2xl mx-auto px-4 sm:px-0" aria-live="assertive">
+    <div class="flex items-center justify-between gap-4">
       <il-interview-progress
         [currentQuestion]="store.questionNumber()"
         [totalQuestions]="store.totalQuestions()"
@@ -45,7 +49,7 @@
       [hasContent]="hasContent()"
     />
 
-    <div class="flex items-center justify-between">
+    <div class="flex items-center justify-between gap-4">
       <il-recording-indicator
         [active]="speech.isRecording()"
         [durationSeconds]="speech.recordingDurationSeconds()"

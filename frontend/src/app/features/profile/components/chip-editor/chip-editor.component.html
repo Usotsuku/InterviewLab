@@ -1,5 +1,5 @@
 <div class="w-full">
-  <label class="block text-sm font-medium text-neutral-800 mb-2">{{ label() }}</label>
+  <label class="block text-sm font-medium text-text mb-2.5">{{ label() }}</label>
   <mat-chip-grid #chipGrid class="min-h-[40px]">
     @for (item of items(); track item) {
       <mat-chip-row
@@ -7,7 +7,7 @@
         class="!bg-primary-50 !text-primary-600 !border-primary-100"
       >
         {{ item }}
-        <button matChipRemove aria-label="Remove item">
+        <button matChipRemove [attr.aria-label]="'Remove ' + item">
           <mat-icon class="text-sm" aria-hidden="true">close</mat-icon>
         </button>
       </mat-chip-row>
@@ -18,6 +18,7 @@
       [matChipInputSeparatorKeyCodes]="separatorKeyCodes"
       [matChipInputAddOnBlur]="true"
       (matChipInputTokenEnd)="add($event)"
+      [attr.aria-label]="label()"
       class="flex-1 min-w-[120px]"
     />
   </mat-chip-grid>

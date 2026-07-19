@@ -1,33 +1,38 @@
-<section class="space-y-6">
-  <header>
-    <h1 class="text-2xl font-bold text-neutral-800">Interview History</h1>
-    <p class="text-sm text-neutral-400 mt-1">Review all your past interview sessions and results.</p>
+<section class="space-y-8">
+  <header class="il-fade-in-up">
+    <h1 class="text-2xl font-bold text-text tracking-tight">Interview History</h1>
+    <p class="text-sm text-text-secondary mt-1">Review all your past interview sessions and results.</p>
   </header>
 
   @if (store.loading()) {
-    <div class="flex items-center justify-center py-20">
+    <div class="flex items-center justify-center py-24">
       <il-spinner label="Loading interviews..." />
     </div>
   } @else if (store.error()) {
-    <div class="text-center py-12">
-      <p class="text-sm text-danger-500">{{ store.error() }}</p>
+    <div class="il-fade-in-up il-alert--error py-4 px-5" role="alert">
+      <mat-icon class="text-base w-4 h-4" aria-hidden="true">error_outline</mat-icon>
+      <p class="text-sm">{{ store.error() }}</p>
     </div>
   } @else {
-    <il-interview-history-filters
-      [filter]="store.filter()"
-      [sortBy]="store.sortBy()"
-      [sortOrder]="store.sortOrder()"
-      [search]="store.search()"
-      (filterChange)="onFilterChange($event)"
-      (sortChange)="onSortChange($event)"
-      (searchChange)="onSearchChange($event)"
-    />
+    <div class="il-fade-in-up" style="animation-delay: 0.05s">
+      <il-interview-history-filters
+        [filter]="store.filter()"
+        [sortBy]="store.sortBy()"
+        [sortOrder]="store.sortOrder()"
+        [search]="store.search()"
+        (filterChange)="onFilterChange($event)"
+        (sortChange)="onSortChange($event)"
+        (searchChange)="onSearchChange($event)"
+      />
+    </div>
 
-    <il-interview-history-list
-      [interviews]="store.filteredItems()"
-      [isEmpty]="store.isEmpty()"
-      (deleteInterview)="onDeleteInterview($event)"
-      (startInterview)="onStartInterview()"
-    />
+    <div class="il-fade-in-up" style="animation-delay: 0.1s">
+      <il-interview-history-list
+        [interviews]="store.filteredItems()"
+        [isEmpty]="store.isEmpty()"
+        (deleteInterview)="onDeleteInterview($event)"
+        (startInterview)="onStartInterview()"
+      />
+    </div>
   }
 </section>

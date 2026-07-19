@@ -27,6 +27,7 @@ import {
     IlFormErrorComponent,
   ],
   templateUrl: './register.page.html',
+  styleUrl: './register.page.scss',
 })
 export class RegisterPage {
   private readonly _fb = inject(FormBuilder);

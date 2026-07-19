@@ -1,9 +1,9 @@
 <div class="flex flex-col sm:flex-row sm:items-center gap-3">
   <div class="relative flex-1">
-    <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400 text-base w-4 h-4" aria-hidden="true">search</mat-icon>
+    <mat-icon class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted text-base w-4 h-4" aria-hidden="true">search</mat-icon>
     <input
       type="text"
-      class="w-full pl-9 pr-3 py-2 text-sm rounded-lg border border-neutral-200 bg-white text-neutral-800 placeholder:text-neutral-400 focus:outline-none focus:ring-2 focus:ring-primary-200 focus:border-primary-300 transition-colors duration-150"
+      class="w-full pl-9 pr-3 py-2.5 text-sm rounded-xl border border-border bg-surface-1/60 backdrop-blur-sm text-text placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary-200/40 focus:border-primary-300 transition-all duration-200"
       placeholder="Search interviews..."
       [value]="search()"
       (input)="onSearchInput($event)"
@@ -11,13 +11,13 @@
     />
   </div>
 
-  <div class="flex items-center gap-2">
+  <div class="flex items-center gap-1.5" role="group" aria-label="Filter by status">
     @for (f of filters; track f.value) {
       <button
-        class="px-3 py-1.5 text-xs font-medium rounded-lg transition-colors duration-150"
+        class="px-3.5 py-1.5 text-xs font-medium rounded-full transition-all duration-200"
         [class]="filter() === f.value
-          ? 'bg-primary-50 text-primary-600 border border-primary-200'
-          : 'bg-white text-neutral-500 border border-neutral-200 hover:bg-neutral-50'"
+          ? 'bg-primary-50 text-primary-600 shadow-sm'
+          : 'bg-surface-2 text-text-muted hover:text-text-secondary hover:bg-surface-3'"
         (click)="onFilterChange(f.value)"
         [attr.aria-pressed]="filter() === f.value"
       >

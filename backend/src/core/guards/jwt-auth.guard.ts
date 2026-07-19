@@ -1,4 +1,5 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { FastifyRequest } from 'fastify';
 import { AppException } from '../exceptions/app.exception';
@@ -6,14 +7,26 @@ import { CORE_ERRORS } from '../exceptions/core.errors';
 import { JwtPayload } from '../decorators/current-user.decorator';
 import { UserSessionRepository } from '@modules/auth/repositories/user-session.repository';
 
+export const IS_PUBLIC_KEY = 'is_public';
+
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(
+    private readonly _reflector: Reflector,
     private readonly _jwtService: JwtService,
     private readonly _sessionRepository: UserSessionRepository,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    const isPublic = this._reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+      context.getHandler(),
+      context.getClass(),
+    ]);
+
+    if (isPublic) {
+      return true;
+    }
+
     const request = context.switchToHttp().getRequest<FastifyRequest & { user?: JwtPayload }>();
     const token = this._extractTokenFromHeader(request);
 

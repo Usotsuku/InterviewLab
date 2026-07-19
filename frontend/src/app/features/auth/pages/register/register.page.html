@@ -1,12 +1,13 @@
-<div class="il-card p-8">
-  <div class="mb-6">
-    <h2 class="text-xl font-semibold text-neutral-800 mb-1">Create your account</h2>
-    <p class="text-sm text-neutral-400">Start your AI-powered interview journey</p>
+<div class="il-auth-card il-fade-in-up">
+  <div class="mb-7">
+    <h2 class="text-xl font-bold text-text mb-1 tracking-tight">Create your account</h2>
+    <p class="text-sm text-text-secondary">Start your AI-powered interview journey</p>
   </div>
 
   @if (errorMessage) {
-    <div class="bg-danger-50 text-danger-500 px-4 py-3 rounded-lg text-sm mb-5 border border-danger-400/20" role="alert">
-      {{ errorMessage }}
+    <div class="il-alert il-alert--error mb-5" role="alert">
+      <mat-icon class="text-base w-4 h-4 shrink-0" aria-hidden="true">error_outline</mat-icon>
+      <span>{{ errorMessage }}</span>
     </div>
   }
 
@@ -19,7 +20,7 @@
         autocomplete="name"
         placeholder="John Doe"
       />
-      <mat-icon matPrefix class="text-neutral-400" aria-hidden="true">person_outline</mat-icon>
+      <mat-icon matPrefix class="text-text-muted" aria-hidden="true">person_outline</mat-icon>
     </mat-form-field>
 
     <il-form-error
@@ -36,7 +37,7 @@
         autocomplete="email"
         placeholder="you@example.com"
       />
-      <mat-icon matPrefix class="text-neutral-400" aria-hidden="true">mail_outline</mat-icon>
+      <mat-icon matPrefix class="text-text-muted" aria-hidden="true">mail_outline</mat-icon>
     </mat-form-field>
 
     <il-form-error
@@ -53,7 +54,7 @@
         autocomplete="new-password"
         placeholder="Create a strong password"
       />
-      <mat-icon matPrefix class="text-neutral-400" aria-hidden="true">lock_outline</mat-icon>
+      <mat-icon matPrefix class="text-text-muted" aria-hidden="true">lock_outline</mat-icon>
       <button
         mat-icon-button
         matSuffix
@@ -68,22 +69,22 @@
     @if (password.touched && password.invalid && passwordStrength) {
       <div class="flex flex-col gap-1.5 -mt-2 mb-1">
         <div class="flex items-center gap-2 text-xs"
-          [class]="passwordStrength.minLength ? 'text-success-500' : 'text-neutral-400'">
+          [class]="passwordStrength.minLength ? 'text-success-400' : 'text-text-muted'">
           <mat-icon class="text-sm w-4 h-4" aria-hidden="true">{{ passwordStrength.minLength ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
           At least 8 characters
         </div>
         <div class="flex items-center gap-2 text-xs"
-          [class]="passwordStrength.upperCase ? 'text-success-500' : 'text-neutral-400'">
+          [class]="passwordStrength.upperCase ? 'text-success-400' : 'text-text-muted'">
           <mat-icon class="text-sm w-4 h-4" aria-hidden="true">{{ passwordStrength.upperCase ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
           One uppercase letter
         </div>
         <div class="flex items-center gap-2 text-xs"
-          [class]="passwordStrength.lowerCase ? 'text-success-500' : 'text-neutral-400'">
+          [class]="passwordStrength.lowerCase ? 'text-success-400' : 'text-text-muted'">
           <mat-icon class="text-sm w-4 h-4" aria-hidden="true">{{ passwordStrength.lowerCase ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
           One lowercase letter
         </div>
         <div class="flex items-center gap-2 text-xs"
-          [class]="passwordStrength.number ? 'text-success-500' : 'text-neutral-400'">
+          [class]="passwordStrength.number ? 'text-success-400' : 'text-text-muted'">
           <mat-icon class="text-sm w-4 h-4" aria-hidden="true">{{ passwordStrength.number ? 'check_circle' : 'radio_button_unchecked' }}</mat-icon>
           One number
         </div>
@@ -99,7 +100,7 @@
         autocomplete="new-password"
         placeholder="Re-enter your password"
       />
-      <mat-icon matPrefix class="text-neutral-400" aria-hidden="true">lock_outline</mat-icon>
+      <mat-icon matPrefix class="text-text-muted" aria-hidden="true">lock_outline</mat-icon>
       <button
         mat-icon-button
         matSuffix
@@ -120,16 +121,16 @@
       type="submit"
       variant="primary"
       size="lg"
-      class="w-full"
+      class="w-full mt-1"
       [loading]="authStore.loading()"
       [disabled]="authStore.loading()"
     >Create Account</il-button>
   </form>
 
-  <div class="mt-6 pt-5 border-t border-neutral-200 text-center">
-    <span class="text-sm text-neutral-400">
+  <div class="mt-6 pt-5 border-t border-border text-center">
+    <span class="text-sm text-text-secondary">
       Already have an account?
-      <a routerLink="/auth/login" class="text-primary-500 hover:text-primary-600 font-medium transition-colors">
+      <a routerLink="/auth/login" class="text-primary-400 hover:text-primary-300 font-semibold transition-colors">
         Sign in
       </a>
     </span>

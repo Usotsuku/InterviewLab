@@ -1,8 +1,8 @@
 @if (store.loading()) {
   <il-spinner label="Loading profile..." />
   } @else if (store.error()) {
-    <div class="il-card p-8 text-center">
-      <p class="text-danger-500 mb-4">{{ store.error() }}</p>
+    <div class="il-card il-radius-xl p-8 text-center il-fade-in-up">
+      <p class="il-alert--error mb-4">{{ store.error() }}</p>
       <il-button variant="secondary" (clicked)="store.load()">Retry</il-button>
     </div>
   } @else if (store.hasEntity()) {
@@ -18,30 +18,32 @@
       />
     }
 
-    <il-profile-header
-      [name]="userName()"
-      [email]="userEmail()"
-      [completionPercent]="store.completionPercent()"
-      [cvStatus]="store.cvAnalysisStatus()"
-      [cvFileName]="store.cvFileName()"
-      [editing]="false"
-    />
+    <div class="il-fade-in-up">
+      <il-profile-header
+        [name]="userName()"
+        [email]="userEmail()"
+        [completionPercent]="store.completionPercent()"
+        [cvStatus]="store.cvAnalysisStatus()"
+        [cvFileName]="store.cvFileName()"
+        [editing]="false"
+      />
+    </div>
 
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-    <div class="lg:col-span-2 flex flex-col gap-5">
-      <div class="il-card p-5">
-        <h3 class="text-base font-semibold text-neutral-800 mb-3">Professional Summary</h3>
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 flex flex-col gap-6">
+      <div class="il-card il-radius-xl p-6 il-fade-in-up">
+        <h3 class="text-base font-semibold text-text mb-4 tracking-tight">Professional Summary</h3>
         @if (store.summary()) {
-          <p class="text-sm text-neutral-500 leading-relaxed">{{ store.summary() }}</p>
+          <p class="text-sm text-text-secondary leading-relaxed">{{ store.summary() }}</p>
         } @else {
-          <p class="text-sm text-neutral-400 italic">No summary added yet.</p>
+          <p class="text-sm text-text-muted italic">No summary added yet.</p>
         }
       </div>
 
       @if (store.experience().length > 0) {
-        <div>
-          <h3 class="text-base font-semibold text-neutral-800 mb-3">Experience</h3>
-          <div class="flex flex-col gap-3">
+        <div class="il-fade-in-up">
+          <h3 class="text-base font-semibold text-text mb-4 tracking-tight">Experience</h3>
+          <div class="flex flex-col gap-3 il-stagger">
             @for (entry of store.experience(); track entry.company + entry.position) {
               <il-experience-card [entry]="entry" />
             }
@@ -50,9 +52,9 @@
       }
 
       @if (store.projects().length > 0) {
-        <div>
-          <h3 class="text-base font-semibold text-neutral-800 mb-3">Projects</h3>
-          <div class="flex flex-col gap-3">
+        <div class="il-fade-in-up">
+          <h3 class="text-base font-semibold text-text mb-4 tracking-tight">Projects</h3>
+          <div class="flex flex-col gap-3 il-stagger">
             @for (entry of store.projects(); track entry.name) {
               <il-project-card [entry]="entry" />
             }
@@ -61,7 +63,7 @@
       }
     </div>
 
-    <div class="flex flex-col gap-5">
+    <div class="flex flex-col gap-6">
       <il-profile-completion-card
         [percent]="store.completionPercent()"
         [hasSummary]="store.summary().length > 0"
@@ -73,36 +75,36 @@
 
       <il-cv-upload />
 
-      <div class="il-card p-5">
-        <h3 class="text-base font-semibold text-neutral-800 mb-3">Skills</h3>
+      <div class="il-card il-radius-xl p-6 il-fade-in-up">
+        <h3 class="text-base font-semibold text-text mb-4 tracking-tight">Skills</h3>
         @if (store.skills().length > 0) {
-          <div class="flex flex-wrap gap-1.5">
+          <div class="flex flex-wrap gap-2 il-stagger">
             @for (skill of store.skills(); track skill) {
               <il-badge variant="primary">{{ skill }}</il-badge>
             }
           </div>
         } @else {
-          <p class="text-sm text-neutral-400 italic">No skills added yet.</p>
+          <p class="text-sm text-text-muted italic">No skills added yet.</p>
         }
       </div>
 
-      <div class="il-card p-5">
-        <h3 class="text-base font-semibold text-neutral-800 mb-3">Technologies</h3>
+      <div class="il-card il-radius-xl p-6 il-fade-in-up">
+        <h3 class="text-base font-semibold text-text mb-4 tracking-tight">Technologies</h3>
         @if (store.technologies().length > 0) {
-          <div class="flex flex-wrap gap-1.5">
+          <div class="flex flex-wrap gap-2 il-stagger">
             @for (tech of store.technologies(); track tech) {
               <il-badge variant="info">{{ tech }}</il-badge>
             }
           </div>
         } @else {
-          <p class="text-sm text-neutral-400 italic">No technologies added yet.</p>
+          <p class="text-sm text-text-muted italic">No technologies added yet.</p>
         }
       </div>
 
       @if (store.strengths().length > 0) {
-        <div class="il-card p-5">
-          <h3 class="text-base font-semibold text-neutral-800 mb-3">Strengths</h3>
-          <div class="flex flex-wrap gap-1.5">
+        <div class="il-card il-radius-xl p-6 il-fade-in-up">
+          <h3 class="text-base font-semibold text-text mb-4 tracking-tight">Strengths</h3>
+          <div class="flex flex-wrap gap-2 il-stagger">
             @for (item of store.strengths(); track item) {
               <il-badge variant="success">{{ item }}</il-badge>
             }
@@ -111,9 +113,9 @@
       }
 
       @if (store.weaknesses().length > 0) {
-        <div class="il-card p-5">
-          <h3 class="text-base font-semibold text-neutral-800 mb-3">Areas for Improvement</h3>
-          <div class="flex flex-wrap gap-1.5">
+        <div class="il-card il-radius-xl p-6 il-fade-in-up">
+          <h3 class="text-base font-semibold text-text mb-4 tracking-tight">Areas for Improvement</h3>
+          <div class="flex flex-wrap gap-2 il-stagger">
             @for (item of store.weaknesses(); track item) {
               <il-badge variant="warning">{{ item }}</il-badge>
             }

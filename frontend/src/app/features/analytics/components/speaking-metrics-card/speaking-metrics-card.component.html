@@ -1,44 +1,44 @@
 <il-card title="Speaking Metrics">
-  <div class="space-y-4">
+  <div class="space-y-5">
     @for (metric of metrics(); track metric.label) {
       <div>
-        <div class="flex items-center justify-between mb-1">
+        <div class="flex items-center justify-between mb-1.5">
           <div class="flex items-center gap-2">
-            <mat-icon class="text-xs w-3.5 h-3.5 text-neutral-400" aria-hidden="true">{{ metric.icon }}</mat-icon>
-            <span class="text-sm text-neutral-500">{{ metric.label }}</span>
+            <mat-icon class="text-xs w-3.5 h-3.5 text-text-muted" aria-hidden="true">{{ metric.icon }}</mat-icon>
+            <span class="text-sm text-text-secondary">{{ metric.label }}</span>
           </div>
-          <span class="text-sm font-semibold text-neutral-700">{{ metric.format }}</span>
+          <span class="text-sm font-semibold text-text">{{ metric.format }}</span>
         </div>
-        <div class="h-1.5 rounded-full bg-neutral-200 overflow-hidden" role="progressbar" [attr.aria-valuemin]="0" [attr.aria-valuemax]="100" [attr.aria-valuenow]="metric.value" [attr.aria-valuetext]="metric.label + ': ' + metric.format">
+        <div class="h-1.5 rounded-full bg-surface-2 overflow-hidden" role="progressbar" [attr.aria-valuemin]="0" [attr.aria-valuemax]="100" [attr.aria-valuenow]="metric.value" [attr.aria-valuetext]="metric.label + ': ' + metric.format">
           <div
             class="h-full rounded-full transition-[width] duration-300"
             [ngClass]="barVariant(metric.value)"
             [style.width.%]="metric.value"
           ></div>
         </div>
-        <p class="text-xs text-neutral-400 mt-0.5 m-0">{{ metric.description }}</p>
+        <p class="text-xs text-text-muted mt-1 m-0">{{ metric.description }}</p>
       </div>
     }
   </div>
 
-  <div class="mt-5 pt-4 border-t border-neutral-200">
-    <h4 class="text-sm font-medium text-neutral-600 mb-3">Trends Over Time</h4>
-    <div class="space-y-3">
+  <div class="mt-6 pt-5 border-t border-border">
+    <h4 class="text-sm font-medium text-text-secondary mb-4">Trends Over Time</h4>
+    <div class="space-y-4">
       @if (wpmTrend().length > 1) {
         <div>
-          <span class="text-xs text-neutral-400">Speaking Pace</span>
+          <span class="text-xs text-text-muted">Speaking Pace</span>
           <il-sparkline [data]="wpmTrend()" color="var(--il-primary-500)" [height]="28" [showArea]="true" />
         </div>
       }
       @if (vocabTrend().length > 1) {
         <div>
-          <span class="text-xs text-neutral-400">Vocabulary Richness</span>
+          <span class="text-xs text-text-muted">Vocabulary Richness</span>
           <il-sparkline [data]="vocabTrend()" color="var(--il-success-500)" [height]="28" [showArea]="true" />
         </div>
       }
       @if (fillerTrend().length > 1) {
         <div>
-          <span class="text-xs text-neutral-400">Filler Words (lower is better)</span>
+          <span class="text-xs text-text-muted">Filler Words (lower is better)</span>
           <il-sparkline [data]="fillerTrend()" color="var(--il-warning-500)" [height]="28" [showArea]="true" />
         </div>
       }

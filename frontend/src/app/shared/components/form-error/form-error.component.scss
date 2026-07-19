@@ -1,0 +1,20 @@
+.il-form-error-wrap {
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: max-height 200ms cubic-bezier(0.4, 0, 0.2, 1), opacity 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+}
+
+.il-form-error-wrap--visible {
+  max-height: 40px;
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.il-form-error-text {
+  font-size: var(--il-font-xs);
+  color: var(--il-danger-400);
+  line-height: 1.4;
+  margin: 4px 0 0;
+}

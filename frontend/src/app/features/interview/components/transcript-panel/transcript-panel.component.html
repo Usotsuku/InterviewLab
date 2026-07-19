@@ -1,9 +1,9 @@
-<div class="il-card p-5">
-  <p class="text-xs uppercase tracking-wider text-neutral-400 mb-3">Your Answer</p>
-  <div class="min-h-24 text-sm leading-relaxed text-neutral-700">
-    {{ finalTranscript() }}<span class="text-neutral-400">{{ interimTranscript() }}</span>
+<div class="il-card il-fade-in-up p-5">
+  <p class="text-xs uppercase tracking-wider text-text-muted mb-3">Your Answer</p>
+  <div class="min-h-24 text-sm leading-relaxed text-text" aria-live="polite" role="log" aria-label="Transcription">
+    {{ finalTranscript() }}<span class="text-text-muted">{{ interimTranscript() }}</span>
     @if (!hasContent()) {
-      <span class="text-neutral-300 italic">
+      <span class="text-text-muted italic">
         @if (isRecording()) {
           Listening...
         } @else {

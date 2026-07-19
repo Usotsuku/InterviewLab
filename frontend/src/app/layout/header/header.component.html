@@ -1,28 +1,28 @@
-<header class="flex items-center justify-between px-6 h-14 bg-neutral-100 border-b border-neutral-200">
+<header class="il-header">
   <div class="flex items-center gap-3">
-    <h6 class="text-sm font-semibold text-neutral-400">InterviewLab</h6>
+    <h6 class="text-sm font-semibold text-text-secondary tracking-tight">InterviewLab</h6>
   </div>
   <div class="flex items-center gap-1">
     <button
-      mat-icon-button
+      class="il-header-btn"
       (click)="themeService.toggleTheme()"
       [attr.aria-label]="themeService.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
     >
-      <mat-icon aria-hidden="true">{{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+      <mat-icon class="text-xl" aria-hidden="true">{{ themeService.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
     </button>
 
-    <button mat-icon-button aria-label="Notifications">
-      <mat-icon aria-hidden="true">notifications_none</mat-icon>
+    <button class="il-header-btn" aria-label="Notifications">
+      <mat-icon class="text-xl" aria-hidden="true">notifications_none</mat-icon>
     </button>
 
-    <button mat-icon-button [matMenuTriggerFor]="userMenu" aria-label="User menu">
+    <button class="il-header-btn" [matMenuTriggerFor]="userMenu" aria-label="User menu">
       <il-avatar [name]="authStore.user()?.name ?? 'U'" size="sm" />
     </button>
-      <mat-menu #userMenu="matMenu">
-        <button mat-menu-item (click)="onLogout()">
-          <mat-icon aria-hidden="true">logout</mat-icon>
-          <span>Logout</span>
-        </button>
-      </mat-menu>
+    <mat-menu #userMenu="matMenu" class="il-menu">
+      <button mat-menu-item (click)="onLogout()">
+        <mat-icon aria-hidden="true">logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
   </div>
 </header>

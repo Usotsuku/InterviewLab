@@ -4,10 +4,54 @@
   border-right: 1px solid var(--il-border);
   display: flex;
   flex-direction: column;
-  transition: width var(--il-transition-base);
+  transition: width 200ms cubic-bezier(0.4, 0, 0.2, 1);
   width: var(--il-sidebar-width);
+}
+
+.il-logo-icon {
+  background: linear-gradient(135deg, var(--il-primary-500), var(--il-primary-300));
+  box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
 }
 
 .il-sidebar--collapsed {
   width: var(--il-space-12);
+}
+
+// Nav item
+.il-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: var(--il-radius-xl);
+  color: var(--il-text-secondary);
+  font-size: var(--il-font-sm);
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+
+  &:hover {
+    background: var(--il-surface-2);
+    color: var(--il-text);
+  }
+}
+
+// Active nav item — premium indicator
+.il-nav-active {
+  background: var(--il-primary-bg) !important;
+  color: var(--il-primary-400) !important;
+  font-weight: 600;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 20px;
+    background: var(--il-primary-500);
+    border-radius: 0 4px 4px 0;
+  }
 }

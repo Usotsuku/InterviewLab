@@ -1,4 +1,4 @@
-<div class="il-card p-6">
+<div class="il-card il-fade-in-up p-6">
   <div class="flex flex-wrap gap-2 mb-4">
     @if (typeLabel()) {
       <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary-50 text-primary-600">
@@ -11,10 +11,10 @@
       </span>
     }
     @if (topic()) {
-      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-neutral-100 text-neutral-500">
+      <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-surface-2 text-text-muted">
         {{ topic() }}
       </span>
     }
   </div>
-  <h2 class="text-lg leading-relaxed text-neutral-800">{{ questionText() }}</h2>
+  <h2 class="text-lg leading-relaxed text-text tracking-tight">{{ questionText() }}</h2>
 </div>

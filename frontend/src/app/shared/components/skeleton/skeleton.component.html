@@ -1,6 +1,6 @@
-<div
-  class="il-skeleton rounded-md"
+<div class="il-skeleton"
   [class.rounded-full]="variant() === 'circle'"
+  [class]="variant() === 'text' ? 'il-skeleton--text' : ''"
   [style.width]="width()"
   [style.height]="height()"
   aria-hidden="true"

@@ -1,54 +1,54 @@
-<div class="il-card p-5">
-  <div class="flex items-center justify-between mb-4">
-    <h3 class="text-base font-semibold text-neutral-800">Profile Completion</h3>
+<div class="il-card il-radius-xl p-6 il-fade-in-up">
+  <div class="flex items-center justify-between mb-5">
+    <h3 class="text-base font-semibold text-text tracking-tight">Profile Completion</h3>
     <span class="text-sm font-semibold"
-      [class]="percent() >= 80 ? 'text-success-500' : percent() >= 40 ? 'text-warning-500' : 'text-neutral-400'">
+      [class]="percent() >= 80 ? 'text-success-500' : percent() >= 40 ? 'text-warning-500' : 'text-text-muted'">
       {{ percent() }}%
     </span>
   </div>
 
-  <div class="w-full h-2 bg-neutral-200 rounded-full overflow-hidden mb-4" role="progressbar" [attr.aria-valuemin]="0" [attr.aria-valuemax]="100" [attr.aria-valuenow]="percent()" [attr.aria-valuetext]="percent() + '%'">
+  <div class="w-full h-2 bg-surface-2 rounded-full overflow-hidden mb-5" role="progressbar" [attr.aria-valuemin]="0" [attr.aria-valuemax]="100" [attr.aria-valuenow]="percent()" [attr.aria-valuetext]="percent() + '%'">
     <div class="h-full rounded-full transition-all duration-300"
       [class]="percent() >= 80 ? 'bg-success-500' : percent() >= 40 ? 'bg-warning-500' : 'bg-primary-500'"
       [style.width.%]="percent()">
     </div>
   </div>
 
-  <ul class="flex flex-col gap-2">
-    <li class="flex items-center gap-2 text-sm">
+  <ul class="flex flex-col gap-3 il-stagger">
+    <li class="flex items-center gap-2.5 text-sm">
       <mat-icon class="text-base w-4 h-4" aria-hidden="true"
-        [class]="hasSummary() ? 'text-success-500' : 'text-neutral-400'">
+        [class]="hasSummary() ? 'text-success-500' : 'text-text-muted'">
         {{ hasSummary() ? 'check_circle' : 'radio_button_unchecked' }}
       </mat-icon>
-      <span [class]="hasSummary() ? 'text-neutral-800' : 'text-neutral-400'">Professional Summary</span>
+      <span [class]="hasSummary() ? 'text-text' : 'text-text-muted'">Professional Summary</span>
     </li>
-    <li class="flex items-center gap-2 text-sm">
+    <li class="flex items-center gap-2.5 text-sm">
       <mat-icon class="text-base w-4 h-4" aria-hidden="true"
-        [class]="hasSkills() ? 'text-success-500' : 'text-neutral-400'">
+        [class]="hasSkills() ? 'text-success-500' : 'text-text-muted'">
         {{ hasSkills() ? 'check_circle' : 'radio_button_unchecked' }}
       </mat-icon>
-      <span [class]="hasSkills() ? 'text-neutral-800' : 'text-neutral-400'">Skills</span>
+      <span [class]="hasSkills() ? 'text-text' : 'text-text-muted'">Skills</span>
     </li>
-    <li class="flex items-center gap-2 text-sm">
+    <li class="flex items-center gap-2.5 text-sm">
       <mat-icon class="text-base w-4 h-4" aria-hidden="true"
-        [class]="hasTechnologies() ? 'text-success-500' : 'text-neutral-400'">
+        [class]="hasTechnologies() ? 'text-success-500' : 'text-text-muted'">
         {{ hasTechnologies() ? 'check_circle' : 'radio_button_unchecked' }}
       </mat-icon>
-      <span [class]="hasTechnologies() ? 'text-neutral-800' : 'text-neutral-400'">Technologies</span>
+      <span [class]="hasTechnologies() ? 'text-text' : 'text-text-muted'">Technologies</span>
     </li>
-    <li class="flex items-center gap-2 text-sm">
+    <li class="flex items-center gap-2.5 text-sm">
       <mat-icon class="text-base w-4 h-4" aria-hidden="true"
-        [class]="hasExperience() ? 'text-success-500' : 'text-neutral-400'">
+        [class]="hasExperience() ? 'text-success-500' : 'text-text-muted'">
         {{ hasExperience() ? 'check_circle' : 'radio_button_unchecked' }}
       </mat-icon>
-      <span [class]="hasExperience() ? 'text-neutral-800' : 'text-neutral-400'">Experience</span>
+      <span [class]="hasExperience() ? 'text-text' : 'text-text-muted'">Experience</span>
     </li>
-    <li class="flex items-center gap-2 text-sm">
+    <li class="flex items-center gap-2.5 text-sm">
       <mat-icon class="text-base w-4 h-4" aria-hidden="true"
-        [class]="hasProjects() ? 'text-success-500' : 'text-neutral-400'">
+        [class]="hasProjects() ? 'text-success-500' : 'text-text-muted'">
         {{ hasProjects() ? 'check_circle' : 'radio_button_unchecked' }}
       </mat-icon>
-      <span [class]="hasProjects() ? 'text-neutral-800' : 'text-neutral-400'">Projects</span>
+      <span [class]="hasProjects() ? 'text-text' : 'text-text-muted'">Projects</span>
     </li>
   </ul>
 </div>

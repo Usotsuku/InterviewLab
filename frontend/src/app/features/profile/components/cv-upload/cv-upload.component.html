@@ -1,17 +1,17 @@
-<div class="il-card p-5">
-  <h3 class="text-base font-semibold text-neutral-800 mb-4">Curriculum Vitae</h3>
+<div class="il-card il-radius-xl p-6 il-fade-in-up">
+  <h3 class="text-base font-semibold text-text mb-5 tracking-tight">Curriculum Vitae</h3>
 
   @if (store.uploading()) {
-    <div class="flex flex-col items-center justify-center py-8 border-2 border-dashed border-primary-200 bg-primary-50/30 rounded-lg">
+    <div class="flex flex-col items-center justify-center py-8 border-2 border-dashed border-primary-200 bg-primary-50/30 il-radius-xl">
       <il-spinner size="sm" label="Uploading CV..." />
     </div>
   } @else if (store.hasCv()) {
     <div class="flex flex-col gap-4">
-      <div class="flex items-start gap-3 p-3 bg-neutral-50 rounded-lg">
-        <mat-icon class="text-primary-500 mt-0.5 flex-shrink-0" aria-hidden="true">description</mat-icon>
+      <div class="flex items-start gap-3 p-4 bg-surface-2 il-radius-xl">
+        <mat-icon class="text-primary-400 mt-0.5 flex-shrink-0" aria-hidden="true">description</mat-icon>
         <div class="flex-1 min-w-0">
-          <p class="text-sm font-medium text-neutral-800 truncate">{{ store.metadata()!.fileName }}</p>
-          <p class="text-xs text-neutral-400 mt-0.5">
+          <p class="text-sm font-medium text-text truncate">{{ store.metadata()!.fileName }}</p>
+          <p class="text-xs text-text-muted mt-0.5">
             {{ formatFileSize(store.metadata()!.fileSize) }} · Uploaded {{ formatDate(store.metadata()!.uploadedAt) }}
           </p>
         </div>
@@ -19,21 +19,23 @@
       </div>
 
       @if (store.isProcessing()) {
-        <div class="flex items-center gap-3 p-3 bg-warning-50 border border-warning-400/20 rounded-lg">
+        <div class="flex items-center gap-3 p-4 bg-warning-50 border border-warning-400/20 il-radius-xl">
           <il-spinner size="sm" />
           <div>
-            <p class="text-sm font-medium text-neutral-800">Analyzing your CV...</p>
-            <p class="text-xs text-neutral-400">AI is extracting your professional information.</p>
+            <p class="text-sm font-medium text-text">Analyzing your CV...</p>
+            <p class="text-xs text-text-muted">AI is extracting your professional information.</p>
           </div>
         </div>
       }
 
       @if (store.isFailed()) {
-        <div class="flex items-center gap-3 p-3 bg-danger-50 border border-danger-400/20 rounded-lg">
-          <mat-icon class="text-danger-500 flex-shrink-0" aria-hidden="true">error_outline</mat-icon>
-          <div>
-            <p class="text-sm font-medium text-neutral-800">Analysis failed</p>
-            <p class="text-xs text-neutral-400">We couldn't analyze your CV. Please try uploading again.</p>
+        <div class="il-alert--error p-4 il-radius-xl">
+          <div class="flex items-center gap-3">
+            <mat-icon class="text-danger-500 flex-shrink-0" aria-hidden="true">error_outline</mat-icon>
+            <div>
+              <p class="text-sm font-medium text-text">Analysis failed</p>
+              <p class="text-xs text-text-muted">We couldn't analyze your CV. Please try uploading again.</p>
+            </div>
           </div>
         </div>
       }
@@ -49,8 +51,8 @@
     </div>
   } @else {
     <div
-      class="flex flex-col items-center justify-center py-8 border-2 border-dashed rounded-lg transition-colors cursor-pointer"
-      [class]="isDragOver() ? 'border-primary-400 bg-primary-50/30' : 'border-neutral-300 hover:border-primary-300 hover:bg-neutral-50'"
+      class="flex flex-col items-center justify-center py-8 border-2 border-dashed il-radius-xl transition-colors cursor-pointer"
+      [class]="isDragOver() ? 'border-primary-400 bg-primary-50/30' : 'border-border hover:border-primary-300 hover:bg-surface-2'"
       role="button"
       tabindex="0"
       aria-label="Upload CV file"
@@ -61,30 +63,34 @@
       (keydown.enter)="openFilePicker()"
       (keydown.space)="openFilePicker()"
     >
-      <mat-icon class="text-3xl mb-2" [class]="isDragOver() ? 'text-primary-500' : 'text-neutral-400'" aria-hidden="true">
+      <mat-icon class="text-3xl mb-2" [class]="isDragOver() ? 'text-primary-400' : 'text-text-muted'" aria-hidden="true">
         upload_file
       </mat-icon>
-      <p class="text-sm font-medium text-neutral-800 mb-1">
+      <p class="text-sm font-medium text-text mb-1">
         {{ isDragOver() ? 'Drop your CV here' : 'Drag & drop your CV' }}
       </p>
-      <p class="text-xs text-neutral-400 mb-3">or click to browse</p>
-      <span class="inline-flex items-center gap-1 px-3 py-1.5 rounded-md bg-neutral-200 text-xs font-medium text-neutral-500">
+      <p class="text-xs text-text-muted mb-3">or click to browse</p>
+      <span class="inline-flex items-center gap-1 px-3 py-1.5 il-radius-xl bg-surface-2 text-xs font-medium text-text-secondary">
         PDF only · Max 10MB
       </span>
     </div>
   }
 
   @if (clientError()) {
-    <div class="flex items-center gap-2 mt-3 p-2.5 bg-danger-50 text-danger-500 text-xs rounded-lg border border-danger-400/20" role="alert">
-      <mat-icon class="text-sm w-4 h-4 flex-shrink-0" aria-hidden="true">error_outline</mat-icon>
-      {{ clientError() }}
+    <div class="il-alert--error mt-4 il-radius-xl" role="alert">
+      <div class="flex items-center gap-2">
+        <mat-icon class="text-sm w-4 h-4 flex-shrink-0" aria-hidden="true">error_outline</mat-icon>
+        {{ clientError() }}
+      </div>
     </div>
   }
 
   @if (store.error()) {
-    <div class="flex items-center gap-2 mt-3 p-2.5 bg-danger-50 text-danger-500 text-xs rounded-lg border border-danger-400/20" role="alert">
-      <mat-icon class="text-sm w-4 h-4 flex-shrink-0" aria-hidden="true">error_outline</mat-icon>
-      {{ store.error() }}
+    <div class="il-alert--error mt-4 il-radius-xl" role="alert">
+      <div class="flex items-center gap-2">
+        <mat-icon class="text-sm w-4 h-4 flex-shrink-0" aria-hidden="true">error_outline</mat-icon>
+        {{ store.error() }}
+      </div>
     </div>
   }
 

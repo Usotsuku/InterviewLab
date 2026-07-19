@@ -1,8 +1,9 @@
-import { Controller, Post, Get, Body, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Post, Get, Body, HttpCode, HttpStatus, SetMetadata } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { Throttle } from '@nestjs/throttler';
 import { CheckAuth } from '@core/decorators/check-auth.decorator';
 import { CurrentUser, JwtPayload } from '@core/decorators/current-user.decorator';
+import { IS_PUBLIC_KEY } from '@core/guards/jwt-auth.guard';
 import { AuthService } from '../services/auth.service';
 import { RegisterDto } from '../dto/register.dto';
 import { LoginDto } from '../dto/login.dto';
@@ -22,6 +23,7 @@ export class AuthController {
 
   @Post('register')
   @Throttle(AUTH_THROTTLE)
+  @SetMetadata(IS_PUBLIC_KEY, true)
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Register a new user account.' })
   @ApiResponse({
@@ -36,6 +38,7 @@ export class AuthController {
 
   @Post('login')
   @Throttle(AUTH_THROTTLE)
+  @SetMetadata(IS_PUBLIC_KEY, true)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Authenticate user and issue session tokens.' })
   @ApiResponse({ status: 200, description: 'Login successful. Returns user profile and tokens.' })
@@ -46,6 +49,7 @@ export class AuthController {
 
   @Post('refresh')
   @Throttle(AUTH_THROTTLE)
+  @SetMetadata(IS_PUBLIC_KEY, true)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Rotate refresh token and issue new token pair.' })
   @ApiResponse({ status: 200, description: 'Tokens rotated successfully.' })
@@ -56,6 +60,7 @@ export class AuthController {
 
   @Post('logout')
   @Throttle(AUTH_THROTTLE)
+  @SetMetadata(IS_PUBLIC_KEY, true)
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Revoke the active session by invalidating the refresh token.' })
   @ApiResponse({ status: 200, description: 'Logged out successfully.' })

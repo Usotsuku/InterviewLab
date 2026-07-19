@@ -1,107 +1,108 @@
-<section class="space-y-6">
-  <div>
-    <a routerLink="/history" class="inline-flex items-center gap-1 text-sm text-neutral-400 hover:text-neutral-600 transition-colors duration-150 no-underline mb-4">
+<section class="space-y-8">
+  <div class="il-fade-in-up">
+    <a routerLink="/history" class="inline-flex items-center gap-1.5 text-sm text-text-muted hover:text-text transition-colors duration-150 no-underline mb-4">
       <mat-icon class="text-base w-4 h-4" aria-hidden="true">arrow_back</mat-icon>
       Back to History
     </a>
   </div>
 
   @if (store.loading()) {
-    <div class="flex items-center justify-center py-20">
+    <div class="flex items-center justify-center py-24">
       <il-spinner label="Loading report..." />
     </div>
   } @else if (store.error()) {
-    <div class="text-center py-12">
-      <p class="text-sm text-danger-500">{{ store.error() }}</p>
+    <div class="il-fade-in-up il-alert--error py-4 px-5" role="alert">
+      <mat-icon class="text-base w-4 h-4" aria-hidden="true">error_outline</mat-icon>
+      <p class="text-sm">{{ store.error() }}</p>
     </div>
   } @else if (store.report()) {
-    <header>
-      <div class="flex items-center gap-3 mb-2">
+    <header class="il-fade-in-up">
+      <div class="flex items-center gap-3 mb-3">
         <il-interview-status-badge [status]="store.interviewSummary()!.status" />
-        <h1 class="text-2xl font-bold text-neutral-800">{{ store.interviewSummary()!.title || 'Interview Report' }}</h1>
+        <h1 class="text-2xl font-bold text-text tracking-tight">{{ store.interviewSummary()!.title || 'Interview Report' }}</h1>
       </div>
-      <p class="text-sm text-neutral-400">
+      <p class="text-sm text-text-secondary">
         {{ store.totalAnswered() }} of {{ store.totalQuestions() }} questions answered &middot;
         {{ store.durationMinutes() }} minutes
       </p>
     </header>
 
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 il-fade-in-up" style="animation-delay: 0.05s">
       <il-card variant="flat">
-        <div class="text-center">
-          <p class="text-xs text-neutral-400 mb-1 m-0">Overall Score</p>
+        <div class="text-center py-1">
+          <p class="text-xs text-text-muted mb-1 m-0">Overall Score</p>
           <p class="text-2xl font-bold text-primary-500 m-0">{{ formatScore(store.interviewSummary()!.overallScore) }}</p>
         </div>
       </il-card>
       <il-card variant="flat">
-        <div class="text-center">
-          <p class="text-xs text-neutral-400 mb-1 m-0">Technical</p>
-          <p class="text-2xl font-bold text-neutral-800 m-0">{{ formatScore(store.interviewSummary()!.technicalScore) }}</p>
+        <div class="text-center py-1">
+          <p class="text-xs text-text-muted mb-1 m-0">Technical</p>
+          <p class="text-2xl font-bold text-text m-0">{{ formatScore(store.interviewSummary()!.technicalScore) }}</p>
         </div>
       </il-card>
       <il-card variant="flat">
-        <div class="text-center">
-          <p class="text-xs text-neutral-400 mb-1 m-0">Communication</p>
-          <p class="text-2xl font-bold text-neutral-800 m-0">{{ formatScore(store.interviewSummary()!.communicationScore) }}</p>
+        <div class="text-center py-1">
+          <p class="text-xs text-text-muted mb-1 m-0">Communication</p>
+          <p class="text-2xl font-bold text-text m-0">{{ formatScore(store.interviewSummary()!.communicationScore) }}</p>
         </div>
       </il-card>
       <il-card variant="flat">
-        <div class="text-center">
-          <p class="text-xs text-neutral-400 mb-1 m-0">Confidence</p>
-          <p class="text-2xl font-bold text-neutral-800 m-0">{{ formatScore(store.interviewSummary()!.confidenceScore) }}</p>
+        <div class="text-center py-1">
+          <p class="text-xs text-text-muted mb-1 m-0">Confidence</p>
+          <p class="text-2xl font-bold text-text m-0">{{ formatScore(store.interviewSummary()!.confidenceScore) }}</p>
         </div>
       </il-card>
     </div>
 
-    <il-card title="Questions Review">
-      <div class="flex flex-col divide-y divide-neutral-100">
+    <il-card title="Questions Review" class="il-fade-in-up" style="animation-delay: 0.1s">
+      <div class="flex flex-col divide-y divide-border">
         @for (question of store.questions(); track question.questionId; let idx = $index) {
-          <div class="py-4 first:pt-0 last:pb-0">
+          <div class="py-5 first:pt-0 last:pb-0">
             <div class="flex items-start gap-3 mb-3">
-              <span class="flex items-center justify-center w-7 h-7 rounded-full bg-neutral-100 text-xs font-semibold text-neutral-600 shrink-0">
+              <span class="flex items-center justify-center w-7 h-7 rounded-full bg-surface-2 text-xs font-semibold text-text-secondary shrink-0">
                 {{ idx + 1 }}
               </span>
               <div class="flex-1 min-w-0">
-                <div class="flex items-center gap-2 mb-1">
-                   <mat-icon class="text-xs w-3.5 h-3.5 text-neutral-400" aria-hidden="true">{{ typeIcon(question.type) }}</mat-icon>
+                <div class="flex items-center gap-2 mb-1.5">
+                   <mat-icon class="text-xs w-3.5 h-3.5 text-text-muted" aria-hidden="true">{{ typeIcon(question.type) }}</mat-icon>
                   <il-badge [variant]="difficultyVariant(question.difficulty)">{{ question.difficulty }}</il-badge>
                 </div>
-                <p class="text-sm font-medium text-neutral-800 m-0">{{ question.text }}</p>
+                <p class="text-sm font-medium text-text m-0">{{ question.text }}</p>
               </div>
             </div>
 
             @if (question.transcript) {
-              <div class="ml-10 p-3 bg-neutral-50 rounded-lg mb-3">
-                <p class="text-xs text-neutral-500 mb-1 m-0">Your Answer</p>
-                <p class="text-sm text-neutral-700 m-0">{{ question.transcript }}</p>
+              <div class="ml-6 sm:ml-10 p-4 bg-surface-2 rounded-xl mb-3">
+                <p class="text-xs text-text-muted mb-1.5 m-0 font-medium uppercase tracking-wide">Your Answer</p>
+                <p class="text-sm text-text-secondary m-0">{{ question.transcript }}</p>
               </div>
             }
 
             @if (question.evaluation) {
-              <div class="ml-10 grid grid-cols-2 sm:grid-cols-4 gap-3 mb-3">
+              <div class="ml-6 sm:ml-10 grid grid-cols-2 sm:grid-cols-4 gap-4 mb-3">
                 <div>
-                  <p class="text-[10px] text-neutral-400 m-0">Correctness</p>
+                  <p class="text-[10px] text-text-muted m-0 uppercase tracking-wide">Correctness</p>
                   <il-progress [value]="question.evaluation.correctnessScore" [variant]="scoreVariant(question.evaluation.correctnessScore)" [showLabel]="true" />
                 </div>
                 <div>
-                  <p class="text-[10px] text-neutral-400 m-0">Completeness</p>
+                  <p class="text-[10px] text-text-muted m-0 uppercase tracking-wide">Completeness</p>
                   <il-progress [value]="question.evaluation.completenessScore" [variant]="scoreVariant(question.evaluation.completenessScore)" [showLabel]="true" />
                 </div>
                 <div>
-                  <p class="text-[10px] text-neutral-400 m-0">Technical</p>
+                  <p class="text-[10px] text-text-muted m-0 uppercase tracking-wide">Technical</p>
                   <il-progress [value]="question.evaluation.technicalScore" [variant]="scoreVariant(question.evaluation.technicalScore)" [showLabel]="true" />
                 </div>
                 <div>
-                  <p class="text-[10px] text-neutral-400 m-0">Communication</p>
+                  <p class="text-[10px] text-text-muted m-0 uppercase tracking-wide">Communication</p>
                   <il-progress [value]="question.evaluation.communicationScore" [variant]="scoreVariant(question.evaluation.communicationScore)" [showLabel]="true" />
                 </div>
               </div>
             }
 
             @if (question.evaluation?.feedback) {
-              <div class="ml-10">
-                <p class="text-xs font-medium text-neutral-500 mb-1 m-0">Feedback</p>
-                <p class="text-sm text-neutral-600 m-0">{{ question.evaluation!.feedback }}</p>
+              <div class="ml-6 sm:ml-10">
+                <p class="text-xs font-medium text-text-muted mb-1 m-0">Feedback</p>
+                <p class="text-sm text-text-secondary m-0">{{ question.evaluation!.feedback }}</p>
               </div>
             }
           </div>

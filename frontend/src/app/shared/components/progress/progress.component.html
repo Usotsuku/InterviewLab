@@ -1,6 +1,6 @@
 <div class="flex items-center gap-3 w-full">
   <div
-    class="flex-1 h-1.5 rounded-full overflow-hidden bg-neutral-200"
+    class="flex-1 h-2 rounded-full overflow-hidden bg-surface-2"
     role="progressbar"
     [attr.aria-valuemin]="0"
     [attr.aria-valuemax]="100"
@@ -8,12 +8,13 @@
     [attr.aria-valuetext]="clampedValue() + '%'"
   >
     <div
-      class="h-full rounded-full transition-[width] duration-slow"
+      class="h-full rounded-full transition-[width] duration-slow ease-out"
       [class]="fillClass()"
       [style.width.%]="clampedValue()"
+      style="transition: width 600ms cubic-bezier(0.4, 0, 0.2, 1)"
     ></div>
   </div>
   @if (showLabel()) {
-    <span class="text-xs font-semibold text-neutral-400 min-w-9 text-right">{{ clampedValue() }}%</span>
+    <span class="text-xs font-semibold text-text-secondary min-w-10 text-right tabular-nums">{{ clampedValue() }}%</span>
   }
 </div>

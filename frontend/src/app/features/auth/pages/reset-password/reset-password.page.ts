@@ -23,6 +23,7 @@ import { passwordStrengthValidator, matchFieldValidator } from '../../../../shar
     IlFormErrorComponent,
   ],
   templateUrl: './reset-password.page.html',
+  styleUrl: './reset-password.page.scss',
 })
 export class ResetPasswordPage {
   private readonly _fb = inject(FormBuilder);

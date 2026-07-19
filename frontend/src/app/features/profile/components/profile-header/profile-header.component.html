@@ -1,11 +1,11 @@
-<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-7">
-  <div class="flex items-center gap-4">
-    <div class="w-14 h-14 rounded-full bg-primary-50 flex items-center justify-center text-primary-500 font-bold text-xl flex-shrink-0">
+<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 il-fade-in-up">
+  <div class="flex items-center gap-5">
+    <div class="w-14 h-14 rounded-full bg-primary-50 flex items-center justify-center text-primary-400 font-bold text-xl flex-shrink-0" role="img" [attr.aria-label]="name() + ' avatar'">
       {{ name().charAt(0).toUpperCase() }}
     </div>
     <div>
-      <h1 class="text-2xl font-bold text-neutral-800">{{ name() }}</h1>
-      <p class="text-sm text-neutral-400">{{ email() }}</p>
+      <h1 class="text-2xl font-bold text-text tracking-tight">{{ name() }}</h1>
+      <p class="text-sm text-text-secondary">{{ email() }}</p>
     </div>
   </div>
   <div class="flex items-center gap-3">

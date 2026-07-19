@@ -1,13 +1,19 @@
-<div class="flex h-screen overflow-hidden">
+<div class="flex h-screen overflow-hidden bg-bg">
+  <a href="#main-content" class="il-skip-nav">Skip to main content</a>
   <il-sidebar
-    class="shrink-0"
+    class="shrink-0 max-lg:hidden"
     [collapsed]="sidebarCollapsed()"
     (toggleCollapse)="sidebarCollapsed.set(!sidebarCollapsed())"
   />
   <div class="flex flex-col flex-1 overflow-hidden min-w-0">
     <il-header class="shrink-0" />
-    <main class="flex-1 overflow-y-auto p-8 max-lg:p-5 animate-fade-in">
-      <router-outlet />
+    <main
+      id="main-content"
+      class="flex-1 overflow-y-auto p-8 max-lg:p-6"
+      [@routeAnimation]="prepareRoute(outlet)"
+      role="main"
+    >
+      <router-outlet #outlet="outlet" />
     </main>
   </div>
 </div>

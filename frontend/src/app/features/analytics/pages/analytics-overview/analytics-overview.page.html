@@ -1,10 +1,10 @@
-<section class="space-y-6">
+<section class="space-y-8">
   @if (loading()) {
-    <div class="flex items-center justify-center py-20">
+    <div class="flex items-center justify-center py-24">
       <il-spinner label="Loading analytics..." />
     </div>
   } @else if (error()) {
-    <div class="text-center py-12">
+    <div class="text-center py-16">
       <p class="text-sm text-danger-500">{{ error() }}</p>
     </div>
   } @else if (completedCount() === 0) {
@@ -15,14 +15,16 @@
       actionLabel="Start Interview"
     />
   } @else {
-    <il-analytics-hero
-      [userName]="userName()?.name ?? 'Candidate'"
-      [totalInterviews]="store.totalInterviews()"
-      [completedCount]="store.completedCount()"
-      [averageScore]="store.averageScore()"
-    />
+    <div class="il-fade-in-up">
+      <il-analytics-hero
+        [userName]="userName()?.name ?? 'Candidate'"
+        [totalInterviews]="store.totalInterviews()"
+        [completedCount]="store.completedCount()"
+        [averageScore]="store.averageScore()"
+      />
+    </div>
 
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="il-fade-in-up grid grid-cols-2 lg:grid-cols-4 gap-5">
       <il-metric-trend-card
         title="Overall Score"
         icon="star"
@@ -61,7 +63,7 @@
       />
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="il-fade-in-up grid grid-cols-1 lg:grid-cols-3 gap-8">
       <div class="lg:col-span-2">
         <il-score-trends-card
           [scoreTrend]="store.scoreTrend()"
@@ -81,7 +83,7 @@
       </div>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <div class="il-fade-in-up grid grid-cols-1 lg:grid-cols-2 gap-8">
       <il-speaking-metrics-card
         [averageWordsPerMinute]="store.averageWordsPerMinute()"
         [averageVocabularyRichness]="store.averageVocabularyRichness()"
@@ -104,8 +106,10 @@
       />
     </div>
 
-    <il-improvement-insights-card
-      [insights]="store.improvements()"
-    />
+    <div class="il-fade-in-up">
+      <il-improvement-insights-card
+        [insights]="store.improvements()"
+      />
+    </div>
   }
 </section>

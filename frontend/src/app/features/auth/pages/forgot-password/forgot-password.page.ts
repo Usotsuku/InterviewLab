@@ -22,6 +22,7 @@ import { IlFormErrorComponent } from '../../../../shared/components/form-error/f
     IlFormErrorComponent,
   ],
   templateUrl: './forgot-password.page.html',
+  styleUrl: './forgot-password.page.scss',
 })
 export class ForgotPasswordPage {
   private readonly _fb = inject(FormBuilder);

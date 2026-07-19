@@ -1,7 +1,7 @@
 <div class="flex flex-col items-center gap-3">
   @if (!permissionGranted()) {
-    <div class="text-center py-4">
-      <p class="text-sm text-neutral-500 mb-3">Microphone access is required to record your answer.</p>
+    <div class="il-alert--error text-center py-4 px-5">
+      <p class="text-sm text-text-muted mb-3">Microphone access is required to record your answer.</p>
       <il-button
         variant="primary"
         icon="mic"

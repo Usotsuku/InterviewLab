@@ -1,35 +1,37 @@
 <aside [class]="sidebarClass()">
-  <div class="flex items-center gap-3 px-4 py-5 border-b border-neutral-200 min-h-14">
-    <span class="w-8 h-8 bg-primary-500 rounded-md flex items-center justify-center font-bold text-xs text-white shrink-0">IL</span>
+  <div class="flex items-center gap-3 px-5 py-5 border-b border-border min-h-14">
+    <div class="il-logo-icon w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs text-white shrink-0">
+      IL
+    </div>
     @if (!collapsed()) {
-      <span class="font-bold text-sm text-neutral-800 whitespace-nowrap">InterviewLab</span>
+      <span class="font-bold text-sm text-text whitespace-nowrap tracking-tight">InterviewLab</span>
     }
   </div>
 
-  <nav class="flex flex-col gap-0.5 flex-1 px-2 py-3">
+  <nav class="flex flex-col gap-1 flex-1 px-3 py-4">
     @for (item of navItems; track item.route) {
       @if (isLocked(item.route)) {
         <button
           type="button"
           disabled
-          class="flex items-center gap-3 px-3 py-2 rounded-md text-neutral-300 text-sm font-medium cursor-not-allowed"
+          class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-text-muted text-sm font-medium cursor-not-allowed opacity-50"
           [title]="'Complete your profile to unlock ' + item.label"
           [attr.aria-label]="item.label + ' (locked)'"
         >
-          <mat-icon class="text-xl w-5 h-5 shrink-0" aria-hidden="true">{{ item.icon }}</mat-icon>
+          <mat-icon class="text-xl w-5 h-5 shrink-0" [fontIcon]="item.icon" aria-hidden="true"></mat-icon>
           @if (!collapsed()) {
             <span class="whitespace-nowrap flex-1 text-left">{{ item.label }}</span>
-            <mat-icon class="text-base w-4 h-4 shrink-0" aria-hidden="true">lock</mat-icon>
+            <mat-icon class="text-sm w-4 h-4 shrink-0 opacity-50" aria-hidden="true">lock</mat-icon>
           }
         </button>
       } @else {
         <a
           [routerLink]="item.route"
-          routerLinkActive="bg-primary-50 !text-primary-400"
-          class="flex items-center gap-3 px-3 py-2 rounded-md text-neutral-400 text-sm font-medium transition-all duration-fast no-underline hover:bg-primary-50 hover:text-primary-400"
+          routerLinkActive="il-nav-active"
+          class="il-nav-item"
           [attr.aria-label]="item.label"
         >
-          <mat-icon class="text-xl w-5 h-5 shrink-0" aria-hidden="true">{{ item.icon }}</mat-icon>
+          <mat-icon class="text-xl w-5 h-5 shrink-0" [fontIcon]="item.icon" aria-hidden="true"></mat-icon>
           @if (!collapsed()) {
             <span class="whitespace-nowrap">{{ item.label }}</span>
           }

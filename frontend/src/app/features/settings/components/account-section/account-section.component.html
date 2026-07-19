@@ -1,23 +1,23 @@
 <il-card title="Account">
-  <div class="space-y-4">
-    <div class="flex items-center gap-4 pb-4 border-b border-neutral-200">
-      <div class="flex items-center justify-center w-14 h-14 rounded-full bg-primary-50 text-primary-500 text-xl font-bold flex-shrink-0">
+  <div class="space-y-6">
+    <div class="flex items-center gap-5 pb-6 border-b border-border">
+      <div class="flex items-center justify-center w-14 h-14 rounded-full bg-primary-50 text-primary-400 text-xl font-bold flex-shrink-0" role="img" [attr.aria-label]="userName() ? userName() + ' avatar' : 'User avatar'">
         {{ userName() ? userName().charAt(0).toUpperCase() : '?' }}
       </div>
       <div>
-        <p class="text-base font-semibold text-neutral-800 m-0">{{ userName() || 'Not set' }}</p>
-        <p class="text-sm text-neutral-400 m-0">{{ userEmail() }}</p>
+        <p class="text-base font-semibold text-text m-0">{{ userName() || 'Not set' }}</p>
+        <p class="text-sm text-text-secondary m-0 mt-0.5">{{ userEmail() }}</p>
       </div>
     </div>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       <div>
-        <p class="text-xs text-neutral-400 m-0 mb-1">User ID</p>
-        <p class="text-sm text-neutral-600 font-mono m-0">{{ userId() || '—' }}</p>
+        <p class="text-xs text-text-muted m-0 mb-1.5 uppercase tracking-wider">User ID</p>
+        <p class="text-sm text-text-secondary font-mono m-0">{{ userId() || '—' }}</p>
       </div>
       <div>
-        <p class="text-xs text-neutral-400 m-0 mb-1">Member Since</p>
-        <p class="text-sm text-neutral-600 m-0">{{ createdAt() ? (createdAt() | date:'mediumDate') : '—' }}</p>
+        <p class="text-xs text-text-muted m-0 mb-1.5 uppercase tracking-wider">Member Since</p>
+        <p class="text-sm text-text-secondary m-0">{{ createdAt() ? (createdAt() | date:'mediumDate') : '—' }}</p>
       </div>
     </div>
   </div>

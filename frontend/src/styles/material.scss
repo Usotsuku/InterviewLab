@@ -1,7 +1,6 @@
 // ============================================================
 // InterviewLab — Angular Material Theme (M3, native to v18)
-// Maps Material to the existing design tokens. Loaded before
-// reset.scss so the app background from reset wins over Material's.
+// Maps Material to the existing design tokens.
 // ============================================================
 @use '@angular/material' as mat;
 
@@ -39,9 +38,7 @@ $il-typography: (
 }
 
 // ============================================================
-// Form field overrides — align Material inputs with the design
-// system (radius, border, focus ring, label, error, disabled).
-// Uses MDC CSS custom properties so no component restyling needed.
+// Form field overrides
 // ============================================================
 .mat-mdc-form-field {
   --mdc-outlined-text-field-outline-color: var(--il-border-strong);
@@ -58,7 +55,8 @@ $il-typography: (
   --mdc-outlined-text-field-error-hover-outline-color: var(--il-danger-600);
   --mdc-outlined-text-field-error-focus-outline-color: var(--il-danger-500);
   --mdc-outlined-text-field-error-label-text-color: var(--il-danger-500);
-  --mdc-outlined-text-field-container-shape: var(--il-radius-md);
+  --mdc-outlined-text-field-container-shape: var(--il-radius-lg);
+  --mdc-outlined-text-field-container-shape: 12px;
 
   --mat-form-field-leading-icon-color: var(--il-text-muted);
   --mat-form-field-trailing-icon-color: var(--il-text-muted);
@@ -68,10 +66,27 @@ $il-typography: (
   --mat-form-field-focus-trailing-icon-color: var(--il-primary-500);
 
   --mat-form-field-container-text-font: var(--il-font);
+
+  // Premium focus ring
+  .mat-mdc-text-field-wrapper {
+    transition: box-shadow 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &.mat-focused .mat-mdc-text-field-wrapper {
+    box-shadow: 0 0 0 1px var(--il-primary-500), var(--il-shadow-glow-sm);
+  }
 }
 
-// Password visibility / suffix buttons keep a calm, contained look.
+// Password visibility / suffix buttons
 .mat-mdc-form-field .mat-mdc-icon-button.mat-mdc-button-base {
   --mdc-icon-button-state-layer-size: 36px;
   --mat-mdc-icon-button-ripple-color: var(--il-primary-500);
+}
+
+// Premium snackbar
+.mat-mdc-snack-bar-container {
+  --mdc-snackbar-container-color: var(--il-surface-2);
+  --mdc-snackbar-supporting-text-color: var(--il-text);
+  border-radius: var(--il-radius-xl) !important;
+  border: 1px solid var(--il-border);
 }

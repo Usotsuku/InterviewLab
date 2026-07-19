@@ -1,6 +1,6 @@
-import { Controller, Post, Get, Delete, Param, Body, HttpStatus, HttpCode } from '@nestjs/common';
-import { ParseMongoIdPipe } from '@nestjs/mongoose';
+import { Controller, Post, Get, Delete, Param, Body, HttpStatus, HttpCode, PipeTransform, Injectable, BadRequestException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
+import mongoose from 'mongoose';
 import { CheckAuth } from '@core/decorators/check-auth.decorator';
 import { CurrentUser, JwtPayload } from '@core/decorators/current-user.decorator';
 import { InterviewService } from '../services/interview.service';
@@ -9,6 +9,16 @@ import { InterviewSessionService } from '../services/interview-session.service';
 import { InterviewReportService } from '../services/interview-report.service';
 import { QuestionService } from '@modules/question/services/question.service';
 import { CreateInterviewDto } from '../dto/create-interview.dto';
+
+@Injectable()
+class ParseMongoIdPipe implements PipeTransform<string> {
+  transform(value: string): string {
+    if (!mongoose.Types.ObjectId.isValid(value)) {
+      throw new BadRequestException(`"${value}" is not a valid MongoId`);
+    }
+    return value;
+  }
+}
 
 @ApiTags('Interviews')
 @Controller('interviews')

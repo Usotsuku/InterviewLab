@@ -17,6 +17,7 @@ interface QuickAction {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [RouterLink, MatIconModule, NgClass, IlCardComponent],
   templateUrl: './quick-actions-card.component.html',
+  styleUrl: './quick-actions-card.component.scss',
 })
 export class IlQuickActionsCardComponent {
   readonly actions: QuickAction[] = [

@@ -8,6 +8,7 @@ import { LoggingInterceptor } from './interceptors/logging.interceptor';
 import { ResponseWrapperInterceptor } from './interceptors/response-wrapper.interceptor';
 import { QueryService } from './repository/query.service';
 import { AuthModule } from '@modules/auth/auth.module';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import configuration from '../config/configuration';
 
 @Global()
@@ -60,6 +61,10 @@ import configuration from '../config/configuration';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: JwtAuthGuard,
     },
   ],
   exports: [JwtModule, QueryService],

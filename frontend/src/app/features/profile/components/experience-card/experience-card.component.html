@@ -1,21 +1,21 @@
-<div class="il-card p-5">
+<div class="il-card il-radius-xl p-6 il-fade-in-up">
   <div class="flex items-start justify-between gap-3">
     <div class="flex-1 min-w-0">
-      <h4 class="text-base font-semibold text-neutral-800">{{ entry().position }}</h4>
-      <p class="text-sm text-primary-500 font-medium">{{ entry().company }}</p>
-      <p class="text-xs text-neutral-400 mt-1">
+      <h4 class="text-base font-semibold text-text tracking-tight">{{ entry().position }}</h4>
+      <p class="text-sm text-primary-400 font-medium">{{ entry().company }}</p>
+      <p class="text-xs text-text-muted mt-1">
         {{ entry().startDate | date:'MMM yyyy' }}
         — {{ entry().endDate ? (entry().endDate | date:'MMM yyyy') : 'Present' }}
       </p>
       @if (entry().description) {
-        <p class="text-sm text-neutral-500 mt-3 leading-relaxed">{{ entry().description }}</p>
+        <p class="text-sm text-text-secondary mt-3 leading-relaxed">{{ entry().description }}</p>
       }
     </div>
     @if (editable()) {
       <button
         mat-icon-button
         type="button"
-        class="flex-shrink-0 text-neutral-400 hover:text-danger-500 transition-colors"
+        class="flex-shrink-0 text-text-muted hover:text-danger-500 transition-colors"
         (click)="removeClicked.emit(index())"
         aria-label="Remove experience entry"
       >

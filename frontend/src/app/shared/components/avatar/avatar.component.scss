@@ -3,14 +3,20 @@
   align-items: center;
   justify-content: center;
   border-radius: var(--il-radius-full);
-  background: var(--il-primary-bg);
-  color: var(--il-primary-400);
+  background: linear-gradient(135deg, var(--il-primary-600), var(--il-primary-400));
+  color: var(--il-text-inverse);
   font-weight: 600;
   overflow: hidden;
   flex-shrink: 0;
+  letter-spacing: -0.02em;
+  box-shadow: 0 0 0 2px var(--il-surface-card), 0 0 0 3px var(--il-border);
 }
 
-.il-avatar--sm { width: 28px; height: 28px; font-size: 11px; }
-.il-avatar--md { width: 36px; height: 36px; font-size: 13px; }
-.il-avatar--lg { width: 48px; height: 48px; font-size: 16px; }
-.il-avatar--xl { width: 64px; height: 64px; font-size: 20px; }
+.il-avatar--sm { width: 32px; height: 32px; font-size: 12px; }
+.il-avatar--md { width: 40px; height: 40px; font-size: 14px; }
+.il-avatar--lg { width: 52px; height: 52px; font-size: 18px; }
+.il-avatar--xl { width: 72px; height: 72px; font-size: 24px; }
+
+.il-avatar--xl {
+  box-shadow: 0 0 0 3px var(--il-surface-card), 0 0 0 4px var(--il-primary-500);
+}

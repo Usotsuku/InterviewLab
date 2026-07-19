@@ -1,33 +1,33 @@
 @if (store.loading()) {
   <il-spinner label="Loading profile..." />
 } @else if (store.error() && !store.profile()) {
-  <div class="il-card p-8 text-center">
-    <p class="text-danger-500 mb-4">{{ store.error() }}</p>
+  <div class="il-card il-radius-xl p-8 text-center il-fade-in-up">
+    <p class="il-alert--error mb-4">{{ store.error() }}</p>
     <button il-button variant="secondary" (click)="store.load()">Retry</button>
   </div>
 } @else {
-  <div class="flex items-center justify-between mb-7">
-    <h1 class="text-2xl font-bold text-neutral-800">Edit Profile</h1>
+  <div class="flex items-center justify-between gap-4 mb-8 il-fade-in-up">
+    <h1 class="text-2xl font-bold text-text tracking-tight min-w-0 truncate">Edit Profile</h1>
     <button routerLink="/profile" type="button" il-button variant="ghost" size="sm">
       Cancel
     </button>
   </div>
 
   @if (store.error()) {
-    <div class="bg-danger-50 text-danger-500 px-4 py-3 rounded-lg text-sm mb-5 border border-danger-400/20" role="alert">
+    <div class="il-alert--error mb-6 il-fade-in-up" role="alert">
       {{ store.error() }}
     </div>
   }
 
   @if (store.saved()) {
-    <div class="bg-success-50 text-success-500 px-4 py-3 rounded-lg text-sm mb-5 border border-success-400/20" role="status">
+    <div class="bg-success-50 text-success-500 px-4 py-3 il-radius-xl text-sm mb-6 border border-success-400/20 il-fade-in-up" role="status">
       Profile saved successfully.
     </div>
   }
 
-  <form [formGroup]="form" (ngSubmit)="onSave()" novalidate class="flex flex-col gap-5">
-    <div class="il-card p-5">
-      <h3 class="text-base font-semibold text-neutral-800 mb-3">Professional Summary</h3>
+  <form [formGroup]="form" (ngSubmit)="onSave()" novalidate class="flex flex-col gap-6">
+    <div class="il-card il-radius-xl p-6 il-fade-in-up">
+      <h3 class="text-base font-semibold text-text mb-4 tracking-tight">Professional Summary</h3>
       <mat-form-field appearance="outline" class="w-full">
         <mat-label>Summary</mat-label>
         <textarea
@@ -40,7 +40,7 @@
       </mat-form-field>
     </div>
 
-    <div class="il-card p-5">
+    <div class="il-card il-radius-xl p-6 il-fade-in-up">
       <il-chip-editor
         label="Skills"
         placeholder="Add a skill..."
@@ -49,7 +49,7 @@
       />
     </div>
 
-    <div class="il-card p-5">
+    <div class="il-card il-radius-xl p-6 il-fade-in-up">
       <il-chip-editor
         label="Technologies"
         placeholder="Add a technology..."
@@ -58,7 +58,7 @@
       />
     </div>
 
-    <div class="il-card p-5">
+    <div class="il-card il-radius-xl p-6 il-fade-in-up">
       <il-chip-editor
         label="Strengths"
         placeholder="Add a strength..."
@@ -67,7 +67,7 @@
       />
     </div>
 
-    <div class="il-card p-5">
+    <div class="il-card il-radius-xl p-6 il-fade-in-up">
       <il-chip-editor
         label="Areas for Improvement"
         placeholder="Add an area for improvement..."
@@ -77,30 +77,30 @@
     </div>
 
     @if (store.experience().length > 0) {
-      <div>
-        <h3 class="text-base font-semibold text-neutral-800 mb-3">Experience</h3>
-        <div class="flex flex-col gap-3">
+      <div class="il-fade-in-up">
+        <h3 class="text-base font-semibold text-text mb-4 tracking-tight">Experience</h3>
+        <div class="flex flex-col gap-3 il-stagger">
           @for (entry of store.experience(); track entry.company + entry.position) {
             <il-experience-card [entry]="entry" />
           }
         </div>
-        <p class="text-xs text-neutral-400 mt-2">Experience entries are managed via CV upload.</p>
+        <p class="text-xs text-text-muted mt-3">Experience entries are managed via CV upload.</p>
       </div>
     }
 
     @if (store.projects().length > 0) {
-      <div>
-        <h3 class="text-base font-semibold text-neutral-800 mb-3">Projects</h3>
-        <div class="flex flex-col gap-3">
+      <div class="il-fade-in-up">
+        <h3 class="text-base font-semibold text-text mb-4 tracking-tight">Projects</h3>
+        <div class="flex flex-col gap-3 il-stagger">
           @for (entry of store.projects(); track entry.name) {
             <il-project-card [entry]="entry" />
           }
         </div>
-        <p class="text-xs text-neutral-400 mt-2">Project entries are managed via CV upload.</p>
+        <p class="text-xs text-text-muted mt-3">Project entries are managed via CV upload.</p>
       </div>
     }
 
-    <div class="flex items-center gap-3 pt-2">
+    <div class="flex items-center gap-3 pt-2 il-fade-in-up">
       <il-button
         type="submit"
         variant="primary"

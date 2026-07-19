@@ -2,21 +2,21 @@
   @if (insights().length > 0) {
     <div class="space-y-3">
       @for (insight of insights(); track insight.id) {
-        <div class="flex items-start gap-3 p-3 rounded-lg bg-neutral-50">
+        <div class="flex items-start gap-3 p-3.5 rounded-xl bg-surface-2 border border-border">
           <div
-            class="flex items-center justify-center w-7 h-7 rounded-md flex-shrink-0 mt-0.5"
+            class="flex items-center justify-center w-7 h-7 rounded-lg flex-shrink-0 mt-0.5"
             [ngClass]="iconBgClass(insight.positive)"
           >
             <mat-icon class="text-sm w-4 h-4" aria-hidden="true">{{ insight.icon }}</mat-icon>
           </div>
-          <p class="text-sm text-neutral-600 leading-relaxed m-0">{{ insight.message }}</p>
+          <p class="text-sm text-text-secondary leading-relaxed m-0">{{ insight.message }}</p>
         </div>
       }
     </div>
   } @else {
-    <div class="text-center py-6">
-      <mat-icon class="text-3xl w-8 h-8 text-neutral-300 mb-2" aria-hidden="true">lightbulb</mat-icon>
-      <p class="text-sm text-neutral-400 m-0">Complete more interviews to see improvement insights</p>
+    <div class="text-center py-8">
+      <mat-icon class="text-3xl w-8 h-8 text-text-muted mb-2" aria-hidden="true">lightbulb</mat-icon>
+      <p class="text-sm text-text-muted m-0">Complete more interviews to see improvement insights</p>
     </div>
   }
 </il-card>

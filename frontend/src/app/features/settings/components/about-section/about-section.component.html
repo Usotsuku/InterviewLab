@@ -1,41 +1,41 @@
 <il-card title="About InterviewLab">
-  <div class="space-y-4">
-    <div class="grid grid-cols-2 gap-4 text-sm">
+  <div class="space-y-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
       <div>
-        <p class="text-xs text-neutral-400 m-0">Version</p>
-        <p class="text-sm font-medium text-neutral-600 m-0">{{ appVersion }}</p>
+        <p class="text-xs text-text-muted m-0 uppercase tracking-wider">Version</p>
+        <p class="text-sm font-medium text-text-secondary m-0 mt-1">{{ appVersion }}</p>
       </div>
       <div>
-        <p class="text-xs text-neutral-400 m-0">AI Provider</p>
-        <p class="text-sm font-medium text-neutral-600 m-0">{{ aiProvider }}</p>
+        <p class="text-xs text-text-muted m-0 uppercase tracking-wider">AI Provider</p>
+        <p class="text-sm font-medium text-text-secondary m-0 mt-1">{{ aiProvider }}</p>
       </div>
       <div>
-        <p class="text-xs text-neutral-400 m-0">Build</p>
-        <p class="text-sm font-medium text-neutral-600 m-0">{{ buildDate }}</p>
+        <p class="text-xs text-text-muted m-0 uppercase tracking-wider">Build</p>
+        <p class="text-sm font-medium text-text-secondary m-0 mt-1">{{ buildDate }}</p>
       </div>
       <div>
-        <p class="text-xs text-neutral-400 m-0">Stack</p>
-        <p class="text-sm font-medium text-neutral-600 m-0">Angular + NestJS</p>
+        <p class="text-xs text-text-muted m-0 uppercase tracking-wider">Stack</p>
+        <p class="text-sm font-medium text-text-secondary m-0 mt-1">Angular + NestJS</p>
       </div>
     </div>
 
-    <div class="pt-3 border-t border-neutral-200">
-      <p class="text-xs text-neutral-400 mb-2 m-0">Core Features</p>
-      <div class="space-y-2">
+    <div class="pt-4 border-t border-border">
+      <p class="text-xs text-text-muted mb-3 m-0 uppercase tracking-wider">Core Features</p>
+      <div class="space-y-3">
         @for (feature of features; track feature.label) {
-          <div class="flex items-start gap-2">
+          <div class="flex items-start gap-2.5">
             <mat-icon class="text-xs w-3.5 h-3.5 text-success-500 mt-0.5 flex-shrink-0" aria-hidden="true">check_circle</mat-icon>
             <div>
-              <p class="text-sm text-neutral-600 font-medium m-0">{{ feature.label }}</p>
-              <p class="text-xs text-neutral-400 m-0">{{ feature.description }}</p>
+              <p class="text-sm text-text-secondary font-medium m-0">{{ feature.label }}</p>
+              <p class="text-xs text-text-muted m-0 mt-0.5">{{ feature.description }}</p>
             </div>
           </div>
         }
       </div>
     </div>
 
-    <div class="pt-3 border-t border-neutral-200">
-      <p class="text-xs text-neutral-400 m-0">Your audio data is processed securely and is never stored permanently. AI evaluations are generated in real-time and are not used for training.</p>
+    <div class="pt-4 border-t border-border">
+      <p class="text-xs text-text-muted m-0 leading-relaxed">Your audio data is processed securely and is never stored permanently. AI evaluations are generated in real-time and are not used for training.</p>
     </div>
   </div>
 </il-card>

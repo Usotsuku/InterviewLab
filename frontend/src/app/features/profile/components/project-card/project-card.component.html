@@ -1,20 +1,20 @@
-<div class="il-card p-5">
+<div class="il-card il-radius-xl p-6 il-fade-in-up">
   <div class="flex items-start justify-between gap-3">
     <div class="flex-1 min-w-0">
       <div class="flex items-center gap-2 mb-1">
-        <h4 class="text-base font-semibold text-neutral-800">{{ entry().name }}</h4>
+        <h4 class="text-base font-semibold text-text tracking-tight">{{ entry().name }}</h4>
         @if (entry().url) {
           <a [href]="entry().url" target="_blank" rel="noopener noreferrer"
-            class="text-primary-500 hover:text-primary-600 transition-colors" aria-label="Open project link">
+            class="text-primary-400 hover:text-primary-500 transition-colors" aria-label="Open project link">
             <mat-icon class="text-base w-4 h-4" aria-hidden="true">open_in_new</mat-icon>
           </a>
         }
       </div>
       @if (entry().description) {
-        <p class="text-sm text-neutral-500 mt-1 leading-relaxed">{{ entry().description }}</p>
+        <p class="text-sm text-text-secondary mt-1 leading-relaxed">{{ entry().description }}</p>
       }
       @if (entry().technologies.length > 0) {
-        <div class="flex flex-wrap gap-1.5 mt-3">
+        <div class="flex flex-wrap gap-1.5 mt-3 il-stagger">
           @for (tech of entry().technologies; track tech) {
             <il-badge variant="neutral">{{ tech }}</il-badge>
           }
@@ -25,7 +25,7 @@
       <button
         mat-icon-button
         type="button"
-        class="flex-shrink-0 text-neutral-400 hover:text-danger-500 transition-colors"
+        class="flex-shrink-0 text-text-muted hover:text-danger-500 transition-colors"
         (click)="removeClicked.emit(index())"
         aria-label="Remove project entry"
       >

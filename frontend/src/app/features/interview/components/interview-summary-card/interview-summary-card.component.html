@@ -1,30 +1,30 @@
-<div class="il-card p-5" [class.opacity-50]="disabled()">
-  <h3 class="text-base font-semibold text-neutral-800 mb-4">Interview Summary</h3>
+<div class="il-card p-6" [class.opacity-50]="disabled()">
+  <h3 class="text-base font-semibold text-text tracking-tight mb-5">Interview Summary</h3>
 
-  <div class="flex flex-col gap-3">
+  <div class="flex flex-col gap-3.5">
     <div class="flex items-center justify-between">
-      <span class="text-sm text-neutral-400">Mode</span>
-      <span class="text-sm font-medium text-neutral-800">{{ modeLabel() }}</span>
+      <span class="text-sm text-text-secondary">Mode</span>
+      <span class="text-sm font-medium text-text">{{ modeLabel() }}</span>
     </div>
 
     <div class="flex items-center justify-between">
-      <span class="text-sm text-neutral-400">Difficulty</span>
+      <span class="text-sm text-text-secondary">Difficulty</span>
       <div class="flex items-center gap-1.5">
-        <mat-icon class="text-sm w-4 h-4 text-neutral-500" aria-hidden="true">{{ difficultyIcon() }}</mat-icon>
-        <span class="text-sm font-medium text-neutral-800">{{ difficultyLabel() }}</span>
+        <mat-icon class="text-sm w-4 h-4 text-text-muted" aria-hidden="true">{{ difficultyIcon() }}</mat-icon>
+        <span class="text-sm font-medium text-text">{{ difficultyLabel() }}</span>
       </div>
     </div>
 
     <div class="flex items-center justify-between">
-      <span class="text-sm text-neutral-400">Questions</span>
-      <span class="text-sm font-medium text-neutral-800">{{ questionCount() }}</span>
+      <span class="text-sm text-text-secondary">Questions</span>
+      <span class="text-sm font-medium text-text">{{ questionCount() }}</span>
     </div>
 
-    <div class="h-px bg-neutral-200"></div>
+    <div class="h-px bg-border my-1"></div>
 
     <div class="flex items-center justify-between">
-      <span class="text-sm text-neutral-400">Estimated Duration</span>
-      <span class="text-sm font-semibold text-neutral-800">{{ durationText() }}</span>
+      <span class="text-sm text-text-secondary">Estimated Duration</span>
+      <span class="text-sm font-semibold text-text">{{ durationText() }}</span>
     </div>
   </div>
 </div>

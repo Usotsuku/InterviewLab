@@ -1,14 +1,14 @@
 <il-card title="Appearance">
-  <div class="space-y-5">
+  <div class="space-y-6">
     <div>
-      <p class="text-sm font-medium text-neutral-600 mb-3">Theme</p>
+      <p class="text-sm font-medium text-text-secondary mb-3">Theme</p>
       <div class="flex gap-3">
         @for (t of themes; track t.value) {
           <button
-            class="flex items-center gap-2 px-4 py-3 rounded-lg border transition-all duration-150 cursor-pointer"
+            class="flex items-center gap-2.5 px-5 py-3 rounded-xl border transition-all duration-200 cursor-pointer"
             [ngClass]="theme() === t.value
-              ? 'border-primary-500 bg-primary-50 text-primary-600'
-              : 'border-neutral-200 bg-neutral-50 text-neutral-500 hover:border-neutral-300'"
+              ? 'border-primary-500 bg-primary-50 text-primary-400 shadow-sm'
+              : 'border-border bg-surface-2 text-text-muted hover:border-neutral-300 hover:bg-surface-3'"
             (click)="onThemeSelect(t.value)"
             [attr.aria-pressed]="theme() === t.value"
             [attr.aria-label]="t.label + ' theme'"
@@ -21,10 +21,10 @@
     </div>
 
     <div>
-      <label for="language-select" class="block text-sm font-medium text-neutral-600 mb-2">Language</label>
+      <label for="language-select" class="block text-sm font-medium text-text-secondary mb-2">Language</label>
       <select
         id="language-select"
-        class="w-full sm:w-auto px-3 py-2.5 rounded-lg border border-neutral-200 bg-neutral-50 text-sm text-neutral-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-150"
+        class="w-full sm:w-auto px-4 py-2.5 rounded-xl border border-border bg-surface-2 text-sm text-text focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 transition-all duration-200"
         [value]="language()"
         (change)="onLanguageChange($event)"
         aria-label="Select language"

@@ -22,6 +22,7 @@ import { IlFormErrorComponent } from '../../../../shared/components/form-error/f
     IlFormErrorComponent,
   ],
   templateUrl: './login.page.html',
+  styleUrl: './login.page.scss',
 })
 export class LoginPage {
   private readonly _fb = inject(FormBuilder);

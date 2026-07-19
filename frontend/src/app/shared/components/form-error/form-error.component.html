@@ -1,3 +1,3 @@
-@if (show()) {
-  <p class="text-xs text-danger-500 mt-1 leading-snug" role="alert">{{ message() }}</p>
-}
+<div class="il-form-error-wrap" [class.il-form-error-wrap--visible]="show()" role="alert">
+  <p class="il-form-error-text">{{ message() }}</p>
+</div>

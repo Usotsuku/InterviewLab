@@ -4,12 +4,13 @@ import { HistoryListStore } from '../../history-list.store';
 import { IlInterviewHistoryFiltersComponent } from '../../components/interview-history-filters/interview-history-filters.component';
 import { IlInterviewHistoryListComponent } from '../../components/interview-history-list/interview-history-list.component';
 import { IlSpinnerComponent } from '@shared/components/spinner/spinner.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'il-history-list',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IlInterviewHistoryFiltersComponent, IlInterviewHistoryListComponent, IlSpinnerComponent],
+  imports: [IlInterviewHistoryFiltersComponent, IlInterviewHistoryListComponent, IlSpinnerComponent, MatIconModule],
   templateUrl: './history-list.page.html',
 })
 export class HistoryListPage implements OnInit {

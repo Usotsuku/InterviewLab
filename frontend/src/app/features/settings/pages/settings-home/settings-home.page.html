@@ -1,52 +1,66 @@
-<section class="space-y-6">
-  <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+<section class="space-y-8">
+  <header class="il-fade-in-up flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
     <div>
-      <h1 class="text-2xl font-bold text-neutral-800 m-0">Settings</h1>
-      <p class="text-sm text-neutral-400 m-0 mt-1">Manage your application preferences and account.</p>
+      <h1 class="text-3xl font-bold tracking-tight text-text m-0">Settings</h1>
+      <p class="text-sm text-text-secondary m-0 mt-1.5">Manage your application preferences and account.</p>
     </div>
     <il-button variant="secondary" size="md" icon="logout" (clicked)="onLogout()">
       Logout
     </il-button>
   </header>
 
-  <il-account-section
-    [userName]="store.userName()"
-    [userEmail]="store.userEmail()"
-    [userId]="store.userId()"
-    [createdAt]="store.userCreatedAt()"
-  />
+  <div class="il-fade-in-up" style="animation-delay: 0.05s">
+    <il-account-section
+      [userName]="store.userName()"
+      [userEmail]="store.userEmail()"
+      [userId]="store.userId()"
+      [createdAt]="store.userCreatedAt()"
+    />
+  </div>
 
-  <il-appearance-section
-    [theme]="store.theme()"
-    [language]="store.language()"
-    (themeChange)="onThemeChange($event)"
-    (languageChange)="onLanguageChange($event)"
-  />
+  <div class="il-fade-in-up" style="animation-delay: 0.1s">
+    <il-appearance-section
+      [theme]="store.theme()"
+      [language]="store.language()"
+      (themeChange)="onThemeChange($event)"
+      (languageChange)="onLanguageChange($event)"
+    />
+  </div>
 
-  <il-notification-section
-    [notificationsEnabled]="store.notificationsEnabled()"
-    [interviewReminders]="store.interviewReminders()"
-    (notificationsChange)="onNotificationsChange($event)"
-    (remindersChange)="onRemindersChange($event)"
-  />
+  <div class="il-fade-in-up" style="animation-delay: 0.15s">
+    <il-notification-section
+      [notificationsEnabled]="store.notificationsEnabled()"
+      [interviewReminders]="store.interviewReminders()"
+      (notificationsChange)="onNotificationsChange($event)"
+      (remindersChange)="onRemindersChange($event)"
+    />
+  </div>
 
-  <il-device-section
-    [micEnabled]="store.micEnabled()"
-    [autoTranscribe]="store.autoTranscribe()"
-    (micChange)="onMicChange($event)"
-    (autoTranscribeChange)="onAutoTranscribeChange($event)"
-  />
+  <div class="il-fade-in-up" style="animation-delay: 0.2s">
+    <il-device-section
+      [micEnabled]="store.micEnabled()"
+      [autoTranscribe]="store.autoTranscribe()"
+      (micChange)="onMicChange($event)"
+      (autoTranscribeChange)="onAutoTranscribeChange($event)"
+    />
+  </div>
 
-  <il-password-section
-    [isLoading]="store.isChangingPassword()"
-    [error]="store.getError('password')"
-    (passwordChange)="onPasswordChange($event)"
-  />
+  <div class="il-fade-in-up" style="animation-delay: 0.25s">
+    <il-password-section
+      [isLoading]="store.isChangingPassword()"
+      [error]="store.getError('password')"
+      (passwordChange)="onPasswordChange($event)"
+    />
+  </div>
 
-  <il-about-section />
+  <div class="il-fade-in-up" style="animation-delay: 0.3s">
+    <il-about-section />
+  </div>
 
-  <il-delete-account-section
-    [isLoading]="store.isDeleting()"
-    (deleteClick)="onDeleteAccount()"
-  />
+  <div class="il-fade-in-up" style="animation-delay: 0.35s">
+    <il-delete-account-section
+      [isLoading]="store.isDeleting()"
+      (deleteClick)="onDeleteAccount()"
+    />
+  </div>
 </section>

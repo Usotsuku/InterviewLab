@@ -1,9 +1,10 @@
 <div [class]="spinnerClass()" role="status" [attr.aria-label]="label() || 'Loading'" aria-live="polite">
-  <div
-    class="animate-spin rounded-full border-[3px] border-neutral-200 border-t-primary-500 sm:h-5 sm:w-5 sm:border-2 md:h-8 md:w-8 lg:h-12 lg:w-12 lg:border-4"
-    aria-hidden="true"
-  ></div>
+  <div class="relative" aria-hidden="true">
+    <div
+      class="animate-spin rounded-full border-[3px] border-surface-2 border-t-primary-500 sm:h-5 sm:w-5 sm:border-2 md:h-8 md:w-8 lg:h-10 lg:w-10 lg:border-[3px]"
+    ></div>
+  </div>
   @if (label()) {
-    <span class="text-sm text-neutral-400">{{ label() }}</span>
+    <span class="text-sm text-text-secondary font-medium">{{ label() }}</span>
   }
 </div>

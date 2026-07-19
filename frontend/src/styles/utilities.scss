@@ -1,61 +1,125 @@
 // ============================================================
-// InterviewLab — Utility Classes
-// Only custom animations/utilities not covered by Tailwind.
+// InterviewLab — Utility Classes & Animations
+// Premium micro-interactions and glass effects
 // ============================================================
 
-// --- Fade In Animation ---
+// --- Keyframes ---
 @keyframes il-fade-in {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
-.il-fade-in {
-  animation: il-fade-in 200ms ease forwards;
-}
-
-// --- Fade In Up ---
 @keyframes il-fade-in-up {
   from { opacity: 0; transform: translateY(12px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes il-fade-in-down {
+  from { opacity: 0; transform: translateY(-12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes il-scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes il-slide-in-right {
+  from { opacity: 0; transform: translateX(20px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes il-recording-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(1.15); }
+}
+
+@keyframes il-shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes il-pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(99, 102, 241, 0); }
+  50%      { box-shadow: 0 0 20px 4px rgba(99, 102, 241, 0.1); }
+}
+
+@keyframes il-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+@keyframes il-gradient-shift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes il-spin-slow {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// --- Animation Utility Classes ---
+.il-fade-in {
+  animation: il-fade-in 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
 .il-fade-in-up {
-  animation: il-fade-in-up 300ms ease forwards;
+  animation: il-fade-in-up 400ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.il-fade-in-down {
+  animation: il-fade-in-down 400ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.il-scale-in {
+  animation: il-scale-in 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.il-slide-in-right {
+  animation: il-slide-in-right 400ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+// Staggered children animation
+.il-stagger > * {
+  opacity: 0;
+  animation: il-fade-in-up 400ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+@for $i from 1 through 20 {
+  .il-stagger > *:nth-child(#{$i}) {
+    animation-delay: #{$i * 60}ms;
+  }
 }
 
 // --- Recording Dot ---
-@keyframes il-recording-dot {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0; }
-}
-
 .il-recording-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
   background: var(--il-danger-500);
-  animation: il-recording-dot 1s ease-in-out infinite;
+  animation: il-recording-dot 1.2s ease-in-out infinite;
 }
 
 // ============================================================
-// Card surface — applied globally so any element using the
-// `il-card` utility class (page wrappers, feature cards) gets a
-// consistent surface, border, radius and elevation. The
-// <il-card> component reuses the same classes via cardClass().
+// Card surface
 // ============================================================
 .il-card {
   background: var(--il-surface-card);
   border: 1px solid var(--il-border);
-  border-radius: var(--il-radius-lg);
+  border-radius: var(--il-radius-xl);
   box-shadow: var(--il-shadow-sm);
+  transition: box-shadow var(--il-transition-base),
+    border-color var(--il-transition-base),
+    transform var(--il-transition-base);
 }
 
 .il-card--elevated { box-shadow: var(--il-shadow-md); }
 .il-card--flat { box-shadow: none; }
 
 // ============================================================
-// Page container — consistent max-width, horizontal centering
-// and vertical rhythm for centered page layouts (auth, settings).
+// Page container
 // ============================================================
 .il-page {
   width: 100%;
@@ -72,13 +136,9 @@
 }
 
 // ============================================================
-// Interactive card — subtle lift + shadow on hover for clickable
-// cards (lists, selectable options). Respects reduced motion.
+// Interactive card — premium hover lift
 // ============================================================
 .il-card--interactive {
-  transition: box-shadow var(--il-transition-base),
-    border-color var(--il-transition-base),
-    transform var(--il-transition-base);
   cursor: pointer;
 }
 
@@ -88,11 +148,208 @@
   transform: translateY(-2px);
 }
 
+// ============================================================
+// Glass effect
+// ============================================================
+.il-glass {
+  background: rgba(17, 17, 19, 0.6);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.il-theme-light .il-glass {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+// ============================================================
+// Gradient text
+// ============================================================
+.il-gradient-text {
+  background: linear-gradient(135deg, var(--il-primary-400), var(--il-primary-600));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+// ============================================================
+// Premium gradient button background
+// ============================================================
+.il-gradient-bg {
+  background: linear-gradient(135deg, var(--il-primary-500), var(--il-primary-700));
+  background-size: 200% 200%;
+}
+
+.il-gradient-bg:hover {
+  animation: il-gradient-shift 3s ease infinite;
+}
+
+// ============================================================
+// Glow ring on focus
+// ============================================================
+.il-glow-focus:focus-visible {
+  box-shadow: var(--il-shadow-glow), 0 0 0 2px var(--il-primary-500);
+}
+
+// ============================================================
+// Animated border
+// ============================================================
+.il-border-animated {
+  position: relative;
+}
+
+.il-border-animated::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: linear-gradient(135deg, var(--il-primary-500), transparent 50%);
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity var(--il-transition-base);
+  pointer-events: none;
+}
+
+.il-border-animated:focus-within::after {
+  opacity: 1;
+}
+
+// ============================================================
+// Skeleton loader
+// ============================================================
+.il-skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--il-surface-2) 25%,
+    var(--il-surface-3) 50%,
+    var(--il-surface-2) 75%
+  );
+  background-size: 200% 100%;
+  animation: il-shimmer 1.5s ease-in-out infinite;
+  border-radius: var(--il-radius-md);
+}
+
+// ============================================================
+// Button press animation
+// ============================================================
+.il-press {
+  transition: transform 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.il-press:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+// ============================================================
+// Auth card — glassmorphism
+// ============================================================
+.il-auth-card {
+  background: var(--il-surface-card);
+  border: 1px solid var(--il-border);
+  border-radius: var(--il-radius-2xl);
+  padding: 2rem;
+  box-shadow: var(--il-shadow-xl);
+}
+
+.il-theme-dark .il-auth-card {
+  background: rgba(17, 17, 19, 0.8);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  border-color: rgba(255, 255, 255, 0.06);
+}
+
+.il-theme-light .il-auth-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+}
+
+// ============================================================
+// Alert
+// ============================================================
+.il-alert {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: var(--il-radius-lg);
+  font-size: var(--il-font-sm);
+  font-weight: 500;
+}
+
+.il-alert--error {
+  background: var(--il-danger-bg);
+  color: var(--il-danger-400);
+  border: 1px solid var(--il-danger-border);
+}
+
+.il-alert--success {
+  background: var(--il-success-bg);
+  color: var(--il-success-400);
+  border: 1px solid var(--il-success-border);
+}
+
+.il-alert--warning {
+  background: var(--il-warning-bg);
+  color: var(--il-warning-400);
+  border: 1px solid var(--il-warning-border);
+}
+
+.il-alert--info {
+  background: var(--il-info-bg);
+  color: var(--il-info-400);
+  border: 1px solid var(--il-info-border);
+}
+
+// ============================================================
+// Reduced motion
+// ============================================================
 @media (prefers-reduced-motion: reduce) {
   .il-card--interactive,
   .il-fade-in,
-  .il-fade-in-up {
+  .il-fade-in-up,
+  .il-fade-in-down,
+  .il-scale-in,
+  .il-slide-in-right,
+  .il-stagger > * {
     transition: none;
     animation: none;
+    opacity: 1;
   }
+
+  .il-skeleton {
+    animation: none;
+  }
+
+  .il-recording-dot {
+    animation: none;
+  }
+}
+
+// ============================================================
+// Skip navigation (accessibility)
+// ============================================================
+.il-skip-nav {
+  position: absolute;
+  left: -9999px;
+  z-index: 999;
+  padding: 12px 24px;
+  background: var(--il-primary-500);
+  color: var(--il-text-inverse);
+  font-weight: 600;
+  font-size: var(--il-font-sm);
+  border-radius: 0 0 var(--il-radius-lg) var(--il-radius-lg);
+  text-decoration: none;
+  transition: left 150ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.il-skip-nav:focus {
+  left: 50%;
+  transform: translateX(-50%);
+  outline: none;
+  box-shadow: var(--il-shadow-glow);
 }

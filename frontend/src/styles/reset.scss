@@ -1,5 +1,5 @@
 // ============================================================
-// InterviewLab — Global Styles
+// InterviewLab — Global Reset & Base Styles
 // ============================================================
 
 // --- Reset ---
@@ -12,6 +12,8 @@
 html {
   font-size: 16px;
   scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
 }
 
 body {
@@ -22,17 +24,20 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   line-height: 1.5;
+  letter-spacing: -0.011em;
+  transition: background-color 200ms cubic-bezier(0.4, 0, 0.2, 1), color 200ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 // --- Typography ---
 h1, h2, h3, h4, h5, h6 {
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 1.2;
   color: var(--il-text);
+  letter-spacing: -0.02em;
 }
 
-h1 { font-size: var(--il-font-4xl); }
-h2 { font-size: var(--il-font-3xl); }
+h1 { font-size: var(--il-font-4xl); font-weight: 700; letter-spacing: -0.025em; }
+h2 { font-size: var(--il-font-3xl); font-weight: 700; letter-spacing: -0.022em; }
 h3 { font-size: var(--il-font-2xl); }
 h4 { font-size: var(--il-font-xl); }
 h5 { font-size: var(--il-font-lg); }
@@ -75,8 +80,8 @@ code, pre {
 
 // --- Selection ---
 ::selection {
-  background: var(--il-primary-500);
-  color: white;
+  background: rgba(99, 102, 241, 0.3);
+  color: var(--il-text);
 }
 
 // --- Focus Visible ---
@@ -90,4 +95,10 @@ button:focus-visible,
 a:focus-visible,
 [role='button']:focus-visible {
   border-radius: var(--il-radius-md);
+}
+
+// --- Placeholder ---
+::placeholder {
+  color: var(--il-text-muted);
+  opacity: 1;
 }

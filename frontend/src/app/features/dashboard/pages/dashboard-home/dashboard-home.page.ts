@@ -12,6 +12,7 @@ import { IlQuickActionsCardComponent } from '../../components/quick-actions-card
 import { IlSpinnerComponent } from '@shared/components/spinner/spinner.component';
 import { IlCardComponent } from '@shared/components/card/card.component';
 import { IlEmptyStateComponent } from '@shared/components/empty-state/empty-state.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'il-dashboard-home',
@@ -27,6 +28,7 @@ import { IlEmptyStateComponent } from '@shared/components/empty-state/empty-stat
     IlSpinnerComponent,
     IlCardComponent,
     IlEmptyStateComponent,
+    MatIconModule,
   ],
   templateUrl: './dashboard-home.page.html',
 })

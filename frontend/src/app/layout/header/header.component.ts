@@ -13,6 +13,7 @@ import { IlAvatarComponent } from '../../shared/components/avatar/avatar.compone
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatIconModule, MatButtonModule, MatMenuModule, IlAvatarComponent],
   templateUrl: './header.component.html',
+  styleUrl: './header.component.scss',
 })
 export class HeaderComponent {
   readonly authStore = inject(AuthStore);
